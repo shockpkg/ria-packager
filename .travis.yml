@@ -1,5 +1,14 @@
 language: node_js
 
+os:
+- linux
+- osx
+- windows
+
+node_js:
+- v10.0.0
+- v13.5.0
+
 env:
 - SHOCKPKG_PACKAGES="
     air-sdk-1.0.7.4880-mac-zip
@@ -31,26 +40,6 @@ env:
     air-sdk-32.0.0.116-windows
     air-sdk-33.0.2.330-mac
     air-sdk-33.0.2.330-windows"
-
-matrix:
-  include:
-  - os: linux
-    node_js: v10.0.0
-
-  - os: osx
-    node_js: v10.0.0
-
-  - os: windows
-    node_js: v10.0.0
-
-  - os: linux
-    node_js: v13.5.0
-
-  - os: osx
-    node_js: v13.5.0
-
-  - os: windows
-    node_js: v13.5.0
 
 script:
 - npm run shockpkg update
