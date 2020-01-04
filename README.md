@@ -24,6 +24,8 @@ Not all possible packing formats are supported, and some have individual limitat
 
 Some packagers have extra features which can optionally be enabled for things the official packager does not support.
 
+This package is not as strict about various things and will allow packaging applications that the official packager would reject as invalid.
+
 
 # Usage
 
