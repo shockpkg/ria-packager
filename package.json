@@ -73,7 +73,7 @@
 		"@rgba-image/create-image": "^0.1.1",
 		"@rgba-image/lanczos": "^0.1.0",
 		"@rgba-image/png": "^0.1.0",
-		"@shockpkg/archive-files": "^1.8.0",
+		"@shockpkg/archive-files": "^1.8.1",
 		"@shockpkg/icon-encoder": "^1.0.1",
 		"@shockpkg/plist-dom": "^1.1.4",
 		"@types/buffer-crc32": "^0.2.0",
