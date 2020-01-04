@@ -1,34 +1,36 @@
 language: node_js
 
 env:
-  global:
-    - SHOCKPKG_PACKAGES="
-        air-sdk-1.0.7.4880-mac-zip
-        air-sdk-1.0.7.4880-windows
-        air-sdk-1.1.0.5790-mac-zip
-        air-sdk-1.1.0.5790-windows
-        air-sdk-1.5.0.7220-mac-zip
-        air-sdk-1.5.0.7220-windows
-        air-sdk-1.5.3.9120-mac-zip
-        air-sdk-1.5.3.9120-windows
-        air-sdk-2.0.1.12090-mac-zip
-        air-sdk-2.0.1.12090-windows
-        air-sdk-2.7.1.19610-mac-zip
-        air-sdk-2.7.1.19610-windows
-        air-sdk-3.0.0.4080-mac-zip
-        air-sdk-3.0.0.4080-windows
-        air-sdk-3.2.0.2070-mac-zip
-        air-sdk-3.2.0.2070-windows
-        air-sdk-3.6.0.6090-mac-zip
-        air-sdk-3.6.0.6090-windows
-        air-sdk-25.0.0.134-mac-zip
-        air-sdk-25.0.0.134-windows
-        air-sdk-27.0.0.128-mac-zip
-        air-sdk-27.0.0.132-windows
-        air-sdk-32.0.0.116-mac-zip
-        air-sdk-32.0.0.116-windows
-        air-sdk-33.0.2.330-mac
-        air-sdk-33.0.2.330-windows"
+- SHOCKPKG_PACKAGES="
+    air-sdk-1.0.7.4880-mac-zip
+    air-sdk-1.0.7.4880-windows
+    air-sdk-1.1.0.5790-mac-zip
+    air-sdk-1.1.0.5790-windows
+    air-sdk-1.5.0.7220-mac-zip
+    air-sdk-1.5.0.7220-windows
+    air-sdk-1.5.3.9120-mac-zip
+    air-sdk-1.5.3.9120-windows
+    air-sdk-2.0.1.12090-mac-zip
+    air-sdk-2.0.1.12090-windows
+    air-sdk-2.7.1.19610-mac-zip
+    air-sdk-2.7.1.19610-windows"
+- SHOCKPKG_PACKAGES="
+    air-sdk-3.0.0.4080-mac-zip
+    air-sdk-3.0.0.4080-windows
+    air-sdk-3.2.0.2070-mac-zip
+    air-sdk-3.2.0.2070-windows
+    air-sdk-3.6.0.6090-mac-zip
+    air-sdk-3.6.0.6090-windows"
+- SHOCKPKG_PACKAGES="
+    air-sdk-25.0.0.134-mac-zip
+    air-sdk-25.0.0.134-windows
+    air-sdk-27.0.0.128-mac-zip
+    air-sdk-27.0.0.132-windows"
+- SHOCKPKG_PACKAGES="
+    air-sdk-32.0.0.116-mac-zip
+    air-sdk-32.0.0.116-windows
+    air-sdk-33.0.2.330-mac
+    air-sdk-33.0.2.330-windows"
 
 matrix:
   include:
