@@ -2,7 +2,7 @@ language: node_js
 
 env:
   global:
-  - SHOCKPKG_PACKAGES_OLD="
+  - SHOCKPKG_PACKAGES="
       air-sdk-1.0.7.4880-mac-zip
       air-sdk-1.0.7.4880-windows
       air-sdk-1.1.0.5790-mac-zip
@@ -20,8 +20,7 @@ env:
       air-sdk-3.2.0.2070-mac-zip
       air-sdk-3.2.0.2070-windows
       air-sdk-3.6.0.6090-mac-zip
-      air-sdk-3.6.0.6090-windows"
-  - SHOCKPKG_PACKAGES_NEW="
+      air-sdk-3.6.0.6090-windows
       air-sdk-25.0.0.134-mac-zip
       air-sdk-25.0.0.134-windows
       air-sdk-27.0.0.128-mac-zip
@@ -35,63 +34,21 @@ matrix:
   include:
   - os: linux
     node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: linux
-    node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
   - os: osx
     node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: osx
-    node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
   - os: windows
     node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: windows
-    node_js: v10.0.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
   - os: linux
     node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: linux
-    node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
   - os: osx
     node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: osx
-    node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
   - os: windows
     node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_OLD"
-
-  - os: windows
-    node_js: v13.5.0
-    env:
-    - SHOCKPKG_PACKAGES="$SHOCKPKG_PACKAGES_NEW"
 
 script:
 - npm run shockpkg update --summary
