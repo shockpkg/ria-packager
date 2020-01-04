@@ -80,12 +80,13 @@ describe('zipper', () => {
 
 			{
 				// No timezone, local time.
-				const date = new Date('2019-12-25 12:34:56');
+				const dateLocal = new Date('2019-12-25 12:34:56');
+				const dateUTC = new Date('2019-12-25 12:34:56 UTC');
 
 				const entry = zipper.createEntry();
 				entry.path = 'b/b/b.txt';
 				entry.comment = 'comment b';
-				entry.setDate(date);
+				entry.setDate(dateLocal);
 
 				entry.extractVersion = 0x12;
 				entry.extractHostOS = 0x34;
@@ -95,7 +96,7 @@ describe('zipper', () => {
 				entry.internalAttributes = 0xABCD;
 				entry.externalAttributes = 0xFECDBA98;
 
-				entry.addExtraFieldsExtendedTimestamp(date);
+				entry.addExtraFieldsExtendedTimestamp(dateUTC);
 				entry.addExtraFieldsInfoZipUnix2(1234, 5678);
 
 				const data = await entry.initData(
@@ -109,7 +110,7 @@ describe('zipper', () => {
 				expect(hex).toBe([
 					'50 4B 03 04 12 34 BC 9A 08 00 5C 64 99 4F F9 EF',
 					'BE 71 03 00 00 00 01 00 00 00 09 00 11 00 62 2F',
-					'62 2F 62 2E 74 78 74 55 54 05 00 01 C0 9D 03 5E',
+					'62 2F 62 2E 74 78 74 55 54 05 00 01 70 57 03 5E',
 					'55 78 04 00 D2 04 2E 16 4B 02 00'
 				].join(' '));
 				expect(offset).toBe(35);
