@@ -79,7 +79,8 @@ describe('zipper', () => {
 			}
 
 			{
-				const date = new Date('2019-12-25T12:34:56.000Z');
+				// No timezone, local time.
+				const date = new Date('2019-12-25 12:34:56');
 
 				const entry = zipper.createEntry();
 				entry.path = 'b/b/b.txt';
@@ -106,9 +107,9 @@ describe('zipper', () => {
 				const {buffer, offset} = out.flushBuffer();
 				const hex = bufferHex(buffer);
 				expect(hex).toBe([
-					'50 4B 03 04 12 34 BC 9A 08 00 5C 3C 99 4F F9 EF',
+					'50 4B 03 04 12 34 BC 9A 08 00 5C 64 99 4F F9 EF',
 					'BE 71 03 00 00 00 01 00 00 00 09 00 11 00 62 2F',
-					'62 2F 62 2E 74 78 74 55 54 05 00 01 70 57 03 5E',
+					'62 2F 62 2E 74 78 74 55 54 05 00 01 C0 9D 03 5E',
 					'55 78 04 00 D2 04 2E 16 4B 02 00'
 				].join(' '));
 				expect(offset).toBe(35);
@@ -160,7 +161,7 @@ describe('zipper', () => {
 				'50 4B 01 02 14 00 14 00 00 00 08 00 00 00 00 00',
 				'76 0A E3 F6 05 00 00 00 0C 00 00 00 00 00 00 00',
 				'00 00 00 00 00 00 00 00 00 00 00 00 00 00 50 4B',
-				'01 02 56 78 12 34 BC 9A 08 00 5C 3C 99 4F F9 EF',
+				'01 02 56 78 12 34 BC 9A 08 00 5C 64 99 4F F9 EF',
 				'BE 71 03 00 00 00 01 00 00 00 09 00 09 00 09 00',
 				'00 00 CD AB 98 BA CD FE 23 00 00 00 62 2F 62 2F',
 				'62 2E 74 78 74 55 54 01 00 01 55 78 00 00 63 6F',
