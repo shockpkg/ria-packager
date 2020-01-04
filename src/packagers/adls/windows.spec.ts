@@ -1,8 +1,4 @@
 import {
-	join as pathJoin
-} from 'path';
-
-import {
 	generateSamplesWindows,
 	cleanPackageDir,
 	fixtureFile,
@@ -34,9 +30,8 @@ describe('packages/adls/windows', () => {
 					'windows',
 					uid
 				);
-				const path = pathJoin(dir, sample.name);
 
-				const packager = new PackagerAdlWindows(path);
+				const packager = new PackagerAdlWindows(dir);
 				if (extras) {
 					// Enable all of the extra features.
 					packager.debug = true;

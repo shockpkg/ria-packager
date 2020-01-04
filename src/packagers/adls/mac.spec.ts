@@ -1,8 +1,4 @@
 import {
-	join as pathJoin
-} from 'path';
-
-import {
 	platformIsMac,
 	generateSamplesMac,
 	cleanPackageDir,
@@ -39,9 +35,8 @@ describe('packages/adls/mac', () => {
 					'mac',
 					uid
 				);
-				const path = pathJoin(dir, `${sample.name}`);
 
-				const packager = new PackagerAdlMac(path);
+				const packager = new PackagerAdlMac(dir);
 
 				if (extras) {
 					// Enable all of the extra features.

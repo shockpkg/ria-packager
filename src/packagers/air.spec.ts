@@ -34,7 +34,7 @@ export function test(
 					name,
 					uid
 				);
-				const path = pathJoin(dir, `${uid}${ext}`);
+				const path = pathJoin(dir, `${sample.name}${ext}`);
 
 				const packager = new Packager(path);
 				packager.debug = true;

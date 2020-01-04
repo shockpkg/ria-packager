@@ -1,8 +1,4 @@
 import {
-	join as pathJoin
-} from 'path';
-
-import {
 	generateSamplesWindows,
 	cleanPackageDir,
 	fixtureFile,
@@ -53,9 +49,8 @@ describe('packages/bundles/windows', () => {
 					'windows',
 					uid
 				);
-				const path = pathJoin(dir, sample.name);
 
-				const packager = new PackagerBundleWindows(path);
+				const packager = new PackagerBundleWindows(dir);
 				if (extras) {
 					// Enable all of the extra features (except architecture).
 					packager.debug = true;
