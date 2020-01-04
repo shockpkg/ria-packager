@@ -79,7 +79,7 @@ describe('zipper', () => {
 			}
 
 			{
-				const date = new Date('2019-12-25 12:34:56 UTC');
+				const date = new Date('2019-12-25T12:34:56.000Z');
 
 				const entry = zipper.createEntry();
 				entry.path = 'b/b/b.txt';
