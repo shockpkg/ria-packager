@@ -51,8 +51,8 @@ matrix:
     node_js: v13.5.0
 
 script:
-- npm run shockpkg update --summary
-- npm run shockpkg install $SHOCKPKG_PACKAGES
+- npm run shockpkg -- update --summary
+- npm run shockpkg -- install $SHOCKPKG_PACKAGES
 - npm run clean
 - npm run lint
 - npm run build
