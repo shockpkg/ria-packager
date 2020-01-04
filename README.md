@@ -22,6 +22,8 @@ Reading DMG SDK packages is only supported on macOS.
 
 Not all possible packing formats are supported, and some have individual limitations.
 
+Some packagers have extra features which can optionally be enabled for things the official packager does not support.
+
 
 # Usage
 
@@ -45,7 +47,7 @@ packager.profile = 'extendedDesktop';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
-	await packager.addResourceFile('src/icons', 'icons');
+	await packager.addResourceDirectory('src/icons', 'icons');
 });
 ```
 
@@ -84,7 +86,7 @@ packager.versionStrings = {
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
-	await packager.addResourceFile('src/icons', 'icons');
+	await packager.addResourceDirectory('src/icons', 'icons');
 });
 ```
 
@@ -115,7 +117,7 @@ packager.frameworkCleanOsFiles = true;
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
-	await packager.addResourceFile('src/icons', 'icons');
+	await packager.addResourceDirectory('src/icons', 'icons');
 });
 ```
 
@@ -138,7 +140,7 @@ packager.profile = 'extendedDesktop';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
-	await packager.addResourceFile('src/icons', 'icons');
+	await packager.addResourceDirectory('src/icons', 'icons');
 });
 ```
 
@@ -156,7 +158,7 @@ packager.architecture = 'x64';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
-	await packager.addResourceFile('src/icons', 'icons');
+	await packager.addResourceDirectory('src/icons', 'icons');
 });
 ```
 
