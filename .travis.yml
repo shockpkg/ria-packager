@@ -36,7 +36,6 @@ matrix:
     node_js: v10.0.0
 
   - os: osx
-    osx_image: xcode10.2
     node_js: v10.0.0
 
   - os: windows
@@ -46,7 +45,6 @@ matrix:
     node_js: v13.5.0
 
   - os: osx
-    osx_image: xcode10.2
     node_js: v13.5.0
 
   - os: windows
