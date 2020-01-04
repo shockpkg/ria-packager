@@ -2,4 +2,4 @@
 
 'use strict';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000 * 5;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60;
