@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/16.0">
+	<id>com.example.HelloWorld</id>
+	<versionLabel>Version 3.1.4</versionLabel>
+	<versionNumber>3.1.4</versionNumber>
+	<filename>HelloWorld</filename>
+	<name>Name</name>
+	<supportedLanguages>en fr es</supportedLanguages>
+	<description>
+		<text xml:lang="en">Description en</text>
+		<text xml:lang="fr">Description fr</text>
+		<text xml:lang="es">Description es</text>
+	</description>
+	<copyright>Copyright</copyright>
+	<icon>
+		<image16x16>icons/icon_16x16.png</image16x16>
+		<image29x29>icons/icon_29x29.png</image29x29>
+		<image32x32>icons/icon_32x32.png</image32x32>
+		<image36x36>icons/icon_36x36.png</image36x36>
+		<image48x48>icons/icon_48x48.png</image48x48>
+		<image50x50>icons/icon_50x50.png</image50x50>
+		<image57x57>icons/icon_57x57.png</image57x57>
+		<image58x58>icons/icon_58x58.png</image58x58>
+		<image72x72>icons/icon_72x72.png</image72x72>
+		<image96x96>icons/icon_96x96.png</image96x96>
+		<image100x100>icons/icon_100x100.png</image100x100>
+		<image114x114>icons/icon_114x114.png</image114x114>
+		<image128x128>icons/icon_128x128.png</image128x128>
+		<image144x144>icons/icon_144x144.png</image144x144>
+		<image512x512>icons/icon_512x512.png</image512x512>
+		<image732x412>icons/icon_732x412.png</image732x412>
+		<image1024x1024>icons/icon_1024x1024.png</image1024x1024>
+	</icon>
+	<fileTypes>
+		<fileType>
+			<name>HelloWorld.Text</name>
+			<extension>hwtxt</extension>
+			<description>HelloWorld text file description</description>
+			<contentType>text/plain</contentType>
+			<icon>
+				<image16x16>iconsdoctxt/icon_16x16.png</image16x16>
+				<image29x29>iconsdoctxt/icon_29x29.png</image29x29>
+				<image32x32>iconsdoctxt/icon_32x32.png</image32x32>
+				<image36x36>iconsdoctxt/icon_36x36.png</image36x36>
+				<image48x48>iconsdoctxt/icon_48x48.png</image48x48>
+				<image128x128>iconsdoctxt/icon_128x128.png</image128x128>
+				<image512x512>iconsdoctxt/icon_512x512.png</image512x512>
+			</icon>
+		</fileType>
+		<fileType>
+			<name>HelloWorld.Binary</name>
+			<extension>hwbin</extension>
+			<description>HelloWorld binary file description</description>
+			<contentType>application/octet-stream</contentType>
+			<icon>
+				<image16x16>iconsdocbin/icon_16x16.png</image16x16>
+				<image29x29>iconsdocbin/icon_29x29.png</image29x29>
+				<image32x32>iconsdocbin/icon_32x32.png</image32x32>
+				<image36x36>iconsdocbin/icon_36x36.png</image36x36>
+				<image48x48>iconsdocbin/icon_48x48.png</image48x48>
+				<image128x128>iconsdocbin/icon_128x128.png</image128x128>
+				<image512x512>iconsdocbin/icon_512x512.png</image512x512>
+			</icon>
+		</fileType>
+		<fileType>
+			<name>HelloWorld.Binary2</name>
+			<extension>hwbin2</extension>
+			<description>HelloWorld binary file description 2</description>
+			<contentType>application/octet-stream</contentType>
+			<icon>
+				<image16x16>iconsdocbin/icon_16x16.png</image16x16>
+				<image29x29>iconsdocbin/icon_29x29.png</image29x29>
+				<image32x32>iconsdocbin/icon_32x32.png</image32x32>
+				<image36x36>iconsdocbin/icon_36x36.png</image36x36>
+				<image48x48>iconsdocbin/icon_48x48.png</image48x48>
+				<image128x128>iconsdocbin/icon_128x128.png</image128x128>
+				<image512x512>iconsdocbin/icon_512x512.png</image512x512>
+			</icon>
+		</fileType>
+	</fileTypes>
+	<initialWindow>
+		<title>Title</title>
+		<content>HelloWorld.swf</content>
+		<visible>true</visible>
+		<requestedDisplayResolution>high</requestedDisplayResolution>
+	</initialWindow>
+</application>
