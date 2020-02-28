@@ -27,6 +27,8 @@ env:
       air-sdk-27.0.0.132-windows
       air-sdk-32.0.0.116-mac-zip
       air-sdk-32.0.0.116-windows
+      air-sdk-33.0.2.330-mac
+      air-sdk-33.0.2.330-windows
       air-sdk-33.1.1.50-mac
       air-sdk-33.1.1.50-windows"
 
