@@ -28,49 +28,20 @@ export function shouldTest(name: string) {
 export const timestampUrl =
 	'http://sha256timestamp.ws.symantec.com/sha256/timestamp';
 
-const formats = [
-	'33.1',
-	'32.0',
-	'31.0',
-	'30.0',
-	'29.0',
-	'28.0',
-	'27.0',
-	'26.0',
-	'25.0',
-	'24.0',
-	'23.0',
-	'22.0',
-	'21.0',
-	'20.0',
-	'19.0',
-	'18.0',
-	'17.0',
-	'16.0',
-	'15.0',
-	'14.0',
-	'13.0',
-	'4.0',
-	'3.9',
-	'3.8',
-	'3.7',
-	'3.6',
-	'3.5',
-	'3.4',
-	'3.3',
-	'3.2',
-	'3.1',
-	'3.0',
-	'2.7',
-	'2.6',
-	'2.5',
-	'2.0',
-	'1.5',
-	'1.0'
-];
+export function listFormats() {
+	// eslint-disable-next-line no-sync
+	return fse.readdirSync(
+		pathJoin('spec', 'fixtures', 'HelloWorld')
+	)
+		.filter(s => /^\d+\.\d+$/.test(s))
+		.map(s => s.split('.').map(s => +s))
+		.sort((a, b) => a[1] - b[1])
+		.sort((a, b) => a[0] - b[0])
+		.map(a => a.join('.'));
+}
 
 export function * generateSamples() {
-	for (const format of formats) {
+	for (const format of listFormats().reverse()) {
 		const version = format.split('.').map(Number);
 		yield {
 			format,
