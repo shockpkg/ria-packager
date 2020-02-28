@@ -29,6 +29,7 @@ export const timestampUrl =
 	'http://sha256timestamp.ws.symantec.com/sha256/timestamp';
 
 const formats = [
+	'33.1',
 	'32.0',
 	'31.0',
 	'30.0',
