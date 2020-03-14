@@ -83,9 +83,7 @@
 		"buffer-crc32": "^0.2.13",
 		"fs-extra": "^8.1.0",
 		"node-forge": "^0.9.1",
-		"node-require-function": "^1.2.0",
 		"puka": "^1.0.0",
-		"rcedit": "^2.1.1",
 		"request": "^2.88.2",
 		"resedit": "^0.5.2",
 		"xmldom": "^0.3.0"
