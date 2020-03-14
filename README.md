@@ -26,6 +26,8 @@ Some packagers have extra features which can optionally be enabled for things th
 
 This package is not as strict about various things and will allow packaging applications that the official packager would reject as invalid.
 
+Currently there is no option for creating license files for packaging HARMAN SDK runtimes.
+
 
 # Usage
 
