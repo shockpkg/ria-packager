@@ -29,8 +29,8 @@ env:
       air-sdk-32.0.0.116-windows
       air-sdk-33.0.2.330-mac
       air-sdk-33.0.2.330-windows
-      air-sdk-33.1.1.63-mac
-      air-sdk-33.1.1.63-windows"
+      air-sdk-33.1.1.86-mac
+      air-sdk-33.1.1.86-windows"
 
 matrix:
   include:
