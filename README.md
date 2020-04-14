@@ -87,6 +87,7 @@ packager.versionStrings = {
 	CompanyName: 'Custom Company Name',
 	LegalCopyright: 'Custom Legal Copyright'
 };
+packager.architecture = 'x64';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
@@ -141,6 +142,7 @@ packager.sdkPath = 'airsdk-win.zip';
 
 // Options:
 packager.profile = 'extendedDesktop';
+packager.architecture = 'x64';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
@@ -158,7 +160,6 @@ packager.sdkPath = 'airsdk-mac.zip';
 
 // Options:
 packager.profile = 'extendedDesktop';
-packager.architecture = 'x64';
 
 await packager.withFile('src/application-app.xml', async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
