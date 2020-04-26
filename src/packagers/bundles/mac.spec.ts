@@ -8,7 +8,7 @@ import {
 	cleanPackageDir,
 	fixtureFile,
 	fixtureKeystoreRead,
-	timestampUrl,
+	// timestampUrl,
 	getPackageFile,
 	shouldTest,
 	versionBefore
@@ -76,7 +76,7 @@ describe('packages/bundles/mac', () => {
 				}
 
 				packager.keystore = await fixtureKeystoreRead();
-				packager.timestampUrl = timestampUrl;
+				// packager.timestampUrl = timestampUrl;
 
 				packager.sdkPath = sdkPath;
 
