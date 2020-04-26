@@ -19,13 +19,16 @@ import {
 } from './packager';
 
 // eslint-disable-next-line no-process-env
-export const envFastTest = process.env.RIA_PACKAGER_FAST_TEST || null;
+export const envTest = process.env.RIA_PACKAGER_TEST || null;
 
 // eslint-disable-next-line no-process-env
 export const timestampUrl = process.env.RIA_PACKAGER_TIMESTAMP_URL || null;
 
 export function shouldTest(name: string) {
-	return !envFastTest || envFastTest === name;
+	return !envTest || (
+		envTest.toLowerCase().split(',')
+			.includes(name.toLowerCase())
+	);
 }
 
 export function listFormats() {
