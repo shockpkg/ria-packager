@@ -16,9 +16,14 @@ export function test(
 	Packager: new(path: string) => PackagerAir,
 	name: string,
 	ext: string,
-	signed: boolean
+	signed: boolean,
+	limitTimestamp: boolean
 ) {
+	let timestampOnce = true;
 	for (const sample of generateSamples()) {
+		const timestamp = timestampOnce || !limitTimestamp;
+		timestampOnce = false;
+
 		const {descriptor64} = sample;
 		const samples: [string, string][] = [
 			[`${sample.name}-${sample.format}`, sample.descriptor]
@@ -41,7 +46,9 @@ export function test(
 
 				if (signed) {
 					packager.keystore = await fixtureKeystoreRead();
-					packager.timestampUrl = timestampUrl;
+					if (timestamp) {
+						packager.timestampUrl = timestampUrl;
+					}
 				}
 
 				const descriptorFile = fixtureFile(

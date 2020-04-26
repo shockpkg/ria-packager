@@ -8,6 +8,6 @@ describe('packages/airs/native', () => {
 		return;
 	}
 	describe('PackagerAirInstaller', () => {
-		test(PackagerAirNative, 'native', '.airn', true);
+		test(PackagerAirNative, 'native', '.airn', true, true);
 	});
 });

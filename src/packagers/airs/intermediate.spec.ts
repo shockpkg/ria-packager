@@ -8,6 +8,6 @@ describe('packages/airs/intermediate', () => {
 		return;
 	}
 	describe('PackagerAirInstaller', () => {
-		test(PackagerAirIntermediate, 'intermediate', '.airi', false);
+		test(PackagerAirIntermediate, 'intermediate', '.airi', false, true);
 	});
 });

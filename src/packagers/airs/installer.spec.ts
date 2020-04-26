@@ -8,6 +8,6 @@ describe('packages/airs/installer', () => {
 		return;
 	}
 	describe('PackagerAirInstaller', () => {
-		test(PackagerAirInstaller, 'installer', '.air', true);
+		test(PackagerAirInstaller, 'installer', '.air', true, true);
 	});
 });
