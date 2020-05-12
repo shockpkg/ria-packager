@@ -10,7 +10,7 @@ import {
 
 import {
 	SecurityKeystorePkcs12
-} from './security/keystores/pkcs12';
+} from './security/keystore/pkcs12';
 import {
 	pathRelativeBase
 } from './util';

@@ -15,7 +15,7 @@ import {
 import {SecurityKeystore} from './security/keystore';
 import {Signature} from './signature';
 import {Hasher} from './hasher';
-import {HasherSha256} from './hashers/sha256';
+import {HasherSha256} from './hasher/sha256';
 
 /**
  * Options for adding resources.

@@ -1,8 +1,8 @@
 import fse from 'fs-extra';
 import forge from 'node-forge';
 
-import {SecurityCertificateX509} from '../certificates/x509';
-import {SecurityKeyPrivateRsa} from '../keys/privates/rsa';
+import {SecurityCertificateX509} from '../certificate/x509';
+import {SecurityKeyPrivateRsa} from '../key/private/rsa';
 import {SecurityKeystore} from '../keystore';
 
 const forgeOidCertBag = forge.pki.oids.certBag;

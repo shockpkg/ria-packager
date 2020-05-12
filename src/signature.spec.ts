@@ -4,7 +4,7 @@ import {
 	fixtureFile,
 	timestampUrl
 } from './util.spec';
-import {SecurityKeystorePkcs12} from './security/keystores/pkcs12';
+import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
 import {SecurityTimestamper} from './security/timestamper';
 import {Signature} from './signature';
 

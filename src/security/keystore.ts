@@ -1,5 +1,5 @@
 import {SecurityCertificate} from './certificate';
-import {SecurityKeyPrivate} from './keys/private';
+import {SecurityKeyPrivate} from './key/private';
 
 /**
  * SecurityKeystore constructor.

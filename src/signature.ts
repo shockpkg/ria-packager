@@ -1,8 +1,8 @@
 import {SecurityCertificate} from './security/certificate';
-import {SecurityKeyPrivate} from './security/keys/private';
+import {SecurityKeyPrivate} from './security/key/private';
 import {SecurityTimestamper} from './security/timestamper';
-import {HasherSha1} from './hashers/sha1';
-import {HasherSha256} from './hashers/sha256';
+import {HasherSha1} from './hasher/sha1';
+import {HasherSha256} from './hasher/sha256';
 
 const templates: [string, string][] = [
 	[
