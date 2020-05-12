@@ -38,12 +38,18 @@ matrix:
   include:
   - os: linux
     node_js: v10.0.0
+    env:
+    - NO_LINT=1
 
   - os: osx
     node_js: v10.0.0
+    env:
+    - NO_LINT=1
 
   - os: windows
     node_js: v10.0.0
+    env:
+    - NO_LINT=1
 
   - os: linux
     node_js: v14.0.0
@@ -58,6 +64,6 @@ script:
 - npm run shockpkg -- update --summary
 - npm run shockpkg -- install $SHOCKPKG_PACKAGES
 - npm run clean
-- npm run lint
+- if [ "$NO_LINT" != "1" ]; then npm run lint; fi
 - npm run build
 - npm run test
