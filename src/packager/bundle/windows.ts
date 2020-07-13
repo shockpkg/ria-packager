@@ -3,6 +3,7 @@ import {
 } from 'path';
 
 import fse from 'fs-extra';
+import {signatureSet} from 'portable-executable-signature';
 import * as resedit from 'resedit';
 import * as rgbaImageCreateImage from '@rgba-image/create-image';
 import * as rgbaImagePng from '@rgba-image/png';
@@ -390,8 +391,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Read EXE file and parse resources.
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
-		const exe = ResEditNtExecutable.from(bufferToArrayBuffer(
-			await fse.readFile(appBinaryPathFull)
+		const exe = ResEditNtExecutable.from(signatureSet(
+			bufferToArrayBuffer(await fse.readFile(appBinaryPathFull)),
+			null,
+			true,
+			true
 		));
 		const res = ResEditNtExecutableResource.from(exe);
 
