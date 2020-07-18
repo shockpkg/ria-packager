@@ -52,13 +52,13 @@ matrix:
     - NO_LINT=1
 
   - os: linux
-    node_js: v14.2.0
+    node_js: v14.5.0
 
   - os: osx
-    node_js: v14.2.0
+    node_js: v14.5.0
 
   - os: windows
-    node_js: v14.2.0
+    node_js: v14.5.0
 
 script:
 - npm run shockpkg -- update --summary
