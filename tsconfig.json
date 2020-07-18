@@ -29,12 +29,7 @@
 
 		"types": [
 			"node",
-			"jasmine",
-			"fs-extra",
-			"node-forge",
-			"buffer-crc32",
-			"request",
-			"xmldom"
+			"jasmine"
 		],
 		"outDir": "lib"
 	},
