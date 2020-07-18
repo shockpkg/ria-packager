@@ -6,6 +6,23 @@ const {
 	pki
 } = forge;
 
+export type SecurityTimestamperRequest = (
+	obj: {
+		url: string;
+		method?: string;
+		headers?: {[key: string]: string};
+		body?: any;
+		encoding?: string | null;
+	},
+	cb: (
+		error: Error,
+		response: {
+			statusCode: number;
+		},
+		body: any
+	) => void
+) => any;
+
 /**
  * SecurityTimestamper constructor.
  *
@@ -42,7 +59,7 @@ export class SecurityTimestamper extends Object {
 	 * @returns Request object.
 	 */
 	protected _createRequest() {
-		return request.defaults({});
+		return request.defaults({}) as SecurityTimestamperRequest;
 	}
 
 	/**
@@ -55,27 +72,30 @@ export class SecurityTimestamper extends Object {
 		const {url} = this;
 		const req = this._createRequest();
 
-		const opts = {
-			method: 'POST',
-			url,
-			headers: {
-				'Content-Type': 'application/timestamp-query'
-			},
-			body: message,
-			encoding: null
-		};
-
 		const [response, body] = await new Promise<[
-			request.Response,
+			{
+				statusCode: number;
+			},
 			Buffer
 		]>((resolve, reject) => {
-			req(opts, (error, response, body) => {
-				if (error) {
-					reject(error);
-					return;
+			req(
+				{
+					method: 'POST',
+					url,
+					headers: {
+						'Content-Type': 'application/timestamp-query'
+					},
+					body: message,
+					encoding: null
+				},
+				(error, response, body) => {
+					if (error) {
+						reject(error);
+						return;
+					}
+					resolve([response, body]);
 				}
-				resolve([response, body]);
-			});
+			);
 		});
 
 		const {statusCode} = response;
