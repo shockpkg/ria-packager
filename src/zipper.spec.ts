@@ -11,7 +11,7 @@ class BufferCollector extends Writable {
 
 	protected _buffered: Buffer[] = [];
 
-	// eslint-disable-next-line @typescript-eslint/member-naming
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	public _write(
 		chunk: any,
 		encoding: string,
