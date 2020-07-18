@@ -58,7 +58,7 @@ matrix:
     node_js: v14.5.0
 
   - os: windows
-    node_js: v14.5.0
+    node_js: v14.4.0
 
 script:
 - npm run shockpkg -- update --summary
