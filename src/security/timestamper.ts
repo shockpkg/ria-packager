@@ -1,26 +1,60 @@
+import fetch from 'node-fetch';
 import forge from 'node-forge';
-import request from 'request';
+
+import {NAME, VERSION} from '../meta';
 
 const {
 	asn1,
 	pki
 } = forge;
 
+const userAgent = `${NAME}/${VERSION}`;
+
+export type SecurityTimestamperRequestOptions = ({
+
+	/**
+	 * URL string.
+	 */
+	url: string;
+
+	/**
+	 * Request method.
+	 */
+	method?: string;
+
+	/**
+	 * Request headers.
+	 */
+	headers?: {[key: string]: string};
+
+	/**
+	 * Request body.
+	 */
+	body?: any;
+
+	/**
+	 * Body encoding used for callback functions.
+	 */
+	encoding?: string | null;
+});
+
+export type SecurityTimestamperRequestResponse = ({
+
+	/**
+	 * Status code.
+	 */
+	statusCode: number;
+});
+
+export type SecurityTimestamperRequestCallback = (
+	error: Error | null,
+	response: SecurityTimestamperRequestResponse,
+	body: any
+) => void;
+
 export type SecurityTimestamperRequest = (
-	obj: {
-		url: string;
-		method?: string;
-		headers?: {[key: string]: string};
-		body?: any;
-		encoding?: string | null;
-	},
-	cb: (
-		error: Error,
-		response: {
-			statusCode: number;
-		},
-		body: any
-	) => void
+	obj: SecurityTimestamperRequestOptions,
+	cb: SecurityTimestamperRequestCallback
 ) => any;
 
 /**
@@ -58,8 +92,44 @@ export class SecurityTimestamper extends Object {
 	 *
 	 * @returns Request object.
 	 */
-	protected _createRequest() {
-		return request.defaults({}) as SecurityTimestamperRequest;
+	protected _createRequest(): SecurityTimestamperRequest {
+		return (
+			options: SecurityTimestamperRequestOptions,
+			cb: SecurityTimestamperRequestCallback
+		) => {
+			let response: SecurityTimestamperRequestResponse = {
+				statusCode: 0
+			};
+			const {encoding} = options;
+			(async () => {
+				const res = await fetch(options.url, {
+					method: options.method || 'GET',
+					headers: {
+						'User-Agent': userAgent,
+						...(options.headers || {})
+					},
+					body: options.body || null
+				});
+				response = {
+					statusCode: res.status
+				};
+				return res.buffer();
+			})()
+				.then(
+					data => {
+						cb(
+							null,
+							response,
+							encoding === null ?
+								data :
+								data.toString(encoding as any)
+						);
+					},
+					err => {
+						cb(err, response, null);
+					}
+				);
+		};
 	}
 
 	/**
@@ -73,9 +143,7 @@ export class SecurityTimestamper extends Object {
 		const req = this._createRequest();
 
 		const [response, body] = await new Promise<[
-			{
-				statusCode: number;
-			},
+			SecurityTimestamperRequestResponse,
 			Buffer
 		]>((resolve, reject) => {
 			req(
