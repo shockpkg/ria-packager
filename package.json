@@ -94,7 +94,7 @@
 		"buffer-crc32": "^0.2.13",
 		"fs-extra": "^9.0.1",
 		"node-fetch": "^2.6.0",
-		"node-forge": "^0.9.1",
+		"node-forge": "^0.10.0",
 		"portable-executable-signature": "^1.1.0",
 		"puka": "^1.0.1",
 		"resedit": "^0.6.0",
