@@ -1,3 +1,5 @@
+import {TranscodeEncoding} from 'buffer';
+
 import fse from 'fs-extra';
 import xmldom from 'xmldom';
 
@@ -396,7 +398,7 @@ export abstract class PackagerBundle extends Packager {
 		data: Readonly<string[]> | string | Readonly<Buffer> | null,
 		file: string | null,
 		newline: string | null,
-		encoding: BufferEncoding | null
+		encoding: TranscodeEncoding | null
 	) {
 		let str: string | null = null;
 		if (typeof data === 'string') {
