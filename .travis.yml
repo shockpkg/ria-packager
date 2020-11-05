@@ -36,8 +36,8 @@ env:
   - SHOCKPKG_PACKAGES_AIR_33="
       air-sdk-33.0.2.330-mac
       air-sdk-33.0.2.330-windows
-      air-sdk-33.1.1.259-mac
-      air-sdk-33.1.1.259-windows"
+      air-sdk-33.1.1.300-mac
+      air-sdk-33.1.1.300-windows"
 
 matrix:
   include:
