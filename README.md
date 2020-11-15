@@ -44,7 +44,7 @@ await keystore.readFile('key.p12', 'password');
 
 const packager = new PackagerAirInstaller('application.air');
 packager.keystore = keystore;
-packager.timestampUrl = 'http://sha256timestamp.ws.symantec.com/sha256/timestamp';
+packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:
 packager.profile = 'extendedDesktop';
@@ -75,7 +75,7 @@ await keystore.readFile('key.p12', 'password');
 const packager = new PackagerAdlWindows('application');
 packager.sdkPath = 'airsdk-win.zip';
 packager.keystore = keystore;
-packager.timestampUrl = 'http://sha256timestamp.ws.symantec.com/sha256/timestamp';
+packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:
 packager.applicationIconModern = true;
@@ -113,7 +113,7 @@ await keystore.readFile('key.p12', 'password');
 const packager = new PackagerBundleMac('application.app');
 packager.sdkPath = 'airsdk-mac.zip';
 packager.keystore = keystore;
-packager.timestampUrl = 'http://sha256timestamp.ws.symantec.com/sha256/timestamp';
+packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:
 packager.applicationIconModern = true;
