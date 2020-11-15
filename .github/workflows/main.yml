@@ -66,6 +66,8 @@ jobs:
           - PACKAGES: |
               air-sdk-33.0.2.330-mac
               air-sdk-33.0.2.330-windows
+
+          - PACKAGES: |
               air-sdk-33.1.1.300-mac
               air-sdk-33.1.1.300-windows
 
