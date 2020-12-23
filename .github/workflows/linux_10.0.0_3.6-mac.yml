@@ -1,4 +1,4 @@
-name: 'linux_10.0.0_25'
+name: 'linux_10.0.0_3.6-mac'
 
 on: push
 
@@ -16,7 +16,7 @@ jobs:
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-25.0.0.134-mac-zip air-sdk-25.0.0.134-windows
+    - run: npm run shockpkg -- install air-sdk-3.6.0.6090-mac-zip
 
     - run: npm run build
     - run: npm run test

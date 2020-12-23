@@ -1,4 +1,4 @@
-name: 'linux_10.0.0_3.2'
+name: 'linux_15.5.0_32-windows'
 
 on: push
 
@@ -11,12 +11,12 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: '10.0.0'
+        node-version: '15.5.0'
 
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-3.2.0.2070-mac-zip air-sdk-3.2.0.2070-windows
+    - run: npm run shockpkg -- install air-sdk-32.0.0.116-windows
 
     - run: npm run build
     - run: npm run test
