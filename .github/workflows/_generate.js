@@ -100,7 +100,7 @@ async function main() {
 				const name = `${platform}_${nodeVersion}_${pkg}`;
 				await fs.writeFile(`${name}.yaml`, template(
 					name,
-					platform,
+					runsOn,
 					nodeVersion,
 					options.lint ? 1 : 0,
 					pkgs.join(' ')
