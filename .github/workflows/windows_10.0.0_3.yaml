@@ -18,8 +18,6 @@ jobs:
     - run: npm run shockpkg -- update --summary
     - run: npm run shockpkg -- install air-sdk-3.0.0.4080-mac-zip air-sdk-3.0.0.4080-windows air-sdk-3.2.0.2070-mac-zip air-sdk-3.2.0.2070-windows air-sdk-3.6.0.6090-mac-zip air-sdk-3.6.0.6090-windows
 
-    - run: npm run lint
-      if: 0
     - run: npm run build
     - run: npm run test
       env:

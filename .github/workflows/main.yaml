@@ -15,6 +15,7 @@ jobs:
 
     - run: npm install
     - run: npm run clean
+    - run: npm run shockpkg -- update --summary
 
     - run: npm run lint
     - run: npm run build

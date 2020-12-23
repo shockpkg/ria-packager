@@ -18,8 +18,6 @@ jobs:
     - run: npm run shockpkg -- update --summary
     - run: npm run shockpkg -- install air-sdk-32.0.0.116-mac-zip air-sdk-32.0.0.116-windows
 
-    - run: npm run lint
-      if: 0
     - run: npm run build
     - run: npm run test
       env:
