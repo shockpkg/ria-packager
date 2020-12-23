@@ -7,16 +7,12 @@ const platforms = [
 ];
 
 const nodeVersions = [
-	['10.0.0', {
-		lint: false
-	}],
-	['15.5.0', {
-		lint: true
-	}]
+	['10.0.0', {}],
+	['15.5.0', {}]
 ];
 
 const packages = [
-	['1-2', [
+	['1', [
 		'air-sdk-1.0.7.4880-mac-zip',
 		'air-sdk-1.0.7.4880-windows',
 		'air-sdk-1.1.0.5790-mac-zip',
@@ -24,17 +20,23 @@ const packages = [
 		'air-sdk-1.5.0.7220-mac-zip',
 		'air-sdk-1.5.0.7220-windows',
 		'air-sdk-1.5.3.9120-mac-zip',
-		'air-sdk-1.5.3.9120-windows',
+		'air-sdk-1.5.3.9120-windows'
+	]],
+	['2', [
 		'air-sdk-2.0.1.12090-mac-zip',
 		'air-sdk-2.0.1.12090-windows',
 		'air-sdk-2.7.1.19610-mac-zip',
 		'air-sdk-2.7.1.19610-windows'
 	]],
-	['3', [
+	['3.0', [
 		'air-sdk-3.0.0.4080-mac-zip',
-		'air-sdk-3.0.0.4080-windows',
+		'air-sdk-3.0.0.4080-windows'
+	]],
+	['3.2', [
 		'air-sdk-3.2.0.2070-mac-zip',
-		'air-sdk-3.2.0.2070-windows',
+		'air-sdk-3.2.0.2070-windows'
+	]],
+	['3.6', [
 		'air-sdk-3.6.0.6090-mac-zip',
 		'air-sdk-3.6.0.6090-windows'
 	]],
@@ -110,7 +112,7 @@ async function main() {
 					name,
 					runsOn,
 					nodeVersion,
-					options.lint,
+					false,
 					pkgs
 				));
 			}

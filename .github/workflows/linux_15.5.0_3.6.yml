@@ -1,4 +1,4 @@
-name: 'linux_15.5.0_32'
+name: 'linux_15.5.0_3.6'
 
 on: push
 
@@ -16,7 +16,7 @@ jobs:
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-32.0.0.116-mac-zip air-sdk-32.0.0.116-windows
+    - run: npm run shockpkg -- install air-sdk-3.6.0.6090-mac-zip air-sdk-3.6.0.6090-windows
 
     - run: npm run build
     - run: npm run test
