@@ -94,7 +94,7 @@ ${linting}
 	}
 
 async function main() {
-	await fs.writeFile('main.yaml', template(
+	await fs.writeFile('main.yml', template(
 		'main',
 		platforms[0][1],
 		nodeVersions[nodeVersions.length - 1][0],
@@ -106,7 +106,7 @@ async function main() {
 		for (const [nodeVersion, options] of nodeVersions) {
 			for (const [pkg, pkgs] of packages) {
 				const name = `${platform}_${nodeVersion}_${pkg}`;
-				await fs.writeFile(`${name}.yaml`, template(
+				await fs.writeFile(`${name}.yml`, template(
 					name,
 					runsOn,
 					nodeVersion,
