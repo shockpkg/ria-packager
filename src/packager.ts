@@ -578,14 +578,12 @@ export abstract class Packager extends Object {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected abstract async _open(
-		applicationData: Readonly<Buffer>
-	): Promise<void>;
+	protected abstract _open(applicationData: Readonly<Buffer>): Promise<void>;
 
 	/**
 	 * Close implementation.
 	 */
-	protected abstract async _close(): Promise<void>;
+	protected abstract _close(): Promise<void>;
 
 	/**
 	 * Write resource with data implementation.
@@ -594,7 +592,7 @@ export abstract class Packager extends Object {
 	 * @param data Resource data.
 	 * @param options Resource options.
 	 */
-	protected abstract async _writeResource(
+	protected abstract _writeResource(
 		destination: string,
 		data: Readonly<Buffer>,
 		options: Readonly<IPackagerResourceOptions>
