@@ -17,5 +17,7 @@ jobs:
     - run: npm run clean
 
     - run: npm run lint
-      if: 0
     - run: npm run build
+    - run: npm run test
+      env:
+        RIA_PACKAGER_TIMESTAMP_URL: http://timestamp.digicert.com/
