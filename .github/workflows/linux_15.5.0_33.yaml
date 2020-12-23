@@ -1,0 +1,26 @@
+name: 'linux_15.5.0_33'
+
+on: push
+
+jobs:
+  build:
+    runs-on: 'linux'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '15.5.0'
+
+    - run: npm install
+    - run: npm run clean
+    - run: npm run shockpkg -- update --summary
+    - run: npm run shockpkg -- install air-sdk-33.1.1.345-mac air-sdk-33.1.1.345-windows
+
+    - run: npm run lint
+      if: 1
+    - run: npm run build
+    - run: npm run test
+      env:
+        RIA_PACKAGER_TIMESTAMP_URL: http://timestamp.digicert.com/

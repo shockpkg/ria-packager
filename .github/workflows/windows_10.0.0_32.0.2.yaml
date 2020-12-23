@@ -1,0 +1,26 @@
+name: 'windows_10.0.0_32.0.2'
+
+on: push
+
+jobs:
+  build:
+    runs-on: 'windows'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.0.0'
+
+    - run: npm install
+    - run: npm run clean
+    - run: npm run shockpkg -- update --summary
+    - run: npm run shockpkg -- install air-sdk-33.0.2.330-mac air-sdk-33.0.2.330-windows
+
+    - run: npm run lint
+      if: 0
+    - run: npm run build
+    - run: npm run test
+      env:
+        RIA_PACKAGER_TIMESTAMP_URL: http://timestamp.digicert.com/

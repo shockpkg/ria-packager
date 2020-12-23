@@ -1,0 +1,26 @@
+name: 'macos_10.0.0_1-2'
+
+on: push
+
+jobs:
+  build:
+    runs-on: 'macos'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.0.0'
+
+    - run: npm install
+    - run: npm run clean
+    - run: npm run shockpkg -- update --summary
+    - run: npm run shockpkg -- install air-sdk-1.0.7.4880-mac-zip air-sdk-1.0.7.4880-windows air-sdk-1.1.0.5790-mac-zip air-sdk-1.1.0.5790-windows air-sdk-1.5.0.7220-mac-zip air-sdk-1.5.0.7220-windows air-sdk-1.5.3.9120-mac-zip air-sdk-1.5.3.9120-windows air-sdk-2.0.1.12090-mac-zip air-sdk-2.0.1.12090-windows air-sdk-2.7.1.19610-mac-zip air-sdk-2.7.1.19610-windows
+
+    - run: npm run lint
+      if: 0
+    - run: npm run build
+    - run: npm run test
+      env:
+        RIA_PACKAGER_TIMESTAMP_URL: http://timestamp.digicert.com/
