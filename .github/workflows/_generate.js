@@ -3,9 +3,7 @@
 const fs = require('fs').promises;
 
 const platforms = [
-	['linux', 'ubuntu-20.04'],
-	['macos', 'macos-10.15'],
-	['windows', 'windows-2019']
+	['linux', 'ubuntu-20.04']
 ];
 
 const nodeVersions = [
