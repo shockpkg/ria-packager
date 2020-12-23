@@ -112,7 +112,7 @@ async function main() {
 					name,
 					runsOn,
 					nodeVersion,
-					options.lint ? 1 : 0,
+					options.lint,
 					pkgs
 				));
 			}
