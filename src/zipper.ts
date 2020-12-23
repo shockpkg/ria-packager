@@ -658,7 +658,7 @@ export class Zipper extends Object {
 	 */
 	public async close() {
 		await this._writeOutput(this.getDirectoryBuffer());
-		await new Promise((resolve, reject) => {
+		await new Promise<void>((resolve, reject) => {
 			this._output.end((err: any) => {
 				if (err) {
 					reject(err);
@@ -675,7 +675,7 @@ export class Zipper extends Object {
 	 * @param data Data buffer.
 	 */
 	protected async _writeOutput(data: Readonly<Buffer>) {
-		await new Promise((resolve, reject) => {
+		await new Promise<void>((resolve, reject) => {
 			this._output.write(data, err => {
 				if (err) {
 					reject(err);
