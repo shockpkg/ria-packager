@@ -98,6 +98,6 @@
 		"portable-executable-signature": "^1.1.0",
 		"puka": "^1.0.1",
 		"resedit": "^0.6.0",
-		"xmldom": "^0.4.0"
+		"xmldom": "^0.5.0"
 	}
 }
