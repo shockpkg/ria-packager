@@ -826,8 +826,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writeInfoPlist() {
 		const dom = await this._generateInfoPlist();
 		const path = pathJoin(this.path, this.appInfoPlistPath);
-		dom.xmlIndented = true;
 		await fse.writeFile(path, dom.toXml({
+			indentRoot: true,
 			indentString: '    '
 		}));
 	}
