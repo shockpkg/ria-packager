@@ -1,4 +1,4 @@
-name: 'main'
+name: 'linux_15_3.6-windows'
 
 on: push
 
@@ -11,13 +11,13 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: '15'
+        node-version: '15.13.0'
 
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
+    - run: npm run shockpkg -- install air-sdk-3.6.0.6090-windows
 
-    - run: npm run lint
     - run: npm run build
     - run: npm run test
       env:

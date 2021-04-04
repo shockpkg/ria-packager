@@ -7,8 +7,8 @@ const platforms = [
 ];
 
 const nodeVersions = [
-	['10.0.0', {}],
-	['15.5.0', {}]
+	['10', '10.0.0', {}],
+	['15', '15.13.0', {}]
 ];
 
 const packages = [
@@ -125,9 +125,9 @@ async function main() {
 	));
 
 	for (const [platform, runsOn] of platforms) {
-		for (const [nodeVersion, options] of nodeVersions) {
+		for (const [nodeVer, nodeVersion, options] of nodeVersions) {
 			for (const [pkg, pkgs] of packages) {
-				const name = `${platform}_${nodeVersion}_${pkg}`;
+				const name = `${platform}_${nodeVer}_${pkg}`;
 				await fs.writeFile(`${name}.yml`, template(
 					name,
 					runsOn,
