@@ -1,4 +1,4 @@
-name: 'linux_15_1-windows'
+name: 'linux_16_25-mac'
 
 on: push
 
@@ -11,12 +11,12 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: '15.13.0'
+        node-version: '16.1.0'
 
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-1.0.7.4880-windows air-sdk-1.1.0.5790-windows air-sdk-1.5.0.7220-windows air-sdk-1.5.3.9120-windows
+    - run: npm run shockpkg -- install air-sdk-25.0.0.134-mac-zip
 
     - run: npm run build
     - run: npm run test

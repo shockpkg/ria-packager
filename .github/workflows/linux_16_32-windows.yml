@@ -1,4 +1,4 @@
-name: 'linux_15_33-windows'
+name: 'linux_16_32-windows'
 
 on: push
 
@@ -11,12 +11,12 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: '15.13.0'
+        node-version: '16.1.0'
 
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-33.1.1.476-windows
+    - run: npm run shockpkg -- install air-sdk-32.0.0.116-windows
 
     - run: npm run build
     - run: npm run test
