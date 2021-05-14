@@ -1,5 +1,4 @@
 export * from './meta';
-export * from './decorators';
 export * from './util';
 export * from './hasher';
 export * from './hasher/';
