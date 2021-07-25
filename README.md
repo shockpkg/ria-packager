@@ -5,7 +5,7 @@ Package for creating Adobe AIR packages
 [![npm](https://img.shields.io/npm/v/@shockpkg/ria-packager.svg)](https://npmjs.com/package/@shockpkg/ria-packager)
 [![node](https://img.shields.io/node/v/@shockpkg/ria-packager.svg)](https://nodejs.org)
 
-[![dependencies](https://img.shields.io/david/shockpkg/ria-packager.svg)](https://david-dm.org/shockpkg/ria-packager)
+[![dependencies](https://img.shields.io/david/shockpkg/ria-packager)](https://david-dm.org/shockpkg/ria-packager)
 [![size](https://packagephobia.now.sh/badge?p=@shockpkg/ria-packager)](https://packagephobia.now.sh/result?p=@shockpkg/ria-packager)
 [![downloads](https://img.shields.io/npm/dm/@shockpkg/ria-packager.svg)](https://npmcharts.com/compare/@shockpkg/ria-packager?minimal=true)
 
