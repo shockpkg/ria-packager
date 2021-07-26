@@ -8,7 +8,7 @@ const platforms = [
 
 const nodeVersions = [
 	['10', '10.13.0', {}],
-	['16', '16.1.0', {}]
+	['16', '16.5.0', {}]
 ];
 
 const packages = [
