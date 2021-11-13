@@ -68,17 +68,17 @@ const packages = [
 	['32-mac', [
 		'air-sdk-32.0.0.116-mac-zip'
 	]],
-	['32.0.2-windows', [
+	['33.0.2-windows', [
 		'air-sdk-33.0.2.330-windows'
 	]],
-	['32.0.2-mac', [
+	['33.0.2-mac', [
 		'air-sdk-33.0.2.330-mac'
 	]],
 	['33-windows', [
-		'air-sdk-33.1.1.575-windows'
+		'air-sdk-33.1.1.674-windows'
 	]],
 	['33-mac', [
-		'air-sdk-33.1.1.575-mac'
+		'air-sdk-33.1.1.674-mac'
 	]]
 ];
 
