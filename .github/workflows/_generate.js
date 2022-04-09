@@ -74,12 +74,11 @@ const packages = [
 	['33.0.2-mac', [
 		'air-sdk-33.0.2.330-mac'
 	]],
-	// 33.1.1.795 the second version:
 	['33-windows', [
-		'air-sdk-33.1.1.795-windows'
+		'air-sdk-33.1.1.821-windows'
 	]],
 	['33-mac', [
-		'air-sdk-33.1.1.795-mac'
+		'air-sdk-33.1.1.821-mac'
 	]]
 ];
 
