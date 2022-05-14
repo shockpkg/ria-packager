@@ -16,7 +16,7 @@ jobs:
     - run: npm install
     - run: npm run clean
     - run: npm run shockpkg -- update --summary
-    - run: npm run shockpkg -- install air-sdk-33.1.1.821-windows
+    - run: npm run shockpkg -- install air-sdk-33.1.1.856-windows
 
     - run: npm run build
     - run: npm run test
