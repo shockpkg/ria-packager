@@ -13,8 +13,7 @@ jobs:
             NO_ESM: 1
             PKG: ''
 
-          - runs-on: macos-10.15
-            node-version: '10.13.0' # LTS
+          - node-version: '10.13.0' # LTS
             NO_FORMATTED: 1
             NO_LINT: 1
             NO_ESM: 1
