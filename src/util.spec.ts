@@ -3,7 +3,6 @@ import {
 } from 'path';
 
 import fse from 'fs-extra';
-import execa from 'execa';
 import {
 	Manager
 } from '@shockpkg/core';
@@ -161,10 +160,14 @@ export function * generateSamplesMac() {
 let getInstalledPackagesCache: string[] | null = null;
 export function getInstalledPackagesSync() {
 	if (!getInstalledPackagesCache) {
-		const {stdout} = execa.sync('shockpkg', ['installed'], {
-			preferLocal: true
-		});
-		getInstalledPackagesCache = stdout.trim().split(/[\r\n]+/);
+		// eslint-disable-next-line no-process-env
+		const installed = process.env.RIA_PACKAGER_INSTALLED || null;
+		if (installed) {
+			getInstalledPackagesCache = installed.split(',');
+		}
+		else {
+			getInstalledPackagesCache = [];
+		}
 	}
 	return getInstalledPackagesCache;
 }
