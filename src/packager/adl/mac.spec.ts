@@ -11,10 +11,15 @@ import {
 import {PackagerAdlMac} from './mac';
 
 describe('packages/adls/mac', () => {
-	if (!shouldTest('adl-mac')) {
-		return;
-	}
 	describe('PackagerAdlMac', () => {
+		it('function', () => {
+			expect(typeof PackagerAdlMac).toBe('function');
+		});
+
+		if (!shouldTest('adl-mac')) {
+			return;
+		}
+
 		for (const {
 			sdk,
 			sample,

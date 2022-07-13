@@ -8,6 +8,7 @@ import {
 	shouldTest,
 	versionBefore
 } from '../../util.spec';
+import {PackagerBundle} from '../bundle';
 
 import {PackagerBundleWindows} from './windows';
 
@@ -25,10 +26,16 @@ const versionStrings = {
 };
 
 describe('packages/bundles/windows', () => {
-	if (!shouldTest('bundle-windows')) {
-		return;
-	}
 	describe('PackagerBundleWindows', () => {
+		it('instanceof PackagerBundle', () => {
+			expect(PackagerBundleWindows.prototype instanceof PackagerBundle)
+				.toBeTrue();
+		});
+
+		if (!shouldTest('bundle-windows')) {
+			return;
+		}
+
 		for (const {
 			sdk,
 			sample,

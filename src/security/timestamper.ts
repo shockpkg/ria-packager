@@ -10,6 +10,7 @@ const {
 
 const userAgent = `${NAME}/${VERSION}`;
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SecurityTimestamperRequestOptions = ({
 
 	/**
@@ -38,6 +39,7 @@ export type SecurityTimestamperRequestOptions = ({
 	encoding?: string | null;
 });
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SecurityTimestamperRequestResponse = ({
 
 	/**
@@ -105,6 +107,7 @@ export class SecurityTimestamper extends Object {
 				const res = await fetch(options.url, {
 					method: options.method || 'GET',
 					headers: {
+						// eslint-disable-next-line @typescript-eslint/naming-convention
 						'User-Agent': userAgent,
 						...(options.headers || {})
 					},
@@ -151,6 +154,7 @@ export class SecurityTimestamper extends Object {
 					method: 'POST',
 					url,
 					headers: {
+						// eslint-disable-next-line @typescript-eslint/naming-convention
 						'Content-Type': 'application/timestamp-query'
 					},
 					body: message,

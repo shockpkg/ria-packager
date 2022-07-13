@@ -13,14 +13,21 @@ import {
 	shouldTest,
 	versionBefore
 } from '../../util.spec';
+import {PackagerBundle} from '../bundle';
 
 import {PackagerBundleMac} from './mac';
 
 describe('packages/bundles/mac', () => {
-	if (!shouldTest('bundle-mac')) {
-		return;
-	}
 	describe('PackagerBundleMac', () => {
+		it('instanceof PackagerBundle', () => {
+			expect(PackagerBundleMac.prototype instanceof PackagerBundle)
+				.toBeTrue();
+		});
+
+		if (!shouldTest('bundle-mac')) {
+			return;
+		}
+
 		for (const {
 			sdk,
 			sample,

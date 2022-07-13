@@ -10,10 +10,15 @@ import {
 import {PackagerAdlWindows} from './windows';
 
 describe('packages/adls/windows', () => {
-	if (!shouldTest('adl-windows')) {
-		return;
-	}
 	describe('PackagerAdlWindows', () => {
+		it('function', () => {
+			expect(typeof PackagerAdlWindows).toBe('function');
+		});
+
+		if (!shouldTest('adl-windows')) {
+			return;
+		}
+
 		for (const {
 			sdk,
 			sample,
