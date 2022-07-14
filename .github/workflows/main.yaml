@@ -13,18 +13,6 @@ jobs:
             NO_ESM: 1
             PKG: ''
 
-          - node-version: '10.13.0' # LTS
-            NO_FORMATTED: 1
-            NO_LINT: 1
-            NO_ESM: 1
-            PKG: ''
-
-          - node-version: '10.13.0' # LTS
-            NO_FORMATTED: 1
-            NO_LINT: 1
-            NO_ESM: 1
-            PKG: ''
-
           - node-version: '12.13.0' # LTS
             NO_FORMATTED: 1
             NO_LINT: 1
