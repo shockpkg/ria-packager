@@ -30,11 +30,7 @@ describe('packages/adls/windows', () => {
 			// eslint-disable-next-line no-await-in-loop
 			it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
-				const dir = await cleanPackageDir(
-					'adls',
-					'windows',
-					uid
-				);
+				const dir = await cleanPackageDir('adls', 'windows', uid);
 
 				const packager = new PackagerAdlWindows(dir);
 				if (extras) {

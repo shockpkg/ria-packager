@@ -10,7 +10,6 @@ Package for creating Adobe AIR packages
 
 [![Build Status](https://github.com/shockpkg/ria-packager/workflows/main/badge.svg?branch=master)](https://github.com/shockpkg/ria-packager/actions?query=workflow%3Amain+branch%3Amaster)
 
-
 # Overview
 
 Creates AIR packages from the packaged files, and an AIR SDK if necessary.
@@ -26,7 +25,6 @@ Some packagers have extra features which can optionally be enabled for things th
 This package is not as strict about various things and will allow packaging applications that the official packager would reject as invalid.
 
 Currently there is no option for creating license files for packaging HARMAN SDK runtimes.
-
 
 # Usage
 
@@ -166,11 +164,9 @@ await packager.withFile('src/application-app.xml', async packager => {
 });
 ```
 
-
 # Bugs
 
 If you find a bug or have compatibility issues, please open a ticket under issues section for this repository.
-
 
 # License
 

@@ -10,9 +10,9 @@ export function defaultValue<T, U>(
 	defaultValue: U
 ): Exclude<T, undefined> | U {
 	// eslint-disable-next-line no-undefined
-	return value === undefined ?
-		defaultValue :
-		(value as Exclude<T, undefined>);
+	return value === undefined
+		? defaultValue
+		: (value as Exclude<T, undefined>);
 }
 
 /**
@@ -63,11 +63,7 @@ export function trimDotSlash(path: string) {
  * @param nocase Match case-insensitive.
  * @returns Returns path, or null.
  */
-export function pathRelativeBase(
-	path: string,
-	start: string,
-	nocase = false
-) {
+export function pathRelativeBase(path: string, start: string, nocase = false) {
 	const p = trimDotSlash(nocase ? path.toLowerCase() : path);
 	const s = trimDotSlash(nocase ? start.toLowerCase() : start);
 	if (p === s) {

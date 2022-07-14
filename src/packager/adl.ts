@@ -1,22 +1,12 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
-import {
-	PathType
-} from '@shockpkg/archive-files';
+import {PathType} from '@shockpkg/archive-files';
 
-import {
-	pathRelativeBaseMatch
-} from '../util';
-import {
-	Packager
-} from '../packager';
+import {pathRelativeBaseMatch} from '../util';
+import {Packager} from '../packager';
 
 /**
- * PackagerAdl constructor.
- *
- * @param path Output path.
+ * PackagerAdl object.
  */
 export abstract class PackagerAdl extends Packager {
 	/**
@@ -49,6 +39,11 @@ export abstract class PackagerAdl extends Packager {
 	 */
 	public atlogin = false;
 
+	/**
+	 * PackagerAdl constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -116,13 +111,7 @@ export abstract class PackagerAdl extends Packager {
 	 * @returns Argument options.
 	 */
 	protected _generateOptionArguments() {
-		const {
-			pubid,
-			profile,
-			screensize,
-			nodebug,
-			atlogin
-		} = this;
+		const {pubid, profile, screensize, nodebug, atlogin} = this;
 		const r = [];
 		if (pubid !== null) {
 			r.push('-pubid', pubid);
@@ -162,6 +151,13 @@ export abstract class PackagerAdl extends Packager {
 				found: false
 			}))
 		];
+
+		/**
+		 * Search function.
+		 *
+		 * @param volumePath Volume path.
+		 * @returns A boolean or null.
+		 */
 		const component = (volumePath: string) => {
 			// Default to not searching any subpaths.
 			let r: boolean | null = false;
@@ -208,9 +204,7 @@ export abstract class PackagerAdl extends Packager {
 				continue;
 			}
 			const info = paths.map(s => JSON.stringify(s)).join(' | ');
-			throw new Error(
-				`Failed to locate component in SDK: ${info}`
-			);
+			throw new Error(`Failed to locate component in SDK: ${info}`);
 		}
 	}
 

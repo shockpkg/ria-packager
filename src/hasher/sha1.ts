@@ -3,7 +3,7 @@ import {createHash} from 'crypto';
 import {Hasher} from '../hasher';
 
 /**
- * HasherSha1 constructor.
+ * HasherSha1 object.
  */
 export class HasherSha1 extends Hasher {
 	/**
@@ -11,6 +11,9 @@ export class HasherSha1 extends Hasher {
 	 */
 	protected _hash = createHash('sha1');
 
+	/**
+	 * HasherSha1 constructor.
+	 */
 	constructor() {
 		super();
 	}

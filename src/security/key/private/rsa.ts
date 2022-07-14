@@ -3,7 +3,7 @@ import forge from 'node-forge';
 import {SecurityKeyPrivate} from '../private';
 
 /**
- * SecurityKeyPrivateRsa constructor.
+ * SecurityKeyPrivateRsa object.
  */
 export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	/**
@@ -11,6 +11,9 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	 */
 	protected _forgePrivateKey: Readonly<forge.pki.PrivateKey> | null = null;
 
+	/**
+	 * SecurityKeyPrivateRsa constructor.
+	 */
 	constructor() {
 		super();
 	}
@@ -53,7 +56,11 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 
 		const md = forge.md.sha1.create();
 		md.update(forge.util.decode64(data.toString('base64')));
-		const signature = (privateKey as any).sign(md, 'RSASSA-PKCS1-V1_5');
+		const signature = (
+			privateKey as {
+				sign: (md: forge.md.MessageDigest, algo: string) => string;
+			}
+		).sign(md, 'RSASSA-PKCS1-V1_5');
 		return Buffer.from(forge.util.encode64(signature), 'base64');
 	}
 }

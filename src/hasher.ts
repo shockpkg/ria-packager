@@ -1,7 +1,10 @@
 /**
- * Hasher constructor.
+ * Hasher object.
  */
 export abstract class Hasher extends Object {
+	/**
+	 * Hasher constructor.
+	 */
 	constructor() {
 		super();
 	}

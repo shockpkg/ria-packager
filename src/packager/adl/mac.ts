@@ -1,6 +1,4 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 // @ts-ignore-file
 import * as puka from 'puka';
@@ -9,10 +7,13 @@ import fse from 'fs-extra';
 import {IPackagerResourceOptions} from '../../packager';
 import {PackagerAdl} from '../adl';
 
-const quoteForSh = puka.quoteForSh || puka.default.quoteForSh;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const quoteForSh = (puka.quoteForSh || puka.default.quoteForSh) as (
+	s: string
+) => string;
 
 /**
- * PackagerAdlMac constructor.
+ * PackagerAdlMac object.
  *
  * @param path Output path.
  */
@@ -23,6 +24,11 @@ export class PackagerAdlMac extends PackagerAdl {
 	 */
 	public preserveResourceMtime = false;
 
+	/**
+	 * PackagerAdlMac constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -61,9 +67,7 @@ export class PackagerAdlMac extends PackagerAdl {
 					'runtime/Adobe AIR.framework'
 				]
 			],
-			optional: [
-				['bin/Contents']
-			]
+			optional: [['bin/Contents']]
 		};
 	}
 
@@ -106,29 +110,30 @@ export class PackagerAdlMac extends PackagerAdl {
 	 * Write the run script.
 	 */
 	protected async _writeRunScript() {
-		const {
-			appSdkPath,
-			appResourcesPath,
-			_metaResourceApplicationPath
-		} = this;
-		await fse.outputFile(pathJoin(this.path, this.appRunPath), [
-			'#!/bin/sh',
-			'',
+		const {appSdkPath, appResourcesPath, _metaResourceApplicationPath} =
+			this;
+		await fse.outputFile(
+			pathJoin(this.path, this.appRunPath),
 			[
-				'exec',
-				...[
-					`${appSdkPath}/bin/adl`,
-					...this._generateOptionArguments(),
-					`${appResourcesPath}/${_metaResourceApplicationPath}`,
-					appResourcesPath
-				].map(quoteForSh),
-				'--',
-				'"$@"'
-			].join(' '),
-			''
-		].join('\n'), {
-			encoding: 'utf8',
-			mode: 0o777
-		});
+				'#!/bin/sh',
+				'',
+				[
+					'exec',
+					...[
+						`${appSdkPath}/bin/adl`,
+						...this._generateOptionArguments(),
+						`${appResourcesPath}/${_metaResourceApplicationPath}`,
+						appResourcesPath
+					].map(quoteForSh),
+					'--',
+					'"$@"'
+				].join(' '),
+				''
+			].join('\n'),
+			{
+				encoding: 'utf8',
+				mode: 0o777
+			}
+		);
 	}
 }

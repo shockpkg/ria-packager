@@ -1,9 +1,7 @@
+/* eslint-disable max-classes-per-file */
 import fse from 'fs-extra';
 
-import {
-	fixtureFile,
-	timestampUrl
-} from './util.spec';
+import {fixtureFile, timestampUrl} from './util.spec';
 import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
 import {SecurityTimestamper} from './security/timestamper';
 import {Signature} from './signature';
@@ -11,28 +9,26 @@ import {Signature} from './signature';
 const mimetype = 'application/vnd.adobe.air-application-installer-package+zip';
 
 const files: [string, () => Promise<Buffer>][] = [
-	[
-		'mimetype',
-		async () => Buffer.from(mimetype, 'utf8')
-	],
+	// eslint-disable-next-line @typescript-eslint/require-await
+	['mimetype', async () => Buffer.from(mimetype, 'utf8')],
 	[
 		'META-INF/AIR/application.xml',
 		async () => fse.readFile(fixtureFile('signature', 'application.xml'))
 	],
-	[
-		'HelloWorld.swf',
-		async () => fse.readFile(fixtureFile('HelloWorld.swf'))
-	]
+	['HelloWorld.swf', async () => fse.readFile(fixtureFile('HelloWorld.swf'))]
 ];
 
-const replayTimestampBody =
-	fixtureFile('signature', 'timestamp.body.bin');
+const replayTimestampBody = fixtureFile('signature', 'timestamp.body.bin');
 
-const expectedTimestampNo =
-	fixtureFile('signature', 'signatures.xml.timestamp.no.bin');
+const expectedTimestampNo = fixtureFile(
+	'signature',
+	'signatures.xml.timestamp.no.bin'
+);
 
-const expectedTimestampYes =
-	fixtureFile('signature', 'signatures.xml.timestamp.yes.bin');
+const expectedTimestampYes = fixtureFile(
+	'signature',
+	'signatures.xml.timestamp.yes.bin'
+);
 
 function extractTimestamp(xml: string) {
 	const m = xml.match(
@@ -68,9 +64,8 @@ async function expectError(tester: () => Promise<any>) {
 	let error: Error | null = null;
 	try {
 		await tester();
-	}
-	catch (err) {
-		error = err;
+	} catch (err) {
+		error = err as Error;
 	}
 	expect(error).toBeTruthy();
 }

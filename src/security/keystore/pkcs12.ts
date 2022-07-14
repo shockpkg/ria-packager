@@ -9,7 +9,7 @@ const forgeOidCertBag = forge.pki.oids.certBag;
 const forgeOidPkcs8ShroudedKeyBag = forge.pki.oids.pkcs8ShroudedKeyBag;
 
 /**
- * SecurityKeystorePkcs12 constructor.
+ * SecurityKeystorePkcs12 object.
  */
 export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	/**
@@ -22,6 +22,9 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 */
 	protected _keyPrivate: SecurityKeyPrivateRsa | null = null;
 
+	/**
+	 * SecurityKeystorePkcs12 constructor.
+	 */
 	constructor() {
 		super();
 	}
@@ -71,9 +74,9 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 
 		const der = forge.util.decode64(data.toString('base64'));
 		const asn1 = forge.asn1.fromDer(der);
-		const p12 = password ?
-			forge.pkcs12.pkcs12FromAsn1(asn1, true, password) :
-			forge.pkcs12.pkcs12FromAsn1(asn1, true);
+		const p12 = password
+			? forge.pkcs12.pkcs12FromAsn1(asn1, true, password)
+			: forge.pkcs12.pkcs12FromAsn1(asn1, true);
 
 		const certificates: forge.pki.Certificate[] = [];
 		const keyPrivates: forge.pki.PrivateKey[] = [];
@@ -93,7 +96,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 						if (!key) {
 							throw new Error('Internal error');
 						}
-						keyPrivates.push(key as any);
+						keyPrivates.push(key);
 						break;
 					}
 					default: {
@@ -114,13 +117,13 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 			);
 		}
 
-		const certificate = certificates.length ?
-			this._createCertificateX509(certificates[0]) :
-			null;
+		const certificate = certificates.length
+			? this._createCertificateX509(certificates[0])
+			: null;
 
-		const keyPrivate = keyPrivates.length ?
-			this._SecurityKeyPrivateRsa(keyPrivates[0]) :
-			null;
+		const keyPrivate = keyPrivates.length
+			? this._SecurityKeyPrivateRsa(keyPrivates[0])
+			: null;
 
 		this._certificate = certificate;
 		this._keyPrivate = keyPrivate;

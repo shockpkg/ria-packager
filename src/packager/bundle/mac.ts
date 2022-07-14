@@ -1,14 +1,8 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 import fse from 'fs-extra';
-import {
-	PathType
-} from '@shockpkg/archive-files';
-import {
-	IconIcns
-} from '@shockpkg/icon-encoder';
+import {PathType} from '@shockpkg/archive-files';
+import {IconIcns} from '@shockpkg/icon-encoder';
 import {
 	Plist,
 	Value,
@@ -18,15 +12,9 @@ import {
 	ValueDict
 } from '@shockpkg/plist-dom';
 
-import {
-	pathRelativeBaseMatch,
-	pathRelativeBase
-} from '../../util';
+import {pathRelativeBaseMatch, pathRelativeBase} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
-import {
-	IIcon,
-	PackagerBundle
-} from '../bundle';
+import {IIcon, PackagerBundle} from '../bundle';
 
 export interface IFileTypeIcon {
 	data?: Buffer | null;
@@ -34,9 +22,7 @@ export interface IFileTypeIcon {
 }
 
 /**
- * PackagerBundleMac constructor.
- *
- * @param path Output path.
+ * PackagerBundleMac object.
  */
 export class PackagerBundleMac extends PackagerBundle {
 	/**
@@ -61,9 +47,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * Info.plist data.
 	 */
-	public infoPlistData: (
-		string | Readonly<string[]> | Readonly<Buffer> | null
-	) = null;
+	public infoPlistData:
+		| string
+		| Readonly<string[]>
+		| Readonly<Buffer>
+		| null = null;
 
 	/**
 	 * PkgInfo file.
@@ -119,6 +107,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	protected _extensionMapping = new Map<string, string>();
 
+	/**
+	 * PackagerBundleMac constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -372,9 +365,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	protected _getPlistCFBundleIconFile(): Value | null {
 		const icon = this._getIcon();
-		return (icon && this._uidIcon(icon)) ?
-			new ValueString(this.appIcnsFile) :
-			null;
+		return icon && this._uidIcon(icon)
+			? new ValueString(this.appIcnsFile)
+			: null;
 	}
 
 	/**
@@ -385,9 +378,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected _getPlistCFBundleLocalizations(): Value | null {
 		const langs = this._applicationInfoSupportedLanguages;
 		const list = langs ? langs.trim().split(/\s+/) : null;
-		return list && list.length ?
-			new ValueArray(list.map(s => new ValueString(s))) :
-			null;
+		return list && list.length
+			? new ValueArray(list.map(s => new ValueString(s)))
+			: null;
 	}
 
 	/**
@@ -396,11 +389,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * @returns The value or null if excluded.
 	 */
 	protected _getPlistNSHighResolutionCapable(): Value | null {
-		return this.plistHighResolutionCapable ?
-			new ValueBoolean(
-				this._applicationInfoRequestedDisplayResolution === 'high'
-			) :
-			null;
+		return this.plistHighResolutionCapable
+			? new ValueBoolean(
+					this._applicationInfoRequestedDisplayResolution === 'high'
+			  )
+			: null;
 	}
 
 	/**
@@ -409,11 +402,13 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * @returns The value or null if excluded.
 	 */
 	protected _getPlistNSAppTransportSecurity(): Value | null {
-		return this.plistHasAppTransportSecurity ?
-			new ValueDict(new Map([
-				['NSAllowsArbitraryLoads', new ValueBoolean(true)]
-			])) :
-			null;
+		return this.plistHasAppTransportSecurity
+			? new ValueDict(
+					new Map([
+						['NSAllowsArbitraryLoads', new ValueBoolean(true)]
+					])
+			  )
+			: null;
 	}
 
 	/**
@@ -434,31 +429,21 @@ export class PackagerBundleMac extends PackagerBundle {
 			const {value} = dict;
 			value.set(
 				'CFBundleTypeExtensions',
-				new ValueArray([
-					new ValueString(ext)
-				])
+				new ValueArray([new ValueString(ext)])
 			);
 			value.set(
 				'CFBundleTypeMIMETypes',
-				new ValueArray([
-					new ValueString(info.contentType)
-				])
+				new ValueArray([new ValueString(info.contentType)])
 			);
 			value.set(
 				'CFBundleTypeName',
 				new ValueString(useDesc ? info.description || '' : info.name)
 			);
-			value.set(
-				'CFBundleTypeRole',
-				new ValueString('Editor')
-			);
+			value.set('CFBundleTypeRole', new ValueString('Editor'));
 
 			const iconFile = extensionMapping.get(ext);
 			if (iconFile) {
-				value.set(
-					'CFBundleTypeIconFile',
-					new ValueString(iconFile)
-				);
+				value.set('CFBundleTypeIconFile', new ValueString(iconFile));
 			}
 
 			list.push(dict);
@@ -545,8 +530,11 @@ export class PackagerBundleMac extends PackagerBundle {
 			const path = entry.volumePath;
 
 			// Extract if the binary.
-			const sdkBinaryPathRel =
-				pathRelativeBase(path, sdkBinaryPath, true);
+			const sdkBinaryPathRel = pathRelativeBase(
+				path,
+				sdkBinaryPath,
+				true
+			);
 			if (sdkBinaryPathRel !== null) {
 				const dest = pathJoin(appBinaryPathFull, sdkBinaryPathRel);
 				await entry.extract(dest);
@@ -555,8 +543,11 @@ export class PackagerBundleMac extends PackagerBundle {
 			}
 
 			// Extract if the framework.
-			const frameworkPathRel =
-				pathRelativeBase(path, sdkFrameworkPath, true);
+			const frameworkPathRel = pathRelativeBase(
+				path,
+				sdkFrameworkPath,
+				true
+			);
 			if (frameworkPathRel !== null) {
 				// If this is an excluded path, skip over.
 				if (frameworkExcludes.has(frameworkPathRel.toLowerCase())) {
@@ -570,17 +561,15 @@ export class PackagerBundleMac extends PackagerBundle {
 			}
 
 			// Optimization to avoid walking unrelated directories if possible.
-			return (
-				pathRelativeBaseMatch(sdkFrameworkPath, path, true) ||
+			return pathRelativeBaseMatch(sdkFrameworkPath, path, true) ||
 				pathRelativeBaseMatch(sdkBinaryPath, path, true)
-			) ? true : null;
+				? true
+				: null;
 		});
 
 		// Check that required components were extracted.
 		if (!extractedBinary) {
-			throw new Error(
-				`Failed to locate binary in SDK: ${sdkBinaryPath}`
-			);
+			throw new Error(`Failed to locate binary in SDK: ${sdkBinaryPath}`);
 		}
 		if (!extractedFramework) {
 			throw new Error(
@@ -654,8 +643,7 @@ export class PackagerBundleMac extends PackagerBundle {
 		if (modern) {
 			// eslint-disable-next-line no-await-in-loop
 			await this._writeIconModern(path, icon);
-		}
-		else {
+		} else {
 			// eslint-disable-next-line no-await-in-loop
 			await this._writeIconReference(path, icon);
 		}
@@ -707,8 +695,7 @@ export class PackagerBundleMac extends PackagerBundle {
 			if (modern) {
 				// eslint-disable-next-line no-await-in-loop
 				await this._writeIconModern(path, icon);
-			}
-			else {
+			} else {
 				// eslint-disable-next-line no-await-in-loop
 				await this._writeIconReference(path, icon);
 			}
@@ -731,13 +718,20 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	protected async _generateInfoPlist() {
 		const dom = await this.getInfoPlistDomOrDefault();
-		const existing = dom.value && dom.value.type === ValueDict.TYPE ?
-			(dom.value as ValueDict) :
-			null;
-		const dict = dom.value = new ValueDict();
+		const existing =
+			dom.value && dom.value.type === ValueDict.TYPE
+				? (dom.value as ValueDict)
+				: null;
+		const dict = (dom.value = new ValueDict());
 
-		// A little helper to set values only once.
 		const done = new Set<string>();
+
+		/**
+		 * A little helper to set values only once.
+		 *
+		 * @param key Key string.
+		 * @param value Value object.
+		 */
 		const val = (key: string, value: Value | null) => {
 			if (done.has(key)) {
 				return;
@@ -753,30 +747,15 @@ export class PackagerBundleMac extends PackagerBundle {
 			'CFBundleAllowMixedLocalizations',
 			this._getPlistCFBundleAllowMixedLocalizations()
 		);
-		val(
-			'CFBundlePackageType',
-			this._getPlistCFBundlePackageType()
-		);
+		val('CFBundlePackageType', this._getPlistCFBundlePackageType());
 		val(
 			'CFBundleInfoDictionaryVersion',
 			this._getPlistCFBundleInfoDictionaryVersion()
 		);
-		val(
-			'LSMinimumSystemVersion',
-			this._getPlistLSMinimumSystemVersion()
-		);
-		val(
-			'LSRequiresCarbon',
-			this._getPlistLSRequiresCarbon()
-		);
-		val(
-			'CFBundleIdentifier',
-			this._getPlistCFBundleIdentifier()
-		);
-		val(
-			'CFBundleGetInfoString',
-			this._getPlistCFBundleGetInfoString()
-		);
+		val('LSMinimumSystemVersion', this._getPlistLSMinimumSystemVersion());
+		val('LSRequiresCarbon', this._getPlistLSRequiresCarbon());
+		val('CFBundleIdentifier', this._getPlistCFBundleIdentifier());
+		val('CFBundleGetInfoString', this._getPlistCFBundleGetInfoString());
 		val(
 			'CFBundleShortVersionString',
 			this._getPlistCFBundleShortVersionString()
@@ -785,30 +764,12 @@ export class PackagerBundleMac extends PackagerBundle {
 			'NSHumanReadableCopyright',
 			this._getPlistNSHumanReadableCopyright()
 		);
-		val(
-			'CFBundleExecutable',
-			this._getPlistCFBundleExecutable()
-		);
-		val(
-			'NSAppTransportSecurity',
-			this._getPlistNSAppTransportSecurity()
-		);
-		val(
-			'NSHighResolutionCapable',
-			this._getPlistNSHighResolutionCapable()
-		);
-		val(
-			'CFBundleIconFile',
-			this._getPlistCFBundleIconFile()
-		);
-		val(
-			'CFBundleDocumentTypes',
-			this._getPlistCFBundleDocumentTypes()
-		);
-		val(
-			'CFBundleLocalizations',
-			this._getPlistCFBundleLocalizations()
-		);
+		val('CFBundleExecutable', this._getPlistCFBundleExecutable());
+		val('NSAppTransportSecurity', this._getPlistNSAppTransportSecurity());
+		val('NSHighResolutionCapable', this._getPlistNSHighResolutionCapable());
+		val('CFBundleIconFile', this._getPlistCFBundleIconFile());
+		val('CFBundleDocumentTypes', this._getPlistCFBundleDocumentTypes());
+		val('CFBundleLocalizations', this._getPlistCFBundleLocalizations());
 
 		// If any existing values, copy the ones not already set.
 		if (existing) {
@@ -826,10 +787,13 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writeInfoPlist() {
 		const dom = await this._generateInfoPlist();
 		const path = pathJoin(this.path, this.appInfoPlistPath);
-		await fse.writeFile(path, dom.toXml({
-			indentRoot: true,
-			indentString: '    '
-		}));
+		await fse.writeFile(
+			path,
+			dom.toXml({
+				indentRoot: true,
+				indentString: '    '
+			})
+		);
 	}
 
 	/**
@@ -856,9 +820,9 @@ export class PackagerBundleMac extends PackagerBundle {
 		}
 
 		// Compute a unique identifier for the used icon set paths.
-		return has ?
-			paths.map(s => `${s ? s.length : 0}:${s || ''}`).join('|') :
-			null;
+		return has
+			? paths.map(s => `${s ? s.length : 0}:${s || ''}`).join('|')
+			: null;
 	}
 
 	/**

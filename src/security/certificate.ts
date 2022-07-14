@@ -1,7 +1,10 @@
 /**
- * SecurityCertificate constructor.
+ * SecurityCertificate object.
  */
 export abstract class SecurityCertificate extends Object {
+	/**
+	 * SecurityCertificate constructor.
+	 */
 	constructor() {
 		super();
 	}

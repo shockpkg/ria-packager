@@ -5,106 +5,102 @@ import {HasherSha1} from './hasher/sha1';
 import {HasherSha256} from './hasher/sha256';
 
 const templates: [string, string][] = [
-	[
-		'certificate',
-		'' +
-'<X509Certificate>{0}</X509Certificate>'
-	],
-	[
-		'crl',
-		'' +
-'<X509CRL>{0}</X509CRL>'
-	],
+	['certificate', '<X509Certificate>{0}</X509Certificate>'],
+	['crl', '<X509CRL>{0}</X509CRL>'],
 	[
 		'fileReference',
-		'' +
-'<Reference URI="{0}">' +
-	'<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>' +
-	'<DigestValue>{1}</DigestValue>' +
-'</Reference>'
+		[
+			'<Reference URI="{0}">',
+			'<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>',
+			'<DigestValue>{1}</DigestValue>',
+			'</Reference>'
+		].join('')
 	],
 	[
 		'packageManifest',
-		'' +
-'<Manifest xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageContents">{0}</Manifest>'
+		'<Manifest xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageContents">{0}</Manifest>'
 	],
 	[
 		'PackageSignature',
-		'' +
-'<signatures>\n' +
-'  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageSignature">\n' +
-'    <SignedInfo>\n' +
-'      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>\n' +
-'      <SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"/>\n' +
-'      <Reference URI="#PackageContents">\n' +
-'        <Transforms>\n' +
-'          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>\n' +
-'        </Transforms>\n' +
-'        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>\n' +
-'        <DigestValue>{0}</DigestValue>\n' +
-'      </Reference>\n' +
-'    </SignedInfo>\n' +
-'    <SignatureValue Id="PackageSignatureValue">{1}</SignatureValue>\n' +
-'    <KeyInfo>\n' +
-'      <X509Data>\n' +
-'        {2}\n' +
-'      </X509Data>\n' +
-'    </KeyInfo>\n' +
-'    <Object>\n' +
-'      <Manifest Id="PackageContents">\n' +
-'        {3}\n' +
-'      </Manifest>\n' +
-'    </Object>\n' +
-'    {4}\n' +
-'  </Signature>\n' +
-'</signatures>\n'
+		[
+			'<signatures>',
+			'  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageSignature">',
+			'    <SignedInfo>',
+			'      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>',
+			'      <SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"/>',
+			'      <Reference URI="#PackageContents">',
+			'        <Transforms>',
+			'          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>',
+			'        </Transforms>',
+			'        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>',
+			'        <DigestValue>{0}</DigestValue>',
+			'      </Reference>',
+			'    </SignedInfo>',
+			// eslint-disable-next-line max-len
+			'    <SignatureValue Id="PackageSignatureValue">{1}</SignatureValue>',
+			'    <KeyInfo>',
+			'      <X509Data>',
+			'        {2}',
+			'      </X509Data>',
+			'    </KeyInfo>',
+			'    <Object>',
+			'      <Manifest Id="PackageContents">',
+			'        {3}',
+			'      </Manifest>',
+			'    </Object>',
+			'    {4}',
+			'  </Signature>',
+			'</signatures>',
+			''
+		].join('\n')
 	],
 	[
 		'SignedInfo',
-		'' +
-'<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">' +
-	'<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod>' +
-	'<SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"></SignatureMethod>' +
-	'<Reference URI="#PackageContents">' +
-		'<Transforms>' +
-			'<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform>' +
-		'</Transforms>' +
-		'<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>' +
-		'<DigestValue>{0}</DigestValue>' +
-	'</Reference>' +
-'</SignedInfo>'
+		[
+			'<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">',
+			'<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod>',
+			'<SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"></SignatureMethod>',
+			'<Reference URI="#PackageContents">',
+			'<Transforms>',
+			'<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform>',
+			'</Transforms>',
+			'<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>',
+			'<DigestValue>{0}</DigestValue>',
+			'</Reference>',
+			'</SignedInfo>'
+		].join('')
 	],
 	[
 		'timestamp',
-		'' +
-'<Object xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" > \n' +
-'  <xades:QualifyingProperties>\n' +
-'    <xades:UnsignedProperties > \n' +
-'      <xades:UnsignedSignatureProperties>\n' +
-'        <xades:SignatureTimeStamp>\n' +
-'     \t  <xades:HashDataInfo uri="{0}">\n' +
-'     \t    <Transforms>\n' +
-'          \t  <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>\n' +
-'            </Transforms>\n' +
-'            <xades:EncapsulatedTimeStamp>\n' +
-'              {1}\n' +
-'            </xades:EncapsulatedTimeStamp>     \t\n' +
-'     \t  </xades:HashDataInfo>     \t\n' +
-'        </xades:SignatureTimeStamp>\n' +
-'      </xades:UnsignedSignatureProperties> \n' +
-'    </xades:UnsignedProperties>\n' +
-'  </xades:QualifyingProperties>\n' +
-'</Object>'
+		[
+			'<Object xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" > ',
+			'  <xades:QualifyingProperties>',
+			'    <xades:UnsignedProperties > ',
+			'      <xades:UnsignedSignatureProperties>',
+			'        <xades:SignatureTimeStamp>',
+			'     \t  <xades:HashDataInfo uri="{0}">',
+			'     \t    <Transforms>',
+			'          \t  <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>',
+			'            </Transforms>',
+			'            <xades:EncapsulatedTimeStamp>',
+			'              {1}',
+			'            </xades:EncapsulatedTimeStamp>     \t',
+			'     \t  </xades:HashDataInfo>     \t',
+			'        </xades:SignatureTimeStamp>',
+			'      </xades:UnsignedSignatureProperties> ',
+			'    </xades:UnsignedProperties>',
+			'  </xades:QualifyingProperties>',
+			'</Object>'
+		].join('\n')
 	],
 	[
 		'SignatureValue',
-		'' +
-'<SignatureValue xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageSignatureValue">{0}</SignatureValue>'
+		'<SignatureValue xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageSignatureValue">{0}</SignatureValue>'
 	]
 ];
 
 /**
- * Signature constructor.
+ * Signature object.
  */
 export class Signature extends Object {
 	/**
@@ -167,6 +163,9 @@ export class Signature extends Object {
 	 */
 	protected _timestamp: Buffer | null = null;
 
+	/**
+	 * Signature constructor.
+	 */
 	constructor() {
 		super();
 	}
@@ -313,13 +312,16 @@ export class Signature extends Object {
 
 		const timestamp = this._timestamp ? this._createTimestampXml() : '';
 
-		return Buffer.from(this._templated('PackageSignature', [
-			this._base64Encode(manifestDiest),
-			this._base64Encode(signature),
-			keyInfo,
-			this._packageManifest.join(''),
-			timestamp
-		]), 'utf8');
+		return Buffer.from(
+			this._templated('PackageSignature', [
+				this._base64Encode(manifestDiest),
+				this._base64Encode(signature),
+				keyInfo,
+				this._packageManifest.join(''),
+				timestamp
+			]),
+			'utf8'
+		);
 	}
 
 	/**
@@ -450,10 +452,7 @@ export class Signature extends Object {
 		const timestampBase64 = this._base64Encode(timestamp);
 		const result: string[] = [];
 		for (const uri of this._getTimestampDataReferenceUris()) {
-			result.push(this._templated('timestamp', [
-				uri,
-				timestampBase64
-			]));
+			result.push(this._templated('timestamp', [uri, timestampBase64]));
 		}
 		return result.join('\n');
 	}
@@ -464,11 +463,8 @@ export class Signature extends Object {
 	 * @returns Key info.
 	 */
 	protected _buildKeyInfo() {
-		const {
-			certchain,
-			crlValidationCerts,
-			crls
-		} = this._buildAndVerifyCertChain();
+		const {certchain, crlValidationCerts, crls} =
+			this._buildAndVerifyCertChain();
 
 		const out = [];
 
@@ -487,9 +483,7 @@ export class Signature extends Object {
 		}
 
 		for (const data of crls) {
-			out.push(
-				this._templated('crl', [this._base64Encode(data)])
-			);
+			out.push(this._templated('crl', [this._base64Encode(data)]));
 		}
 
 		return out.join('');

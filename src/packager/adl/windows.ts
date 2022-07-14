@@ -1,6 +1,4 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 // @ts-ignore-file
 import * as puka from 'puka';
@@ -9,10 +7,21 @@ import fse from 'fs-extra';
 import {IPackagerResourceOptions} from '../../packager';
 import {PackagerAdl} from '../adl';
 
-const quoteForCmd = puka.quoteForCmd || puka.default.quoteForCmd;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const quoteForCmd = (puka.quoteForCmd || puka.default.quoteForCmd) as (
+	s: string
+) => string;
 
 /**
- * PackagerAdlWindows constructor.
+ * Convert forward slashes to back slashes.
+ *
+ * @param s String with forward slashes.
+ * @returns String with back slaches.
+ */
+const bs = (s: string) => s.replace(/\//g, '\\');
+
+/**
+ * PackagerAdlWindows object.
  *
  * @param path Output path.
  */
@@ -28,6 +37,11 @@ export class PackagerAdlWindows extends PackagerAdl {
 	 */
 	public architecture: 'x86' | 'x64' | null = null;
 
+	/**
+	 * PackagerAdlWindows constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -110,30 +124,31 @@ export class PackagerAdlWindows extends PackagerAdl {
 	 * Write the run script.
 	 */
 	protected async _writeRunScript() {
-		const {
-			appSdkPath,
-			appResourcesPath,
-			_metaResourceApplicationPath
-		} = this;
+		const {appSdkPath, appResourcesPath, _metaResourceApplicationPath} =
+			this;
 		const arch = this.architecture === 'x64' ? '64' : '';
-		const bs = (s: string) => s.replace(/\//g, '\\');
-		await fse.outputFile(pathJoin(this.path, this.appRunPath), [
-			'@ECHO OFF',
-			'',
+		const metaPath = `${appResourcesPath}/${_metaResourceApplicationPath}`;
+		await fse.outputFile(
+			pathJoin(this.path, this.appRunPath),
 			[
-				...[
-					bs(`${appSdkPath}/bin/adl${arch}`),
-					...this._generateOptionArguments(),
-					bs(`${appResourcesPath}/${_metaResourceApplicationPath}`),
-					bs(appResourcesPath)
-				].map(quoteForCmd),
-				'--',
-				'%*'
-			].join(' '),
-			''
-		].join('\r\n'), {
-			encoding: 'utf8',
-			mode: 0o777
-		});
+				'@ECHO OFF',
+				'',
+				[
+					...[
+						bs(`${appSdkPath}/bin/adl${arch}`),
+						...this._generateOptionArguments(),
+						bs(metaPath),
+						bs(appResourcesPath)
+					].map(quoteForCmd),
+					'--',
+					'%*'
+				].join(' '),
+				''
+			].join('\r\n'),
+			{
+				encoding: 'utf8',
+				mode: 0o777
+			}
+		);
 	}
 }

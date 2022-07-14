@@ -1,6 +1,4 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 import fse from 'fs-extra';
 import {signatureSet} from 'portable-executable-signature';
@@ -8,12 +6,8 @@ import * as resedit from 'resedit';
 import * as rgbaImageCreateImage from '@rgba-image/create-image';
 import * as rgbaImagePng from '@rgba-image/png';
 import * as rgbaImageLanczos from '@rgba-image/lanczos';
-import {
-	PathType
-} from '@shockpkg/archive-files';
-import {
-	IconIco
-} from '@shockpkg/icon-encoder';
+import {PathType} from '@shockpkg/archive-files';
+import {IconIco} from '@shockpkg/icon-encoder';
 
 import {
 	pathRelativeBaseMatch,
@@ -21,42 +15,37 @@ import {
 	bufferToArrayBuffer
 } from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
-import {
-	IIcon,
-	PackagerBundle
-} from '../bundle';
+import {IIcon, PackagerBundle} from '../bundle';
 
 const ResEditNtExecutable =
-	resedit.NtExecutable ||
-	(resedit as any).default.NtExecutable;
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	resedit.NtExecutable || (resedit as any).default.NtExecutable;
 
 const ResEditNtExecutableResource =
 	resedit.NtExecutableResource ||
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 	(resedit as any).default.NtExecutableResource;
 
-const ResEditResource =
-	resedit.Resource ||
-	(resedit as any).default.Resource;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const ResEditResource = resedit.Resource || (resedit as any).default.Resource;
 
-const ResEditData =
-	resedit.Data ||
-	(resedit as any).default.Data;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const ResEditData = resedit.Data || (resedit as any).default.Data;
 
 const createImage =
 	rgbaImageCreateImage.createImage ||
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 	(rgbaImageCreateImage as any).default.createImage;
 
-const fromPng =
-	rgbaImagePng.fromPng ||
-	(rgbaImagePng as any).default.fromPng;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const fromPng = rgbaImagePng.fromPng || (rgbaImagePng as any).default.fromPng;
 
-const toPng =
-	rgbaImagePng.toPng ||
-	(rgbaImagePng as any).default.toPng;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const toPng = rgbaImagePng.toPng || (rgbaImagePng as any).default.toPng;
 
 const lanczos =
-	rgbaImageLanczos.lanczos ||
-	(rgbaImageLanczos as any).default.lanczos;
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	rgbaImageLanczos.lanczos || (rgbaImageLanczos as any).default.lanczos;
 
 /**
  * Helper function to resize images using lanczos algorithm.
@@ -77,9 +66,7 @@ function resizeLanczos(
 }
 
 /**
- * PackagerBundleWindows constructor.
- *
- * @param path Output path.
+ * PackagerBundleWindows object.
  */
 export class PackagerBundleWindows extends PackagerBundle {
 	/**
@@ -136,6 +123,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 */
 	public versionStrings: {[key: string]: string} | null = null;
 
+	/**
+	 * PackagerBundleWindows constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -243,10 +235,16 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 			const path = entry.volumePath;
 
-			const sdkBinaryPathRel =
-				pathRelativeBase(path, sdkBinaryPath, true);
-			const frameworkPathRel =
-				pathRelativeBase(path, sdkFrameworkPath, true);
+			const sdkBinaryPathRel = pathRelativeBase(
+				path,
+				sdkBinaryPath,
+				true
+			);
+			const frameworkPathRel = pathRelativeBase(
+				path,
+				sdkFrameworkPath,
+				true
+			);
 
 			// Extract if the framework.
 			if (frameworkPathRel !== null) {
@@ -282,10 +280,10 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// Optimization to avoid walking unrelated directories if possible.
-			return (
-				pathRelativeBaseMatch(sdkFrameworkPath, path, true) ||
+			return pathRelativeBaseMatch(sdkFrameworkPath, path, true) ||
 				pathRelativeBaseMatch(sdkBinaryPath, path, true)
-			) ? true : null;
+				? true
+				: null;
 		});
 
 		// If the binary is in framework, copy it.
@@ -298,9 +296,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Check that required components were extracted.
 		if (!extractedBinary) {
-			throw new Error(
-				`Failed to locate binary in SDK: ${sdkBinaryPath}`
-			);
+			throw new Error(`Failed to locate binary in SDK: ${sdkBinaryPath}`);
 		}
 		if (!extractedFramework) {
 			throw new Error(
@@ -361,8 +357,9 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 * @returns Architecture string.
 	 */
 	protected _getArchitecture() {
-		return this.architecture || (
-			this._applicationInfoArchitecture === '64' ? 'x64' : 'x86'
+		return (
+			this.architecture ||
+			(this._applicationInfoArchitecture === '64' ? 'x64' : 'x86')
 		);
 	}
 
@@ -391,12 +388,14 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Read EXE file and parse resources.
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
-		const exe = ResEditNtExecutable.from(signatureSet(
-			bufferToArrayBuffer(await fse.readFile(appBinaryPathFull)),
-			null,
-			true,
-			true
-		));
+		const exe = ResEditNtExecutable.from(
+			signatureSet(
+				bufferToArrayBuffer(await fse.readFile(appBinaryPathFull)),
+				null,
+				true,
+				true
+			)
+		);
 		const res = ResEditNtExecutableResource.from(exe);
 
 		// Check that icons and version info not present.
@@ -433,10 +432,12 @@ export class PackagerBundleWindows extends PackagerBundle {
 			);
 
 			// List all the resources now in the list.
-			const entriesById = new Map(res.entries.map((resource, index) => [
-				resource.id,
-				{index, resource}
-			]));
+			const entriesById = new Map(
+				res.entries.map((resource, index) => [
+					resource.id,
+					{index, resource}
+				])
+			);
 
 			// Get icon group info.
 			const entryInfo = entriesById.get(iconGroupId);
@@ -466,10 +467,13 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Add the version info if any.
 		if (versionStrings) {
 			const versionInfo = ResEditResource.VersionInfo.createEmpty();
-			versionInfo.setStringValues({
-				lang,
-				codepage
-			}, versionStrings);
+			versionInfo.setStringValues(
+				{
+					lang,
+					codepage
+				},
+				versionStrings
+			);
 
 			// Update integer values from parsed strings if possible.
 			const {FileVersion, ProductVersion} = versionStrings;
@@ -514,17 +518,19 @@ export class PackagerBundleWindows extends PackagerBundle {
 		const numbers = [];
 		for (const part of parts) {
 			const n = /^\d+$/.test(part) ? +part : NaN;
-			if (!(n >= 0 && n <= 0xFFFF)) {
+			if (!(n >= 0 && n <= 0xffff)) {
 				return null;
 			}
 			numbers.push(n);
 		}
-		return numbers.length ? [
-			// eslint-disable-next-line no-bitwise
-			(((numbers[0] || 0) << 16) | (numbers[1] || 0)) >>> 0,
-			// eslint-disable-next-line no-bitwise
-			(((numbers[2] || 0) << 16) | (numbers[3] || 0)) >>> 0
-		] : null;
+		return numbers.length
+			? [
+					// eslint-disable-next-line no-bitwise
+					(((numbers[0] || 0) << 16) | (numbers[1] || 0)) >>> 0,
+					// eslint-disable-next-line no-bitwise
+					(((numbers[2] || 0) << 16) | (numbers[3] || 0)) >>> 0
+			  ]
+			: null;
 	}
 
 	/**
@@ -551,9 +557,9 @@ export class PackagerBundleWindows extends PackagerBundle {
 		}
 
 		// Compute a unique identifier for the used icon set paths.
-		return has ?
-			paths.map(s => `${s ? s.length : 0}:${s || ''}`).join('|') :
-			null;
+		return has
+			? paths.map(s => `${s ? s.length : 0}:${s || ''}`).join('|')
+			: null;
 	}
 
 	/**
@@ -569,9 +575,9 @@ export class PackagerBundleWindows extends PackagerBundle {
 		const modern = this.applicationIconModern;
 
 		// Encode either a modern or a reference icon.
-		return modern ?
-			this._encodeIconModern(icon) :
-			this._encodeIconReference(icon);
+		return modern
+			? this._encodeIconModern(icon)
+			: this._encodeIconReference(icon);
 	}
 
 	/**
@@ -607,11 +613,12 @@ export class PackagerBundleWindows extends PackagerBundle {
 			did.add(uid);
 
 			// Write either a modern or a reference icon.
-			// eslint-disable-next-line no-await-in-loop
-			r.push(await (modern ?
-				this._encodeIconModern(icon) :
-				this._encodeIconReference(icon)
-			));
+			r.push(
+				// eslint-disable-next-line no-await-in-loop
+				await (modern
+					? this._encodeIconModern(icon)
+					: this._encodeIconReference(icon))
+			);
 		}
 		return r;
 	}
@@ -689,18 +696,18 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Resize 512x512 icon down if available.
 		if (image512x512) {
 			const d = await fse.readFile(this._getResourcePath(image512x512));
-			return Buffer.from(toPng(
-				resizeLanczos(fromPng(d), 256, 256)
-			));
+			return Buffer.from(toPng(resizeLanczos(fromPng(d), 256, 256)));
 		}
 
 		// Resize 1024x1024 icon down if available.
 		// Do this in two half-res steps to minorly improve quality.
 		if (image1024x1024) {
 			const d = await fse.readFile(this._getResourcePath(image1024x1024));
-			return Buffer.from(toPng(
-				resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)
-			));
+			return Buffer.from(
+				toPng(
+					resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)
+				)
+			);
 		}
 
 		// Otherwise no icon to resize down.

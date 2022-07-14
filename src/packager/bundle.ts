@@ -5,6 +5,13 @@ import xmldom from 'xmldom';
 
 import {Packager} from '../packager';
 
+/**
+ * Get child tags for an element.
+ *
+ * @param el Element to get the children of.
+ * @param name Child tag name or null.
+ * @returns Tag list.
+ */
 const childTags = (el: Readonly<Element>, name: String | null = null) => {
 	const {childNodes} = el;
 	const r: Element[] = [];
@@ -20,10 +27,17 @@ const childTags = (el: Readonly<Element>, name: String | null = null) => {
 	return r;
 };
 
+/**
+ * Get path of tag.
+ *
+ * @param el Element to get the children of.
+ * @param add Additional path.
+ * @returns Tag path.
+ */
 const tagPath = (el: Readonly<Element>, add: string | null = null) => {
 	const r = add === null ? [el.tagName] : [add, el.tagName];
 	for (let e = el.parentNode; e; e = e.parentNode) {
-		const {tagName} = (e as Element);
+		const {tagName} = e as Element;
 		if (!tagName) {
 			break;
 		}
@@ -60,9 +74,7 @@ export interface IFileTypeInfo {
 }
 
 /**
- * PackagerBundle constructor.
- *
- * @param path Output path.
+ * PackagerBundle object.
  */
 export abstract class PackagerBundle extends Packager {
 	/**
@@ -98,9 +110,8 @@ export abstract class PackagerBundle extends Packager {
 	/**
 	 * Application info from the fileTypes tag.
 	 */
-	protected _applicationInfoFileTypes: Map<string, IFileTypeInfo> | null = (
-		null
-	);
+	protected _applicationInfoFileTypes: Map<string, IFileTypeInfo> | null =
+		null;
 
 	/**
 	 * Application info from the supportedLanguages tag.
@@ -117,6 +128,11 @@ export abstract class PackagerBundle extends Packager {
 	 */
 	protected _applicationInfoArchitecture: string | null = null;
 
+	/**
+	 * PackagerBundle constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -159,12 +175,19 @@ export abstract class PackagerBundle extends Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected _applicationInfoInit(applicationData: Readonly<Buffer>) {
-		const doc = (new xmldom.DOMParser()).parseFromString(
+		const doc = new xmldom.DOMParser().parseFromString(
 			applicationData.toString('utf8'),
 			'text/xml'
 		);
 		const root = doc.documentElement;
 
+		/**
+		 * Get child tag, optional.
+		 *
+		 * @param el The element.
+		 * @param name Tag name.
+		 * @returns The element or null.
+		 */
 		const childTag = (el: Readonly<Element>, name: string) => {
 			const tags = childTags(el, name);
 			if (tags.length > 2) {
@@ -173,6 +196,14 @@ export abstract class PackagerBundle extends Packager {
 			}
 			return tags.length ? tags[0] : null;
 		};
+
+		/**
+		 * Get child tag, required.
+		 *
+		 * @param el The element.
+		 * @param name Tag name.
+		 * @returns The element.
+		 */
 		const childTagReq = (el: Readonly<Element>, name: string) => {
 			const tag = childTag(el, name);
 			if (!tag) {
@@ -181,14 +212,38 @@ export abstract class PackagerBundle extends Packager {
 			}
 			return tag;
 		};
+
+		/**
+		 * Get child tag value, optional.
+		 *
+		 * @param el The element.
+		 * @param name Tag name.
+		 * @returns The value or null.
+		 */
 		const childTagValue = (el: Readonly<Element>, name: string) => {
 			const tag = childTag(el, name);
 			return tag ? tag.textContent || '' : null;
 		};
+
+		/**
+		 * Get child tag value, required.
+		 *
+		 * @param el The element.
+		 * @param name Tag name.
+		 * @returns The value.
+		 */
 		const childTagReqValue = (el: Readonly<Element>, name: string) => {
 			const {textContent} = childTagReq(el, name);
 			return textContent || '';
 		};
+
+		/**
+		 * Get child tag value, required non-empty.
+		 *
+		 * @param el The element.
+		 * @param name Tag name.
+		 * @returns The value.
+		 */
 		const childTagReqValued = (el: Readonly<Element>, name: string) => {
 			const r = childTagReqValue(el, name);
 			if (!r) {
@@ -199,6 +254,13 @@ export abstract class PackagerBundle extends Packager {
 			}
 			return r;
 		};
+
+		/**
+		 * Read the icon tag.
+		 *
+		 * @param el The element.
+		 * @returns The values.
+		 */
 		const readIcons = (el: Readonly<Element>): IIcon => ({
 			image16x16: childTagValue(el, 'image16x16'),
 			image29x29: childTagValue(el, 'image29x29'),
@@ -223,8 +285,10 @@ export abstract class PackagerBundle extends Packager {
 		this._applicationInfoId = childTagReqValued(root, 'id');
 
 		// The application.versionNumber tag.
-		this._applicationInfoVersionNumber =
-			childTagReqValued(root, 'versionNumber');
+		this._applicationInfoVersionNumber = childTagReqValued(
+			root,
+			'versionNumber'
+		);
 
 		// The application.filename tag.
 		this._applicationInfoFilename = childTagReqValued(root, 'filename');
@@ -247,8 +311,10 @@ export abstract class PackagerBundle extends Packager {
 					throw new Error(`Duplicate ${path}: ${extension}`);
 				}
 				const name = childTagReqValued(fileTypeTag, 'name');
-				const contentType =
-					childTagReqValued(fileTypeTag, 'contentType');
+				const contentType = childTagReqValued(
+					fileTypeTag,
+					'contentType'
+				);
 				const description = childTagValue(fileTypeTag, 'description');
 
 				const iconTag = childTag(fileTypeTag, 'icon');
@@ -262,26 +328,27 @@ export abstract class PackagerBundle extends Packager {
 				});
 			}
 			this._applicationInfoFileTypes = fileTypes;
-		}
-		else {
+		} else {
 			this._applicationInfoFileTypes = null;
 		}
 
 		// The application.supportedLanguages tag.
-		this._applicationInfoSupportedLanguages =
-			childTagValue(root, 'supportedLanguages');
+		this._applicationInfoSupportedLanguages = childTagValue(
+			root,
+			'supportedLanguages'
+		);
 
 		// The application.initialWindow.requestedDisplayResolution tag.
 		const initialWindowTag = childTag(root, 'initialWindow');
-		this._applicationInfoRequestedDisplayResolution = initialWindowTag ?
-			childTagValue(initialWindowTag, 'requestedDisplayResolution') :
-			null;
+		this._applicationInfoRequestedDisplayResolution = initialWindowTag
+			? childTagValue(initialWindowTag, 'requestedDisplayResolution')
+			: null;
 
 		// The application.architecture tag (can be anywhere, use first).
 		const architectureTags = doc.getElementsByTagName('architecture');
-		this._applicationInfoArchitecture = architectureTags.length ?
-			architectureTags[0].textContent || null :
-			null;
+		this._applicationInfoArchitecture = architectureTags.length
+			? architectureTags[0].textContent || null
+			: null;
 	}
 
 	/**
@@ -403,14 +470,12 @@ export abstract class PackagerBundle extends Packager {
 		let str: string | null = null;
 		if (typeof data === 'string') {
 			str = data;
-		}
-		else if (Array.isArray(data as string[])) {
+		} else if (Array.isArray(data as string[])) {
 			if (newline === null) {
 				throw new Error('New line delimiter required');
 			}
 			str = (data as string[]).join(newline);
-		}
-		else {
+		} else {
 			return this._dataFromBufferOrFile(data as Buffer, file);
 		}
 		if (!encoding) {

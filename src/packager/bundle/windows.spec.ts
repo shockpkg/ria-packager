@@ -28,8 +28,9 @@ const versionStrings = {
 describe('packages/bundles/windows', () => {
 	describe('PackagerBundleWindows', () => {
 		it('instanceof PackagerBundle', () => {
-			expect(PackagerBundleWindows.prototype instanceof PackagerBundle)
-				.toBeTrue();
+			expect(
+				PackagerBundleWindows.prototype instanceof PackagerBundle
+			).toBeTrue();
 		});
 
 		if (!shouldTest('bundle-windows')) {
@@ -51,11 +52,7 @@ describe('packages/bundles/windows', () => {
 			// eslint-disable-next-line no-await-in-loop
 			it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
-				const dir = await cleanPackageDir(
-					'bundles',
-					'windows',
-					uid
-				);
+				const dir = await cleanPackageDir('bundles', 'windows', uid);
 
 				const packager = new PackagerBundleWindows(dir);
 				if (extras) {

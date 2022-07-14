@@ -3,16 +3,13 @@ import forge from 'node-forge';
 
 import {NAME, VERSION} from '../meta';
 
-const {
-	asn1,
-	pki
-} = forge;
+const {asn1, pki} = forge;
 
 const userAgent = `${NAME}/${VERSION}`;
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SecurityTimestamperRequestOptions = ({
-
+export type SecurityTimestamperRequestOptions = {
+	//
 	/**
 	 * URL string.
 	 */
@@ -37,16 +34,16 @@ export type SecurityTimestamperRequestOptions = ({
 	 * Body encoding used for callback functions.
 	 */
 	encoding?: string | null;
-});
+};
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SecurityTimestamperRequestResponse = ({
-
+export type SecurityTimestamperRequestResponse = {
+	//
 	/**
 	 * Status code.
 	 */
 	statusCode: number;
-});
+};
 
 export type SecurityTimestamperRequestCallback = (
 	error: Error | null,
@@ -60,9 +57,7 @@ export type SecurityTimestamperRequest = (
 ) => any;
 
 /**
- * SecurityTimestamper constructor.
- *
- * @param url The timestamp server URL.
+ * SecurityTimestamper object.
  */
 export class SecurityTimestamper extends Object {
 	/**
@@ -70,6 +65,11 @@ export class SecurityTimestamper extends Object {
 	 */
 	public url: string;
 
+	/**
+	 * SecurityTimestamper constructor.
+	 *
+	 * @param url The timestamp server URL.
+	 */
 	constructor(url: string) {
 		super();
 
@@ -111,27 +111,27 @@ export class SecurityTimestamper extends Object {
 						'User-Agent': userAgent,
 						...(options.headers || {})
 					},
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					body: options.body || null
 				});
 				response = {
 					statusCode: res.status
 				};
 				return res.buffer();
-			})()
-				.then(
-					data => {
-						cb(
-							null,
-							response,
-							encoding === null ?
-								data :
-								data.toString(encoding as any)
-						);
-					},
-					err => {
-						cb(err, response, null);
-					}
-				);
+			})().then(
+				data => {
+					cb(
+						null,
+						response,
+						encoding === null
+							? data
+							: data.toString(encoding as BufferEncoding)
+					);
+				},
+				err => {
+					cb(err as Error, response, null);
+				}
+			);
 		};
 	}
 
@@ -145,10 +145,9 @@ export class SecurityTimestamper extends Object {
 		const {url} = this;
 		const req = this._createRequest();
 
-		const [response, body] = await new Promise<[
-			SecurityTimestamperRequestResponse,
-			Buffer
-		]>((resolve, reject) => {
+		const [response, body] = await new Promise<
+			[SecurityTimestamperRequestResponse, Buffer]
+		>((resolve, reject) => {
 			req(
 				{
 					method: 'POST',
@@ -173,7 +172,7 @@ export class SecurityTimestamper extends Object {
 		const {statusCode} = response;
 		if (statusCode !== 200) {
 			throw new Error(
-				`Unexpected status code: ${statusCode}: ${body}`
+				`Unexpected status code: ${statusCode}: ${body.toString()}`
 			);
 		}
 		return body;
@@ -207,12 +206,7 @@ export class SecurityTimestamper extends Object {
 					false,
 					asn1.oidToDer(pki.oids.sha1).getBytes()
 				),
-				asn1.create(
-					asn1.Class.UNIVERSAL,
-					asn1.Type.NULL,
-					false,
-					''
-				)
+				asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
 			]
 		);
 
@@ -234,14 +228,9 @@ export class SecurityTimestamper extends Object {
 		// Could be set to some bytes.
 		// ie: reqPolicy = new forge.util.DataBuffer(Buffer.from('test'));
 		const reqPolicy = null;
-		const asn1ReqPolicy = reqPolicy ?
-			asn1.create(
-				asn1.Class.UNIVERSAL,
-				asn1.Type.OID,
-				false,
-				reqPolicy
-			) :
-			null;
+		const asn1ReqPolicy = reqPolicy
+			? asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, reqPolicy)
+			: null;
 
 		// Always null.
 		const nonceDER = null;
@@ -270,7 +259,7 @@ export class SecurityTimestamper extends Object {
 					asn1.Class.UNIVERSAL,
 					asn1.Type.BOOLEAN,
 					false,
-					String.fromCharCode(certReq ? 0xFF : 0)
+					String.fromCharCode(certReq ? 0xff : 0)
 				),
 				asn1Extn
 			].filter(Boolean) as forge.asn1.Asn1[]
@@ -339,21 +328,27 @@ export class SecurityTimestamper extends Object {
 			]
 		};
 
-		const capture: {[key: string]: any} = {};
+		const capture: {[key: string]: unknown} = {};
 		const errors: string[] = [];
 
-		const success = (asn1 as any).validate(
-			object,
-			validator,
-			capture,
-			errors
-		);
+		const success = (
+			asn1 as unknown as {
+				validate: (
+					a: unknown,
+					b: unknown,
+					c: unknown,
+					d: unknown
+				) => boolean;
+			}
+		).validate(object, validator, capture, errors);
 		if (!success || errors.length) {
 			const error = errors[0] || 'Unknown error';
 			throw new Error(`Decode error: ${error}`);
 		}
 
-		const pkiStatus = capture['root.statusInfo.pkiStatus'];
+		const pkiStatus = capture['root.statusInfo.pkiStatus'] as {
+			value: string;
+		};
 		if (!pkiStatus) {
 			throw new Error('Missing PKI status');
 		}
@@ -369,7 +364,7 @@ export class SecurityTimestamper extends Object {
 			throw new Error(`Unexpected PKI status code: ${pkiStatusCode}`);
 		}
 
-		const tst = capture['root.tst'];
+		const tst = capture['root.tst'] as forge.asn1.Asn1;
 		if (!tst) {
 			throw new Error('Missing PKI TSTInfo');
 		}

@@ -1,21 +1,11 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 import fse from 'fs-extra';
-import {
-	Manager
-} from '@shockpkg/core';
+import {Manager} from '@shockpkg/core';
 
-import {
-	SecurityKeystorePkcs12
-} from './security/keystore/pkcs12';
-import {
-	pathRelativeBase
-} from './util';
-import {
-	IPackagerResourceOptions
-} from './packager';
+import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
+import {pathRelativeBase} from './util';
+import {IPackagerResourceOptions} from './packager';
 
 // eslint-disable-next-line no-process-env
 export const envTest = process.env.RIA_PACKAGER_TEST || null;
@@ -24,17 +14,16 @@ export const envTest = process.env.RIA_PACKAGER_TEST || null;
 export const timestampUrl = process.env.RIA_PACKAGER_TIMESTAMP_URL || null;
 
 export function shouldTest(name: string) {
-	return !envTest || (
-		envTest.toLowerCase().split(',')
-			.includes(name.toLowerCase())
+	return (
+		!envTest ||
+		envTest.toLowerCase().split(',').includes(name.toLowerCase())
 	);
 }
 
 export function listFormats() {
 	// eslint-disable-next-line no-sync
-	return fse.readdirSync(
-		pathJoin('spec', 'fixtures', 'HelloWorld')
-	)
+	return fse
+		.readdirSync(pathJoin('spec', 'fixtures', 'HelloWorld'))
 		.filter(s => /^\d+\.\d+$/.test(s))
 		.map(s => s.split('.').map(s => +s))
 		.sort((a, b) => a[1] - b[1])
@@ -42,7 +31,7 @@ export function listFormats() {
 		.map(a => a.join('.'));
 }
 
-export function * generateSamples() {
+export function* generateSamples() {
 	for (const format of listFormats().reverse()) {
 		const version = format.split('.').map(Number);
 		yield {
@@ -90,7 +79,7 @@ export function * generateSamples() {
 	}
 }
 
-export function * generateSamplesWindows() {
+export function* generateSamplesWindows() {
 	for (const {sdk, sample} of generatePlatformSamples('windows')) {
 		const {descriptor64} = sample;
 		const samples: [string, string, 'x86' | 'x64'][] = [
@@ -129,13 +118,10 @@ export function * generateSamplesWindows() {
 	}
 }
 
-export function * generateSamplesMac() {
+export function* generateSamplesMac() {
 	for (const {sdk, sample} of generatePlatformSamples('mac')) {
 		const samples: [string, string][] = [
-			[
-				`${sample.name}-${sample.format}-${sdk.name}`,
-				sample.descriptor
-			]
+			[`${sample.name}-${sample.format}-${sdk.name}`, sample.descriptor]
 		];
 
 		for (const [uid, descriptor] of samples) {
@@ -164,8 +150,7 @@ export function getInstalledPackagesSync() {
 		const installed = process.env.RIA_PACKAGER_INSTALLED || null;
 		if (installed) {
 			getInstalledPackagesCache = installed.split(',');
-		}
-		else {
+		} else {
 			getInstalledPackagesCache = [];
 		}
 	}
@@ -194,7 +179,7 @@ export function generateSdks() {
 		.sort((a, b) => a.version[0] - b.version[0]);
 }
 
-export function * generatePlatformSamples(platform: string) {
+export function* generatePlatformSamples(platform: string) {
 	for (const sdk of generateSdks()) {
 		if (sdk.platform !== platform) {
 			continue;
@@ -216,10 +201,7 @@ export function * generatePlatformSamples(platform: string) {
 }
 
 export function versionBefore(version: number[], major: number, minor: number) {
-	return (
-		version[0] < major ||
-		(version[0] === major && version[1] < minor)
-	);
+	return version[0] < major || (version[0] === major && version[1] < minor);
 }
 
 export async function fixtureKeystoreRead() {
@@ -239,9 +221,7 @@ export function fixtureFile(...path: string[]) {
 }
 
 export async function getPackageFile(pkg: string) {
-	return (new Manager()).with(
-		async manager => manager.packageInstallFile(pkg)
-	);
+	return new Manager().with(async manager => manager.packageInstallFile(pkg));
 }
 
 export async function cleanPackageDir(...path: string[]) {

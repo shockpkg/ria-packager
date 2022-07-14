@@ -1,7 +1,4 @@
-import {
-	join as pathJoin,
-	basename
-} from 'path';
+import {join as pathJoin, basename} from 'path';
 
 import fse from 'fs-extra';
 import {
@@ -21,7 +18,7 @@ import {HasherSha256} from './hasher/sha256';
  * Options for adding resources.
  */
 export interface IPackagerResourceOptions {
-
+	//
 	/**
 	 * Mark file as executable.
 	 */
@@ -34,9 +31,7 @@ export interface IPackagerResourceOptions {
 }
 
 /**
- * Packager constructor.
- *
- * @param path Output path.
+ * Packager object.
  */
 export abstract class Packager extends Object {
 	/**
@@ -57,11 +52,7 @@ export abstract class Packager extends Object {
 	/**
 	 * File and directory names to exclude when added a directory.
 	 */
-	public excludes = [
-		/^\./,
-		/^ehthumbs\.db$/,
-		/^Thumbs\.db$/
-	];
+	public excludes = [/^\./, /^ehthumbs\.db$/, /^Thumbs\.db$/];
 
 	/**
 	 * Output path.
@@ -88,6 +79,11 @@ export abstract class Packager extends Object {
 	 */
 	protected _signature: Signature | null = null;
 
+	/**
+	 * Packager constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super();
 
@@ -173,9 +169,8 @@ export abstract class Packager extends Object {
 		await this.open(applicationData);
 		let r: T;
 		try {
-			r = await func.call(this, this);
-		}
-		finally {
+			r = (await func.call(this, this)) as T;
+		} finally {
 			await this.close();
 		}
 		return r;
@@ -195,9 +190,8 @@ export abstract class Packager extends Object {
 		await this.openFile(descriptorFile);
 		let r: T;
 		try {
-			r = await func.call(this, this);
-		}
-		finally {
+			r = (await func.call(this, this)) as T;
+		} finally {
 			await this.close();
 		}
 		return r;

@@ -7,8 +7,9 @@ import {PackagerAirInstaller} from './installer';
 describe('packages/airs/installer', () => {
 	describe('PackagerAirInstaller', () => {
 		it('function', () => {
-			expect(PackagerAirInstaller.prototype instanceof PackagerAir)
-				.toBeTrue();
+			expect(
+				PackagerAirInstaller.prototype instanceof PackagerAir
+			).toBeTrue();
 		});
 
 		if (!shouldTest('air-installer')) {

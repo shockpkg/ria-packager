@@ -7,8 +7,9 @@ import {PackagerAirIntermediate} from './intermediate';
 describe('packages/airs/intermediate', () => {
 	describe('PackagerAirIntermediate', () => {
 		it('function', () => {
-			expect(PackagerAirIntermediate.prototype instanceof PackagerAir)
-				.toBeTrue();
+			expect(
+				PackagerAirIntermediate.prototype instanceof PackagerAir
+			).toBeTrue();
 		});
 
 		if (!shouldTest('air-intermediate')) {

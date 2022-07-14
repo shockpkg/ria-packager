@@ -14,27 +14,25 @@ import bufferCrc32 from 'buffer-crc32';
 function dateToDosTime(date: Readonly<Date> | number) {
 	const d = typeof date === 'number' ? new Date(date * 1000) : date;
 	return {
-		date: (
+		date:
 			// eslint-disable-next-line no-bitwise
-			(d.getDate() & 0x1F) |
+			(d.getDate() & 0x1f) |
 			// eslint-disable-next-line no-bitwise
-			(((d.getMonth() + 1) & 0xF) << 5) |
+			(((d.getMonth() + 1) & 0xf) << 5) |
 			// eslint-disable-next-line no-bitwise
-			(((d.getFullYear() - 1980) & 0x7F) << 9)
-		),
-		time: (
+			(((d.getFullYear() - 1980) & 0x7f) << 9),
+		time:
 			// eslint-disable-next-line no-bitwise
 			Math.floor(d.getSeconds() / 2) |
 			// eslint-disable-next-line no-bitwise
-			((d.getMinutes() & 0x3F) << 5) |
+			((d.getMinutes() & 0x3f) << 5) |
 			// eslint-disable-next-line no-bitwise
-			((d.getHours() & 0x1F) << 11)
-		)
+			((d.getHours() & 0x1f) << 11)
 	};
 }
 
 /**
- * Zipper Entry Extra Field.
+ * Zipper Entry Extra Field object.
  */
 export class ZipperEntryExtraField extends Object {
 	/**
@@ -47,6 +45,9 @@ export class ZipperEntryExtraField extends Object {
 	 */
 	public data: Buffer | null = null;
 
+	/**
+	 * Zipper Entry Extra Field constructor.
+	 */
 	constructor() {
 		super();
 	}
@@ -158,13 +159,13 @@ export class ZipperEntryExtraField extends Object {
 			}
 
 			// eslint-disable-next-line no-bitwise
-			flags |= (1 << i);
+			flags |= 1 << i;
 			if (!local && !i) {
 				return;
 			}
 
-			const time = typeof v === 'number' ?
-				v : Math.round(v.getTime() / 1000);
+			const time =
+				typeof v === 'number' ? v : Math.round(v.getTime() / 1000);
 			const b = Buffer.alloc(4);
 			b.writeUInt32LE(time, 0);
 			buffers.push(b);
@@ -178,18 +179,18 @@ export class ZipperEntryExtraField extends Object {
 }
 
 /**
- * Zipper Entry.
+ * Zipper Entry object.
  */
 export class ZipperEntry extends Object {
 	/**
 	 * Tag signature, local header.
 	 */
-	public signatureLocal = 0x4034B50;
+	public signatureLocal = 0x4034b50;
 
 	/**
 	 * Tag signature, central header.
 	 */
-	public signatureCentral = 0x2014B50;
+	public signatureCentral = 0x2014b50;
 
 	/**
 	 * Extract version.
@@ -286,6 +287,9 @@ export class ZipperEntry extends Object {
 	 */
 	public extraFieldsCentral: ZipperEntryExtraField[] = [];
 
+	/**
+	 * Zipper Entry constructor.
+	 */
 	constructor() {
 		super();
 	}
@@ -334,9 +338,7 @@ export class ZipperEntry extends Object {
 	 * @returns Extra fields as data.
 	 */
 	public getExtraFieldsLocalBuffer() {
-		return Buffer.concat(
-			this.extraFieldsLocal.map(e => e.toBuffer())
-		);
+		return Buffer.concat(this.extraFieldsLocal.map(e => e.toBuffer()));
 	}
 
 	/**
@@ -345,9 +347,7 @@ export class ZipperEntry extends Object {
 	 * @returns Extra fields as data.
 	 */
 	public getExtraFieldsCentralBuffer() {
-		return Buffer.concat(
-			this.extraFieldsCentral.map(e => e.toBuffer())
-		);
+		return Buffer.concat(this.extraFieldsCentral.map(e => e.toBuffer()));
 	}
 
 	/**
@@ -373,11 +373,7 @@ export class ZipperEntry extends Object {
 		head.writeUInt16LE(pathBuffer.length, 26);
 		head.writeUInt16LE(extraFieldsBuffer.length, 28);
 
-		return Buffer.concat([
-			head,
-			pathBuffer,
-			extraFieldsBuffer
-		]);
+		return Buffer.concat([head, pathBuffer, extraFieldsBuffer]);
 	}
 
 	/**
@@ -543,14 +539,12 @@ export class ZipperEntry extends Object {
 
 /**
  * Zipper, a low-level ZIP file writter.
- *
- * @param output Writable stream.
  */
 export class Zipper extends Object {
 	/**
 	 * Tag signature.
 	 */
-	public signature = 0x6054B50;
+	public signature = 0x6054b50;
 
 	/**
 	 * Archive comment.
@@ -572,6 +566,11 @@ export class Zipper extends Object {
 	 */
 	protected readonly _output: Writable;
 
+	/**
+	 * Zipper constructor.
+	 *
+	 * @param output Writable stream.
+	 */
 	constructor(output: Writable) {
 		super();
 
@@ -603,9 +602,9 @@ export class Zipper extends Object {
 	 */
 	public getDirectoryBuffer() {
 		const {_offset, entries} = this;
-		const directoryData = Buffer.concat(entries.map(
-			e => e.getCentralBuffer()
-		));
+		const directoryData = Buffer.concat(
+			entries.map(e => e.getCentralBuffer())
+		);
 		const commentBuffer = this.getCommentBuffer();
 
 		const end = Buffer.alloc(22);
@@ -618,11 +617,7 @@ export class Zipper extends Object {
 		end.writeUInt32LE(_offset, 16);
 		end.writeUInt16LE(commentBuffer.length, 20);
 
-		return Buffer.concat([
-			directoryData,
-			end,
-			commentBuffer
-		]);
+		return Buffer.concat([directoryData, end, commentBuffer]);
 	}
 
 	/**
@@ -641,8 +636,7 @@ export class Zipper extends Object {
 			if (data.length !== sizeCompressed) {
 				throw new Error('Data length and compressed size must match');
 			}
-		}
-		else if (sizeCompressed) {
+		} else if (sizeCompressed) {
 			throw new Error('Data required when compressed size not zero');
 		}
 		entry.headerOffsetLocal = _offset;

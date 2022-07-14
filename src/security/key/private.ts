@@ -1,9 +1,12 @@
 import {SecurityKey} from '../key';
 
 /**
- * SecurityKeyPrivate constructor.
+ * SecurityKeyPrivate object.
  */
 export abstract class SecurityKeyPrivate extends SecurityKey {
+	/**
+	 * SecurityKeyPrivate constructor.
+	 */
 	constructor() {
 		super();
 	}

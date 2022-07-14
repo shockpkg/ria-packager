@@ -35,11 +35,7 @@ describe('packages/adls/mac', () => {
 					return;
 				}
 
-				const dir = await cleanPackageDir(
-					'adls',
-					'mac',
-					uid
-				);
+				const dir = await cleanPackageDir('adls', 'mac', uid);
 
 				const packager = new PackagerAdlMac(dir);
 

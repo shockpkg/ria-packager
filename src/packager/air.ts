@@ -2,19 +2,11 @@ import {Writable} from 'stream';
 
 import fse from 'fs-extra';
 
-import {
-	Zipper,
-	ZipperEntry
-} from '../zipper';
-import {
-	IPackagerResourceOptions,
-	Packager
-} from '../packager';
+import {Zipper, ZipperEntry} from '../zipper';
+import {IPackagerResourceOptions, Packager} from '../packager';
 
 /**
- * PackagerAir constructor.
- *
- * @param path Output path.
+ * PackagerAir object.
  */
 export abstract class PackagerAir extends Packager {
 	/**
@@ -27,6 +19,11 @@ export abstract class PackagerAir extends Packager {
 	 */
 	protected _zipperEntryHash: ZipperEntry | null = null;
 
+	/**
+	 * PackagerAir constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -83,7 +80,7 @@ export abstract class PackagerAir extends Packager {
 	 * @returns External attributes.
 	 */
 	protected _zipGetExternalAttributes(executable: boolean) {
-		return executable ? 0x81ED0000 : 0x81A40000;
+		return executable ? 0x81ed0000 : 0x81a40000;
 	}
 
 	/**
@@ -177,8 +174,7 @@ export abstract class PackagerAir extends Packager {
 		const fd = await fse.open(this.path, 'r+');
 		try {
 			await fse.write(fd, data, 0, data.length, headerOffsetLocal);
-		}
-		finally {
+		} finally {
 			await fse.close(fd);
 		}
 	}

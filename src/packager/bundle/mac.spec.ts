@@ -1,6 +1,4 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 import {
 	platformIsMac,
@@ -20,8 +18,9 @@ import {PackagerBundleMac} from './mac';
 describe('packages/bundles/mac', () => {
 	describe('PackagerBundleMac', () => {
 		it('instanceof PackagerBundle', () => {
-			expect(PackagerBundleMac.prototype instanceof PackagerBundle)
-				.toBeTrue();
+			expect(
+				PackagerBundleMac.prototype instanceof PackagerBundle
+			).toBeTrue();
 		});
 
 		if (!shouldTest('bundle-mac')) {
@@ -48,11 +47,7 @@ describe('packages/bundles/mac', () => {
 					return;
 				}
 
-				const dir = await cleanPackageDir(
-					'bundles',
-					'mac',
-					uid
-				);
+				const dir = await cleanPackageDir('bundles', 'mac', uid);
 				const path = pathJoin(dir, `${sample.name}.app`);
 
 				const packager = new PackagerBundleMac(path);

@@ -2,9 +2,12 @@ import {SecurityCertificate} from './certificate';
 import {SecurityKeyPrivate} from './key/private';
 
 /**
- * SecurityKeystore constructor.
+ * SecurityKeystore object.
  */
 export abstract class SecurityKeystore extends Object {
+	/**
+	 * SecurityKeystore constructor.
+	 */
 	constructor() {
 		super();
 	}

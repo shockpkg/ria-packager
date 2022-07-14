@@ -1,7 +1,10 @@
 /**
- * SecurityKey constructor.
+ * SecurityKey object.
  */
 export abstract class SecurityKey extends Object {
+	/**
+	 * SecurityKey constructor.
+	 */
 	constructor() {
 		super();
 	}

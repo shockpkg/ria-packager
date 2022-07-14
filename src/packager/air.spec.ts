@@ -1,6 +1,4 @@
-import {
-	join as pathJoin
-} from 'path';
+import {join as pathJoin} from 'path';
 
 import {
 	generateSamples,
@@ -13,7 +11,7 @@ import {
 import {PackagerAir} from './air';
 
 export function test(
-	Packager: new(path: string) => PackagerAir,
+	Packager: new (path: string) => PackagerAir,
 	name: string,
 	ext: string,
 	signed: boolean,
@@ -34,11 +32,7 @@ export function test(
 
 		for (const [uid, descriptor] of samples) {
 			it(uid, async () => {
-				const dir = await cleanPackageDir(
-					'airs',
-					name,
-					uid
-				);
+				const dir = await cleanPackageDir('airs', name, uid);
 				const path = pathJoin(dir, `${sample.name}${ext}`);
 
 				const packager = new Packager(path);

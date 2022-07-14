@@ -1,11 +1,14 @@
 import {PackagerAir} from '../air';
 
 /**
- * PackagerAirNative constructor.
- *
- * @param path Output path.
+ * PackagerAirNative object.
  */
 export class PackagerAirNative extends PackagerAir {
+	/**
+	 * PackagerAirNative constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
@@ -16,9 +19,8 @@ export class PackagerAirNative extends PackagerAir {
 	 * @returns Mimetype string.
 	 */
 	public get mimetype() {
-		return (
-			'application/vnd.adobe.air-native-application-installer-package+zip'
-		);
+		// eslint-disable-next-line max-len
+		return 'application/vnd.adobe.air-native-application-installer-package+zip';
 	}
 
 	/**

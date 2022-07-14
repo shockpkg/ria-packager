@@ -3,7 +3,7 @@ import forge from 'node-forge';
 import {SecurityCertificate} from '../certificate';
 
 /**
- * SecurityCertificateX509 constructor.
+ * SecurityCertificateX509 object.
  */
 export class SecurityCertificateX509 extends SecurityCertificate {
 	/**
@@ -11,6 +11,9 @@ export class SecurityCertificateX509 extends SecurityCertificate {
 	 */
 	protected _forgeCertificate: Readonly<forge.pki.Certificate> | null = null;
 
+	/**
+	 * SecurityCertificateX509 constructor.
+	 */
 	constructor() {
 		super();
 	}

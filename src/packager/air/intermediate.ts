@@ -1,11 +1,14 @@
 import {PackagerAir} from '../air';
 
 /**
- * PackagerAirIntermediate constructor.
- *
- * @param path Output path.
+ * PackagerAirIntermediate object.
  */
 export class PackagerAirIntermediate extends PackagerAir {
+	/**
+	 * PackagerAirIntermediate constructor.
+	 *
+	 * @param path Output path.
+	 */
 	constructor(path: string) {
 		super(path);
 	}
