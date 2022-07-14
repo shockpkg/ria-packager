@@ -7,13 +7,14 @@ import {
 	shouldTest,
 	versionBefore
 } from '../../util.spec';
+import {PackagerAdl} from '../adl';
 
 import {PackagerAdlMac} from './mac';
 
 describe('packages/adls/mac', () => {
 	describe('PackagerAdlMac', () => {
-		it('function', () => {
-			expect(typeof PackagerAdlMac).toBe('function');
+		it('instanceof PackagerAdl', () => {
+			expect(PackagerAdlMac.prototype instanceof PackagerAdl).toBeTrue();
 		});
 
 		if (!shouldTest('adl-mac')) {

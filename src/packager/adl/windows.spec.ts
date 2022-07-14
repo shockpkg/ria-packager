@@ -6,13 +6,16 @@ import {
 	shouldTest,
 	versionBefore
 } from '../../util.spec';
+import {PackagerAdl} from '../adl';
 
 import {PackagerAdlWindows} from './windows';
 
 describe('packages/adls/windows', () => {
 	describe('PackagerAdlWindows', () => {
-		it('function', () => {
-			expect(typeof PackagerAdlWindows).toBe('function');
+		it('instanceof PackagerAdl', () => {
+			expect(
+				PackagerAdlWindows.prototype instanceof PackagerAdl
+			).toBeTrue();
 		});
 
 		if (!shouldTest('adl-windows')) {
