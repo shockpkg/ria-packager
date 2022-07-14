@@ -429,8 +429,8 @@ export class Signature extends Object {
 		let b64 = data.toString('base64');
 		const chunks = [];
 		while (b64.length > chunk) {
-			chunks.push(b64.substr(0, chunk));
-			b64 = b64.substr(chunk);
+			chunks.push(b64.substring(0, chunk));
+			b64 = b64.substring(chunk);
 		}
 		if (b64.length) {
 			chunks.push(b64);
