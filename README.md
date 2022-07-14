@@ -1,4 +1,4 @@
-# ria-packager
+# RIA Packager
 
 Package for creating Adobe AIR packages
 
