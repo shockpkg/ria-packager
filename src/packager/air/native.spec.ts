@@ -5,7 +5,7 @@ import {PackagerAir} from '../air';
 import {PackagerAirNative} from './native';
 
 describe('packages/airs/native', () => {
-	describe('PackagerAirInstaller', () => {
+	describe('PackagerAirNative', () => {
 		it('instanceof PackagerAir', () => {
 			expect(
 				PackagerAirNative.prototype instanceof PackagerAir

@@ -6,7 +6,7 @@ import {PackagerAirInstaller} from './installer';
 
 describe('packages/airs/installer', () => {
 	describe('PackagerAirInstaller', () => {
-		it('function', () => {
+		it('instanceof PackagerAir', () => {
 			expect(
 				PackagerAirInstaller.prototype instanceof PackagerAir
 			).toBeTrue();
