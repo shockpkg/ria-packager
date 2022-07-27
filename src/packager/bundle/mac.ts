@@ -233,40 +233,34 @@ export class PackagerBundleMac extends PackagerBundle {
 	}
 
 	/**
-	 * Get Info.plist data if any specified, from data or file.
-	 *
-	 * @returns Info.plist data or null.
-	 */
-	public async getInfoPlistData() {
-		return this._dataFromValueOrFile(
-			this.infoPlistData,
-			this.infoPlistFile,
-			'utf8'
-		);
-	}
-
-	/**
 	 * Get Info.plist data as DOM if any specified.
 	 *
 	 * @returns Info.plist DOM or null.
 	 */
-	public async getInfoPlistDom() {
-		const data = await this.getInfoPlistData();
-		if (!data) {
+	public async getInfoPlistDocument() {
+		const {infoPlistData, infoPlistFile} = this;
+		let xml;
+		if (typeof infoPlistData === 'string') {
+			xml = infoPlistData;
+		} else if (infoPlistData) {
+			xml = infoPlistData.toString('utf8');
+		} else if (infoPlistFile) {
+			xml = await readFile(infoPlistFile, 'utf8');
+		} else {
 			return null;
 		}
 		const dom = new Plist();
-		dom.fromXml(data.toString('utf8'));
+		dom.fromXml(xml);
 		return dom;
 	}
 
 	/**
 	 * Get Info.plist data as DOM if any specified, or default.
 	 *
-	 * @returns Info.plist DOM or null.
+	 * @returns Info.plist DOM.
 	 */
-	public async getInfoPlistDomOrDefault() {
-		const dom = await this.getInfoPlistDom();
+	public async getInfoPlistDocumentOrDefault() {
+		const dom = await this.getInfoPlistDocument();
 		return dom || new Plist();
 	}
 
@@ -276,11 +270,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * @returns PkgInfo data or null.
 	 */
 	public async getPkgInfoData() {
-		return this._dataFromValueOrFile(
-			this.pkgInfoData,
-			this.pkgInfoFile,
-			'ascii'
-		);
+		const {pkgInfoData, pkgInfoFile} = this;
+		if (typeof pkgInfoData === 'string') {
+			return Buffer.from(pkgInfoData, 'ascii');
+		}
+		return pkgInfoData || (pkgInfoFile ? readFile(pkgInfoFile) : null);
 	}
 
 	/**
@@ -710,7 +704,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * @returns Plist DOM.
 	 */
 	protected async _generateInfoPlist() {
-		const dom = await this.getInfoPlistDomOrDefault();
+		const dom = await this.getInfoPlistDocumentOrDefault();
 		const existing =
 			dom.value && dom.value.type === ValueDict.TYPE
 				? (dom.value as ValueDict)

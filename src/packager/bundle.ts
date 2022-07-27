@@ -1,6 +1,3 @@
-import {readFile} from 'fs/promises';
-import {TranscodeEncoding} from 'buffer';
-
 import {DOMParser} from 'xmldom';
 
 import {Packager} from '../packager';
@@ -175,6 +172,8 @@ export abstract class PackagerBundle extends Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected _applicationInfoInit(applicationData: Readonly<Buffer>) {
+		super._applicationInfoInit(applicationData);
+
 		const doc = new DOMParser().parseFromString(
 			applicationData.toString('utf8'),
 			'text/xml'
@@ -421,6 +420,8 @@ export abstract class PackagerBundle extends Packager {
 	 * Clear application info from descriptor data.
 	 */
 	protected _applicationInfoClear() {
+		super._applicationInfoClear();
+
 		this._applicationInfoId = null;
 		this._applicationInfoVersionNumber = null;
 		this._applicationInfoFilename = null;
@@ -430,50 +431,5 @@ export abstract class PackagerBundle extends Packager {
 		this._applicationInfoSupportedLanguages = null;
 		this._applicationInfoRequestedDisplayResolution = null;
 		this._applicationInfoArchitecture = null;
-	}
-
-	/**
-	 * Get data from buffer or file.
-	 *
-	 * @param data Data buffer.
-	 * @param file File path.
-	 * @returns Data buffer.
-	 */
-	protected async _dataFromBufferOrFile(
-		data: Readonly<Buffer> | null,
-		file: string | null
-	) {
-		if (data) {
-			return data;
-		}
-		if (file) {
-			return readFile(file);
-		}
-		return null;
-	}
-
-	/**
-	 * Get data from value or file.
-	 *
-	 * @param data Data value.
-	 * @param file File path.
-	 * @param encoding String encoding.
-	 * @returns Data buffer.
-	 */
-	protected async _dataFromValueOrFile(
-		data: string | Readonly<Buffer> | null,
-		file: string | null,
-		encoding: TranscodeEncoding | null
-	) {
-		let str: string | null = null;
-		if (typeof data === 'string') {
-			str = data;
-		} else {
-			return this._dataFromBufferOrFile(data as Buffer, file);
-		}
-		if (!encoding) {
-			throw new Error('String data encoding required');
-		}
-		return Buffer.from(str, encoding);
 	}
 }
