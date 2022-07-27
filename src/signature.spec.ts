@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import fse from 'fs-extra';
+import {readFile} from 'fs/promises';
 
 import {fixtureFile, timestampUrl} from './util.spec';
 import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
@@ -13,9 +13,9 @@ const files: [string, () => Promise<Buffer>][] = [
 	['mimetype', async () => Buffer.from(mimetype, 'utf8')],
 	[
 		'META-INF/AIR/application.xml',
-		async () => fse.readFile(fixtureFile('signature', 'application.xml'))
+		async () => readFile(fixtureFile('signature', 'application.xml'))
 	],
-	['HelloWorld.swf', async () => fse.readFile(fixtureFile('HelloWorld.swf'))]
+	['HelloWorld.swf', async () => readFile(fixtureFile('HelloWorld.swf'))]
 ];
 
 const replayTimestampBody = fixtureFile('signature', 'timestamp.body.bin');
@@ -54,7 +54,7 @@ class SignatureReplay extends Signature {
 	protected _createSecurityTimestamper(timestampUrl: string) {
 		return new (class extends SecurityTimestamper {
 			protected async _sendRequest(message: Buffer) {
-				return fse.readFile(replayTimestampBody);
+				return readFile(replayTimestampBody);
 			}
 		})(timestampUrl);
 	}
@@ -89,7 +89,7 @@ describe('signature', () => {
 			const encoded = signature.encode();
 
 			// Check that code matches expected code.
-			const expected = await fse.readFile(expectedTimestampNo);
+			const expected = await readFile(expectedTimestampNo);
 			expect(encoded.toString('utf8')).toEqual(expected.toString('utf8'));
 		});
 
@@ -113,7 +113,7 @@ describe('signature', () => {
 			const encoded = signature.encode();
 
 			// Check that code matches expected code.
-			const expected = await fse.readFile(expectedTimestampYes);
+			const expected = await readFile(expectedTimestampYes);
 			expect(encoded.toString('utf8')).toEqual(expected.toString('utf8'));
 		});
 
@@ -139,7 +139,7 @@ describe('signature', () => {
 			const encoded = signature.encode();
 			const extracted = extractTimestamp(encoded.toString('utf8'));
 
-			const expected = await fse.readFile(expectedTimestampNo);
+			const expected = await readFile(expectedTimestampNo);
 			expect(extracted.removed).toEqual(expected.toString('utf8'));
 		});
 
@@ -152,8 +152,8 @@ describe('signature', () => {
 
 			signature.timestampUrl = timestampUrl;
 
-			const expectedNo = await fse.readFile(expectedTimestampNo);
-			const expectedYes = await fse.readFile(expectedTimestampYes);
+			const expectedNo = await readFile(expectedTimestampNo);
+			const expectedYes = await readFile(expectedTimestampYes);
 
 			const expectedEncode = (data: Buffer, timestamp: boolean) => {
 				const expected = timestamp ? expectedYes : expectedNo;

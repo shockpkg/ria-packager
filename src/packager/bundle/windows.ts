@@ -1,6 +1,6 @@
-import {join as pathJoin} from 'path';
+import {copyFile, mkdir, readFile, stat, utimes, writeFile} from 'fs/promises';
+import {dirname, join as pathJoin} from 'path';
 
-import fse from 'fs-extra';
 import {signatureSet} from 'portable-executable-signature';
 import * as resedit from 'resedit';
 import * as rgbaImageCreateImage from '@rgba-image/create-image';
@@ -288,9 +288,9 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// If the binary is in framework, copy it.
 		if (binaryInFrameworkPath) {
-			await fse.copy(binaryInFrameworkPath, appBinaryPathFull, {
-				preserveTimestamps: true
-			});
+			const st = await stat(binaryInFrameworkPath);
+			await copyFile(binaryInFrameworkPath, appBinaryPathFull);
+			await utimes(binaryInFrameworkPath, st.atime, st.mtime);
 			extractedBinary = true;
 		}
 
@@ -327,15 +327,14 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Write resource to file.
 		const mode = this._getFileMode(options.executable || false);
 		const dest = this._getResourcePath(destination);
-		await fse.outputFile(dest, data, {
-			mode
-		});
+		await mkdir(dirname(dest), {recursive: true});
+		await writeFile(dest, data, {mode});
 
 		// Optionally preserve mtime information.
 		if (this.preserveResourceMtime) {
 			const {mtime} = options;
 			if (mtime) {
-				await fse.utimes(dest, mtime, mtime);
+				await utimes(dest, mtime, mtime);
 			}
 		}
 	}
@@ -390,7 +389,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
 		const exe = ResEditNtExecutable.from(
 			signatureSet(
-				bufferToArrayBuffer(await fse.readFile(appBinaryPathFull)),
+				bufferToArrayBuffer(await readFile(appBinaryPathFull)),
 				null,
 				true,
 				true
@@ -504,7 +503,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Update resources and write EXE file.
 		res.outputResource(exe);
-		await fse.writeFile(appBinaryPathFull, Buffer.from(exe.generate()));
+		await writeFile(appBinaryPathFull, Buffer.from(exe.generate()));
 	}
 
 	/**
@@ -643,7 +642,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// eslint-disable-next-line no-await-in-loop
-			const data = await fse.readFile(this._getResourcePath(path));
+			const data = await readFile(this._getResourcePath(path));
 			ico.addFromPng(data, false);
 		}
 		return ico.encode();
@@ -669,7 +668,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// eslint-disable-next-line no-await-in-loop
-			const data = await fse.readFile(this._getResourcePath(path));
+			const data = await readFile(this._getResourcePath(path));
 			ico.addFromPng(data, false);
 		}
 
@@ -695,14 +694,14 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Resize 512x512 icon down if available.
 		if (image512x512) {
-			const d = await fse.readFile(this._getResourcePath(image512x512));
+			const d = await readFile(this._getResourcePath(image512x512));
 			return Buffer.from(toPng(resizeLanczos(fromPng(d), 256, 256)));
 		}
 
 		// Resize 1024x1024 icon down if available.
 		// Do this in two half-res steps to minorly improve quality.
 		if (image1024x1024) {
-			const d = await fse.readFile(this._getResourcePath(image1024x1024));
+			const d = await readFile(this._getResourcePath(image1024x1024));
 			return Buffer.from(
 				toPng(
 					resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)

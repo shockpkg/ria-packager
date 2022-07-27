@@ -1,8 +1,8 @@
-import {join as pathJoin} from 'path';
+import {mkdir, utimes, writeFile} from 'fs/promises';
+import {dirname, join as pathJoin} from 'path';
 
 // @ts-ignore-file
 import * as puka from 'puka';
-import fse from 'fs-extra';
 
 import {IPackagerResourceOptions} from '../../packager';
 import {PackagerAdl} from '../adl';
@@ -93,15 +93,14 @@ export class PackagerAdlMac extends PackagerAdl {
 		// Write resource to file.
 		const mode = this._getFileMode(options.executable || false);
 		const dest = this._getResourcePath(destination);
-		await fse.outputFile(dest, data, {
-			mode
-		});
+		await mkdir(dirname(dest), {recursive: true});
+		await writeFile(dest, data, {mode});
 
 		// Optionally preserve mtime information.
 		if (this.preserveResourceMtime) {
 			const {mtime} = options;
 			if (mtime) {
-				await fse.utimes(dest, mtime, mtime);
+				await utimes(dest, mtime, mtime);
 			}
 		}
 	}
@@ -110,10 +109,15 @@ export class PackagerAdlMac extends PackagerAdl {
 	 * Write the run script.
 	 */
 	protected async _writeRunScript() {
-		const {appSdkPath, appResourcesPath, _metaResourceApplicationPath} =
-			this;
-		await fse.outputFile(
-			pathJoin(this.path, this.appRunPath),
+		const {
+			path,
+			appSdkPath,
+			appResourcesPath,
+			_metaResourceApplicationPath
+		} = this;
+		await mkdir(path, {recursive: true});
+		await writeFile(
+			pathJoin(path, this.appRunPath),
 			[
 				'#!/bin/sh',
 				'',

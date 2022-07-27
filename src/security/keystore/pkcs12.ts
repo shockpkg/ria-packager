@@ -1,4 +1,5 @@
-import fse from 'fs-extra';
+import {readFile} from 'fs/promises';
+
 import forge from 'node-forge';
 
 import {SecurityCertificateX509} from '../certificate/x509';
@@ -136,7 +137,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 * @param password The password if necessary.
 	 */
 	public async readFile(path: string, password: string | null = null) {
-		const data = await fse.readFile(path);
+		const data = await readFile(path);
 		this.readData(data, password);
 	}
 

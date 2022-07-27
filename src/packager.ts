@@ -1,6 +1,6 @@
+import {lstat, readFile, stat} from 'fs/promises';
 import {join as pathJoin, basename} from 'path';
 
-import fse from 'fs-extra';
 import {
 	ArchiveDir,
 	ArchiveHdi,
@@ -135,7 +135,7 @@ export abstract class Packager extends Object {
 	 * @param descriptorFile Application descriptor file.
 	 */
 	public async openFile(descriptorFile: string) {
-		const applicationData = await fse.readFile(descriptorFile);
+		const applicationData = await readFile(descriptorFile);
 		await this.open(applicationData);
 	}
 
@@ -226,7 +226,7 @@ export abstract class Packager extends Object {
 	) {
 		const opts = options || {};
 		const dest = destination === null ? source : destination;
-		const stat = await fse.lstat(source);
+		const stat = await lstat(source);
 
 		// Symlinks would only be allowed in a macOS native extension.
 		// Throw an error like the official packager does.
@@ -245,7 +245,7 @@ export abstract class Packager extends Object {
 			executable = !!(stat.mode & 0b001000000);
 		}
 
-		const data = await fse.readFile(source);
+		const data = await readFile(source);
 		await this.addResource(dest, data, {
 			executable,
 			mtime: opts.mtime || stat.mtime
@@ -539,8 +539,8 @@ export abstract class Packager extends Object {
 	 * @returns Archive instance.
 	 */
 	protected async _openArchive(path: string) {
-		const stat = await fse.stat(path);
-		if (stat.isDirectory()) {
+		const st = await stat(path);
+		if (st.isDirectory()) {
 			return new ArchiveDir(path);
 		}
 		const archive = createArchiveByFileExtension(path);

@@ -1,6 +1,6 @@
+import {readFile} from 'fs/promises';
 import {TranscodeEncoding} from 'buffer';
 
-import fse from 'fs-extra';
 import xmldom from 'xmldom';
 
 import {Packager} from '../packager';
@@ -447,7 +447,7 @@ export abstract class PackagerBundle extends Packager {
 			return data;
 		}
 		if (file) {
-			return fse.readFile(file);
+			return readFile(file);
 		}
 		return null;
 	}

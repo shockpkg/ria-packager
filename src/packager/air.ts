@@ -1,6 +1,7 @@
+import {createWriteStream} from 'fs';
+import {mkdir, open} from 'fs/promises';
+import {dirname} from 'path';
 import {Writable} from 'stream';
-
-import fse from 'fs-extra';
 
 import {Zipper, ZipperEntry} from '../zipper';
 import {IPackagerResourceOptions, Packager} from '../packager';
@@ -136,8 +137,9 @@ export abstract class PackagerAir extends Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected async _open(applicationData: Readonly<Buffer>) {
-		await fse.ensureFile(this.path);
-		this._zipper = this._createZipper(fse.createWriteStream(this.path));
+		const {path} = this;
+		await mkdir(dirname(path), {recursive: true});
+		this._zipper = this._createZipper(createWriteStream(path));
 	}
 
 	/**
@@ -171,11 +173,11 @@ export abstract class PackagerAir extends Packager {
 		const data = Buffer.concat([localBuffer, hashDigest]);
 
 		// Write that buffer at the offset.
-		const fd = await fse.open(this.path, 'r+');
+		const f = await open(this.path, 'r+');
 		try {
-			await fse.write(fd, data, 0, data.length, headerOffsetLocal);
+			await f.write(data, 0, data.length, headerOffsetLocal);
 		} finally {
-			await fse.close(fd);
+			await f.close();
 		}
 	}
 

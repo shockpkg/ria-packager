@@ -1,6 +1,6 @@
-import {join as pathJoin} from 'path';
+import {mkdir, readFile, utimes, writeFile} from 'fs/promises';
+import {dirname, join as pathJoin} from 'path';
 
-import fse from 'fs-extra';
 import {PathType} from '@shockpkg/archive-files';
 import {IconIcns} from '@shockpkg/icon-encoder';
 import {
@@ -605,15 +605,14 @@ export class PackagerBundleMac extends PackagerBundle {
 		// Write resource to file.
 		const mode = this._getFileMode(options.executable || false);
 		const dest = this._getResourcePath(destination);
-		await fse.outputFile(dest, data, {
-			mode
-		});
+		await mkdir(dirname(dest), {recursive: true});
+		await writeFile(dest, data, {mode});
 
 		// Optionally preserve mtime information.
 		if (this.preserveResourceMtime) {
 			const {mtime} = options;
 			if (mtime) {
-				await fse.utimes(dest, mtime, mtime);
+				await utimes(dest, mtime, mtime);
 			}
 		}
 	}
@@ -708,7 +707,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writePkgInfo() {
 		const data = await this.getPkgInfoDataOrDefault();
 		const path = pathJoin(this.path, this.appPkgInfoPath);
-		await fse.writeFile(path, data);
+		await writeFile(path, data);
 	}
 
 	/**
@@ -787,7 +786,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writeInfoPlist() {
 		const dom = await this._generateInfoPlist();
 		const path = pathJoin(this.path, this.appInfoPlistPath);
-		await fse.writeFile(
+		await writeFile(
 			path,
 			dom.toXml({
 				indentRoot: true,
@@ -845,10 +844,10 @@ export class PackagerBundleMac extends PackagerBundle {
 			}
 
 			// eslint-disable-next-line no-await-in-loop
-			const data = await fse.readFile(this._getResourcePath(path));
+			const data = await readFile(this._getResourcePath(path));
 			icns.addFromPng(data, types);
 		}
-		await fse.writeFile(path, icns.encode());
+		await writeFile(path, icns.encode());
 	}
 
 	/**
@@ -878,10 +877,10 @@ export class PackagerBundleMac extends PackagerBundle {
 			}
 
 			// eslint-disable-next-line no-await-in-loop
-			const data = await fse.readFile(this._getResourcePath(path));
+			const data = await readFile(this._getResourcePath(path));
 			icns.addFromPng(data, [type]);
 		}
-		await fse.writeFile(path, icns.encode());
+		await writeFile(path, icns.encode());
 	}
 
 	/**

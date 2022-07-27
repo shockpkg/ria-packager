@@ -1,6 +1,7 @@
+import {readdirSync} from 'fs';
+import {mkdir, rm} from 'fs/promises';
 import {join as pathJoin} from 'path';
 
-import fse from 'fs-extra';
 import {Manager} from '@shockpkg/core';
 
 import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
@@ -22,8 +23,7 @@ export function shouldTest(name: string) {
 
 export function listFormats() {
 	// eslint-disable-next-line no-sync
-	return fse
-		.readdirSync(pathJoin('spec', 'fixtures', 'HelloWorld'))
+	return readdirSync(pathJoin('spec', 'fixtures', 'HelloWorld'))
 		.filter(s => /^\d+\.\d+$/.test(s))
 		.map(s => s.split('.').map(s => +s))
 		.sort((a, b) => a[1] - b[1])
@@ -226,8 +226,8 @@ export async function getPackageFile(pkg: string) {
 
 export async function cleanPackageDir(...path: string[]) {
 	const dir = pathJoin(specPackagesPath, ...path);
-	await fse.remove(dir);
-	await fse.ensureDir(dir);
+	await rm(dir, {recursive: true, force: true});
+	await mkdir(dir, {recursive: true});
 	return dir;
 }
 
