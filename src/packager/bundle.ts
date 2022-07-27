@@ -457,24 +457,17 @@ export abstract class PackagerBundle extends Packager {
 	 *
 	 * @param data Data value.
 	 * @param file File path.
-	 * @param newline Newline string.
 	 * @param encoding String encoding.
 	 * @returns Data buffer.
 	 */
 	protected async _dataFromValueOrFile(
-		data: Readonly<string[]> | string | Readonly<Buffer> | null,
+		data: string | Readonly<Buffer> | null,
 		file: string | null,
-		newline: string | null,
 		encoding: TranscodeEncoding | null
 	) {
 		let str: string | null = null;
 		if (typeof data === 'string') {
 			str = data;
-		} else if (Array.isArray(data as string[])) {
-			if (newline === null) {
-				throw new Error('New line delimiter required');
-			}
-			str = (data as string[]).join(newline);
 		} else {
 			return this._dataFromBufferOrFile(data as Buffer, file);
 		}

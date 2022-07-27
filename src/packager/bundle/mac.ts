@@ -47,11 +47,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * Info.plist data.
 	 */
-	public infoPlistData:
-		| string
-		| Readonly<string[]>
-		| Readonly<Buffer>
-		| null = null;
+	public infoPlistData: string | Readonly<Buffer> | null = null;
 
 	/**
 	 * PkgInfo file.
@@ -245,7 +241,6 @@ export class PackagerBundleMac extends PackagerBundle {
 		return this._dataFromValueOrFile(
 			this.infoPlistData,
 			this.infoPlistFile,
-			'\n',
 			'utf8'
 		);
 	}
@@ -284,7 +279,6 @@ export class PackagerBundleMac extends PackagerBundle {
 		return this._dataFromValueOrFile(
 			this.pkgInfoData,
 			this.pkgInfoFile,
-			null,
 			'ascii'
 		);
 	}
