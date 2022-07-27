@@ -484,8 +484,8 @@ export class PackagerBundleWindows extends PackagerBundle {
 		const parts = version.split(/[.,]/);
 		const numbers = [];
 		for (const part of parts) {
-			const n = /^\d+$/.test(part) ? +part : NaN;
-			if (!(n >= 0 && n <= 0xffff)) {
+			const n = /^\d+$/.test(part) ? +part : -1;
+			if (n < 0 || n > 0xffff) {
 				return null;
 			}
 			numbers.push(n);
