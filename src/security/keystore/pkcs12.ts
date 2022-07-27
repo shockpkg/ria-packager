@@ -120,7 +120,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 			: null;
 
 		const keyPrivate = keyPrivates.length
-			? this._SecurityKeyPrivateRsa(keyPrivates[0])
+			? this._createSecurityKeyPrivateRsa(keyPrivates[0])
 			: null;
 
 		this._certificate = certificate;
@@ -158,7 +158,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 * @param keyPrivate Force private key.
 	 * @returns New KeyPrivateRsa.
 	 */
-	protected _SecurityKeyPrivateRsa(
+	protected _createSecurityKeyPrivateRsa(
 		keyPrivate: Readonly<forge.pki.PrivateKey>
 	) {
 		const r = new SecurityKeyPrivateRsa();
