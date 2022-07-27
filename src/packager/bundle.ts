@@ -1,4 +1,4 @@
-import {DOMParser} from 'xmldom';
+import {DOMParser} from '@xmldom/xmldom';
 
 import {Packager} from '../packager';
 
