@@ -511,7 +511,8 @@ export class ZipperEntry {
 	 * @returns CRC32 hash.
 	 */
 	protected _bufferCrc32(data: Readonly<Buffer>) {
-		return bufferCrc32.unsigned(data as Buffer) as number;
+		// Cast to number to ensure no dependency on library types.
+		return bufferCrc32.unsigned(data as Buffer) as unknown as number;
 	}
 
 	/**
