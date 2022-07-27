@@ -1,3 +1,6 @@
+// @ts-ignore-file
+import {quoteForCmd, quoteForSh} from 'puka';
+
 /**
  * Default value if value is undefined.
  *
@@ -100,4 +103,24 @@ export function pathRelativeBaseMatch(
 export function bufferToArrayBuffer(buffer: Readonly<Buffer>) {
 	const {byteOffset, byteLength} = buffer;
 	return buffer.buffer.slice(byteOffset, byteOffset + byteLength);
+}
+
+/**
+ * Quote string for SH.
+ *
+ * @param str String to be quoted.
+ * @returns Quoted string.
+ */
+export function quoteSh(str: string) {
+	return (quoteForSh as (str: string) => string)(str);
+}
+
+/**
+ * Quote string for CMD.
+ *
+ * @param str String to be quoted.
+ * @returns Quoted string.
+ */
+export function quoteCmd(str: string) {
+	return (quoteForCmd as (str: string) => string)(str);
 }

@@ -1,7 +1,7 @@
 import {readFile} from 'fs/promises';
 import {TranscodeEncoding} from 'buffer';
 
-import xmldom from 'xmldom';
+import {DOMParser} from 'xmldom';
 
 import {Packager} from '../packager';
 
@@ -175,7 +175,7 @@ export abstract class PackagerBundle extends Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected _applicationInfoInit(applicationData: Readonly<Buffer>) {
-		const doc = new xmldom.DOMParser().parseFromString(
+		const doc = new DOMParser().parseFromString(
 			applicationData.toString('utf8'),
 			'text/xml'
 		);

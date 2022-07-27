@@ -3,8 +3,6 @@ import forge from 'node-forge';
 
 import {NAME, VERSION} from '../meta';
 
-const {asn1, pki} = forge;
-
 const userAgent = `${NAME}/${VERSION}`;
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -196,29 +194,34 @@ export class SecurityTimestamper extends Object {
 		const certReq = true;
 
 		const hashAlgoDef = forge.asn1.create(
-			asn1.Class.UNIVERSAL,
-			asn1.Type.SEQUENCE,
+			forge.asn1.Class.UNIVERSAL,
+			forge.asn1.Type.SEQUENCE,
 			true,
 			[
-				asn1.create(
-					asn1.Class.UNIVERSAL,
-					asn1.Type.OID,
+				forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.OID,
 					false,
-					asn1.oidToDer(pki.oids.sha1).getBytes()
+					forge.asn1.oidToDer(forge.pki.oids.sha1).getBytes()
 				),
-				asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, '')
+				forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.NULL,
+					false,
+					''
+				)
 			]
 		);
 
-		const messageImprintDef = asn1.create(
-			asn1.Class.UNIVERSAL,
-			asn1.Type.SEQUENCE,
+		const messageImprintDef = forge.asn1.create(
+			forge.asn1.Class.UNIVERSAL,
+			forge.asn1.Type.SEQUENCE,
 			true,
 			[
 				hashAlgoDef,
-				asn1.create(
-					asn1.Class.UNIVERSAL,
-					asn1.Type.OCTETSTRING,
+				forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.OCTETSTRING,
 					false,
 					hashedMessage
 				)
@@ -229,7 +232,12 @@ export class SecurityTimestamper extends Object {
 		// ie: reqPolicy = new forge.util.DataBuffer(Buffer.from('test'));
 		const reqPolicy = null;
 		const asn1ReqPolicy = reqPolicy
-			? asn1.create(asn1.Class.UNIVERSAL, asn1.Type.OID, false, reqPolicy)
+			? forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.OID,
+					false,
+					reqPolicy
+			  )
 			: null;
 
 		// Always null.
@@ -241,23 +249,23 @@ export class SecurityTimestamper extends Object {
 		// const asn1Extn = extensions ? extensions : null;
 		const asn1Extn = null;
 
-		const tsaReqDef = asn1.create(
-			asn1.Class.UNIVERSAL,
-			asn1.Type.SEQUENCE,
+		const tsaReqDef = forge.asn1.create(
+			forge.asn1.Class.UNIVERSAL,
+			forge.asn1.Type.SEQUENCE,
 			true,
 			[
-				asn1.create(
-					asn1.Class.UNIVERSAL,
-					asn1.Type.INTEGER,
+				forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.INTEGER,
 					false,
 					String.fromCharCode(1)
 				),
 				messageImprintDef,
 				asn1ReqPolicy,
 				nonceDER,
-				asn1.create(
-					asn1.Class.UNIVERSAL,
-					asn1.Type.BOOLEAN,
+				forge.asn1.create(
+					forge.asn1.Class.UNIVERSAL,
+					forge.asn1.Type.BOOLEAN,
 					false,
 					String.fromCharCode(certReq ? 0xff : 0)
 				),
@@ -265,7 +273,7 @@ export class SecurityTimestamper extends Object {
 			].filter(Boolean) as forge.asn1.Asn1[]
 		);
 
-		return Buffer.from(asn1.toDer(tsaReqDef).toHex(), 'hex');
+		return Buffer.from(forge.asn1.toDer(tsaReqDef).toHex(), 'hex');
 	}
 
 	/**
@@ -275,42 +283,42 @@ export class SecurityTimestamper extends Object {
 	 * @returns Decoded response.
 	 */
 	protected _decodeResponse(response: Readonly<Buffer>) {
-		const object = asn1.fromDer(
+		const object = forge.asn1.fromDer(
 			forge.util.decode64(response.toString('base64'))
 		);
 
 		const validator = {
 			name: 'root',
-			tagClass: asn1.Class.UNIVERSAL,
-			type: asn1.Type.SEQUENCE,
+			tagClass: forge.asn1.Class.UNIVERSAL,
+			type: forge.asn1.Type.SEQUENCE,
 			constructed: true,
 			value: [
 				{
 					name: 'root.statusInfo',
-					tagClass: asn1.Class.UNIVERSAL,
-					type: asn1.Type.SEQUENCE,
+					tagClass: forge.asn1.Class.UNIVERSAL,
+					type: forge.asn1.Type.SEQUENCE,
 					constructed: true,
 					value: [
 						{
 							name: 'root.statusInfo.pkiStatus',
-							tagClass: asn1.Class.UNIVERSAL,
-							type: asn1.Type.INTEGER,
+							tagClass: forge.asn1.Class.UNIVERSAL,
+							type: forge.asn1.Type.INTEGER,
 							constructed: false,
 							captureAsn1: 'root.statusInfo.pkiStatus',
 							optional: true
 						},
 						{
 							name: 'root.statusInfo.pkiFreeText',
-							tagClass: asn1.Class.UNIVERSAL,
-							type: asn1.Type.UTF8,
+							tagClass: forge.asn1.Class.UNIVERSAL,
+							type: forge.asn1.Type.UTF8,
 							constructed: false,
 							captureAsn1: 'root.statusInfo.pkiFreeText',
 							optional: true
 						},
 						{
 							name: 'root.statusInfo.pkiFailureInfo',
-							tagClass: asn1.Class.UNIVERSAL,
-							type: asn1.Type.BITSTRING,
+							tagClass: forge.asn1.Class.UNIVERSAL,
+							type: forge.asn1.Type.BITSTRING,
 							constructed: false,
 							captureAsn1: 'root.statusInfo.pkiFailureInfo',
 							optional: true
@@ -319,8 +327,8 @@ export class SecurityTimestamper extends Object {
 				},
 				{
 					name: 'root.tst',
-					tagClass: asn1.Class.UNIVERSAL,
-					type: asn1.Type.SEQUENCE,
+					tagClass: forge.asn1.Class.UNIVERSAL,
+					type: forge.asn1.Type.SEQUENCE,
 					constructed: true,
 					captureAsn1: 'root.tst',
 					optional: true
@@ -332,7 +340,7 @@ export class SecurityTimestamper extends Object {
 		const errors: string[] = [];
 
 		const success = (
-			asn1 as unknown as {
+			forge.asn1 as unknown as {
 				validate: (
 					a: unknown,
 					b: unknown,
@@ -369,6 +377,6 @@ export class SecurityTimestamper extends Object {
 			throw new Error('Missing PKI TSTInfo');
 		}
 
-		return Buffer.from(asn1.toDer(tst).toHex(), 'hex');
+		return Buffer.from(forge.asn1.toDer(tst).toHex(), 'hex');
 	}
 }

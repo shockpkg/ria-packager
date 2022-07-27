@@ -1,16 +1,9 @@
 import {mkdir, utimes, writeFile} from 'fs/promises';
 import {dirname, join as pathJoin} from 'path';
 
-// @ts-ignore-file
-import * as puka from 'puka';
-
+import {quoteCmd} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {PackagerAdl} from '../adl';
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const quoteForCmd = (puka.quoteForCmd || puka.default.quoteForCmd) as (
-	s: string
-) => string;
 
 /**
  * Convert forward slashes to back slashes.
@@ -143,7 +136,7 @@ export class PackagerAdlWindows extends PackagerAdl {
 						...this._generateOptionArguments(),
 						bs(metaPath),
 						bs(appResourcesPath)
-					].map(quoteForCmd),
+					].map(quoteCmd),
 					'--',
 					'%*'
 				].join(' '),

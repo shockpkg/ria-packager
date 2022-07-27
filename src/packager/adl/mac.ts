@@ -1,16 +1,9 @@
 import {mkdir, utimes, writeFile} from 'fs/promises';
 import {dirname, join as pathJoin} from 'path';
 
-// @ts-ignore-file
-import * as puka from 'puka';
-
 import {IPackagerResourceOptions} from '../../packager';
+import {quoteSh} from '../../util';
 import {PackagerAdl} from '../adl';
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const quoteForSh = (puka.quoteForSh || puka.default.quoteForSh) as (
-	s: string
-) => string;
 
 /**
  * PackagerAdlMac object.
@@ -128,7 +121,7 @@ export class PackagerAdlMac extends PackagerAdl {
 						...this._generateOptionArguments(),
 						`${appResourcesPath}/${_metaResourceApplicationPath}`,
 						appResourcesPath
-					].map(quoteForSh),
+					].map(quoteSh),
 					'--',
 					'"$@"'
 				].join(' '),

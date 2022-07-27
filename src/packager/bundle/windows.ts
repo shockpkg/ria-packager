@@ -2,10 +2,10 @@ import {copyFile, mkdir, readFile, stat, utimes, writeFile} from 'fs/promises';
 import {dirname, join as pathJoin} from 'path';
 
 import {signatureSet} from 'portable-executable-signature';
-import * as resedit from 'resedit';
-import * as rgbaImageCreateImage from '@rgba-image/create-image';
-import * as rgbaImagePng from '@rgba-image/png';
-import * as rgbaImageLanczos from '@rgba-image/lanczos';
+import {NtExecutable, NtExecutableResource, Resource, Data} from 'resedit';
+import {createImage} from '@rgba-image/create-image';
+import {fromPng, toPng} from '@rgba-image/png';
+import {lanczos} from '@rgba-image/lanczos';
 import {PathType} from '@shockpkg/archive-files';
 import {IconIco} from '@shockpkg/icon-encoder';
 
@@ -16,36 +16,6 @@ import {
 } from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
-
-const ResEditNtExecutable =
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	resedit.NtExecutable || (resedit as any).default.NtExecutable;
-
-const ResEditNtExecutableResource =
-	resedit.NtExecutableResource ||
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	(resedit as any).default.NtExecutableResource;
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const ResEditResource = resedit.Resource || (resedit as any).default.Resource;
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const ResEditData = resedit.Data || (resedit as any).default.Data;
-
-const createImage =
-	rgbaImageCreateImage.createImage ||
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	(rgbaImageCreateImage as any).default.createImage;
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const fromPng = rgbaImagePng.fromPng || (rgbaImagePng as any).default.fromPng;
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const toPng = rgbaImagePng.toPng || (rgbaImagePng as any).default.toPng;
-
-const lanczos =
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	rgbaImageLanczos.lanczos || (rgbaImageLanczos as any).default.lanczos;
 
 /**
  * Helper function to resize images using lanczos algorithm.
@@ -387,7 +357,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Read EXE file and parse resources.
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
-		const exe = ResEditNtExecutable.from(
+		const exe = NtExecutable.from(
 			signatureSet(
 				bufferToArrayBuffer(await readFile(appBinaryPathFull)),
 				null,
@@ -395,13 +365,13 @@ export class PackagerBundleWindows extends PackagerBundle {
 				true
 			)
 		);
-		const res = ResEditNtExecutableResource.from(exe);
+		const res = NtExecutableResource.from(exe);
 
 		// Check that icons and version info not present.
-		if (ResEditResource.IconGroupEntry.fromEntries(res.entries).length) {
+		if (Resource.IconGroupEntry.fromEntries(res.entries).length) {
 			throw new Error('Executable resources contains unexpected icons');
 		}
-		if (ResEditResource.VersionInfo.fromEntries(res.entries).length) {
+		if (Resource.VersionInfo.fromEntries(res.entries).length) {
 			throw new Error(
 				'Executable resources contains unexpected version info'
 			);
@@ -415,15 +385,13 @@ export class PackagerBundleWindows extends PackagerBundle {
 		let resIdsNext = 100;
 		for (const iconData of icons) {
 			// Parse ico.
-			const ico = ResEditData.IconFile.from(
-				bufferToArrayBuffer(iconData)
-			);
+			const ico = Data.IconFile.from(bufferToArrayBuffer(iconData));
 
 			// Get the next icon group ID.
 			const iconGroupId = resIdsNext++;
 
 			// Add this group to the list.
-			ResEditResource.IconGroupEntry.replaceIconsForResource(
+			Resource.IconGroupEntry.replaceIconsForResource(
 				res.entries,
 				iconGroupId,
 				0,
@@ -445,7 +413,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// Read icon group entry.
-			const [iconGroup] = ResEditResource.IconGroupEntry.fromEntries([
+			const [iconGroup] = Resource.IconGroupEntry.fromEntries([
 				entryInfo.resource
 			]);
 
@@ -465,7 +433,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Add the version info if any.
 		if (versionStrings) {
-			const versionInfo = ResEditResource.VersionInfo.createEmpty();
+			const versionInfo = Resource.VersionInfo.createEmpty();
 			versionInfo.setStringValues(
 				{
 					lang,

@@ -6,9 +6,6 @@ import {SecurityCertificateX509} from '../certificate/x509';
 import {SecurityKeyPrivateRsa} from '../key/private/rsa';
 import {SecurityKeystore} from '../keystore';
 
-const forgeOidCertBag = forge.pki.oids.certBag;
-const forgeOidPkcs8ShroudedKeyBag = forge.pki.oids.pkcs8ShroudedKeyBag;
-
 /**
  * SecurityKeystorePkcs12 object.
  */
@@ -84,7 +81,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 		for (const safeContent of p12.safeContents) {
 			for (const safeBag of safeContent.safeBags) {
 				switch (safeBag.type) {
-					case forgeOidCertBag: {
+					case forge.pki.oids.certBag: {
 						const {cert} = safeBag;
 						if (!cert) {
 							throw new Error('Internal error');
@@ -92,7 +89,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 						certificates.push(cert);
 						break;
 					}
-					case forgeOidPkcs8ShroudedKeyBag: {
+					case forge.pki.oids.pkcs8ShroudedKeyBag: {
 						const {key} = safeBag;
 						if (!key) {
 							throw new Error('Internal error');
