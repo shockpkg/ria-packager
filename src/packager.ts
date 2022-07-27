@@ -33,7 +33,7 @@ export interface IPackagerResourceOptions {
 /**
  * Packager object.
  */
-export abstract class Packager extends Object {
+export abstract class Packager {
 	/**
 	 * Make a debug build.
 	 */
@@ -85,8 +85,6 @@ export abstract class Packager extends Object {
 	 * @param path Output path.
 	 */
 	constructor(path: string) {
-		super();
-
 		this._hasher = this._createHasher();
 
 		this.path = path;

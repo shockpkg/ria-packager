@@ -1,13 +1,11 @@
 /**
  * SecurityCertificate object.
  */
-export abstract class SecurityCertificate extends Object {
+export abstract class SecurityCertificate {
 	/**
 	 * SecurityCertificate constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Reset the internal state.

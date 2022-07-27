@@ -102,7 +102,7 @@ const templates: [string, string][] = [
 /**
  * Signature object.
  */
-export class Signature extends Object {
+export class Signature {
 	/**
 	 * Certificate.
 	 */
@@ -166,9 +166,7 @@ export class Signature extends Object {
 	/**
 	 * Signature constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Reset options to defaults.

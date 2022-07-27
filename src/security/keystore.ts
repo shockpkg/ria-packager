@@ -4,13 +4,11 @@ import {SecurityKeyPrivate} from './key/private';
 /**
  * SecurityKeystore object.
  */
-export abstract class SecurityKeystore extends Object {
+export abstract class SecurityKeystore {
 	/**
 	 * SecurityKeystore constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Reset the internal state.

@@ -1,13 +1,11 @@
 /**
  * Hasher object.
  */
-export abstract class Hasher extends Object {
+export abstract class Hasher {
 	/**
 	 * Hasher constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * The number of bytes in the hash digest.

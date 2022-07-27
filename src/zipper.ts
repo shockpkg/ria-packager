@@ -34,7 +34,7 @@ function dateToDosTime(date: Readonly<Date> | number) {
 /**
  * Zipper Entry Extra Field object.
  */
-export class ZipperEntryExtraField extends Object {
+export class ZipperEntryExtraField {
 	/**
 	 * Type ID.
 	 */
@@ -48,9 +48,7 @@ export class ZipperEntryExtraField extends Object {
 	/**
 	 * Zipper Entry Extra Field constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Encode type and data as buffer.
@@ -181,7 +179,7 @@ export class ZipperEntryExtraField extends Object {
 /**
  * Zipper Entry object.
  */
-export class ZipperEntry extends Object {
+export class ZipperEntry {
 	/**
 	 * Tag signature, local header.
 	 */
@@ -290,9 +288,7 @@ export class ZipperEntry extends Object {
 	/**
 	 * Zipper Entry constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Create new ZipperEntryExtraField object.
@@ -540,7 +536,7 @@ export class ZipperEntry extends Object {
 /**
  * Zipper, a low-level ZIP file writter.
  */
-export class Zipper extends Object {
+export class Zipper {
 	/**
 	 * Tag signature.
 	 */
@@ -572,8 +568,6 @@ export class Zipper extends Object {
 	 * @param output Writable stream.
 	 */
 	constructor(output: Writable) {
-		super();
-
 		this._output = output;
 	}
 

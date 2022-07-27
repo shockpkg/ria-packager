@@ -57,7 +57,7 @@ export type SecurityTimestamperRequest = (
 /**
  * SecurityTimestamper object.
  */
-export class SecurityTimestamper extends Object {
+export class SecurityTimestamper {
 	/**
 	 * The timestamp server URL.
 	 */
@@ -69,8 +69,6 @@ export class SecurityTimestamper extends Object {
 	 * @param url The timestamp server URL.
 	 */
 	constructor(url: string) {
-		super();
-
 		this.url = url;
 	}
 

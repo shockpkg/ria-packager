@@ -1,13 +1,11 @@
 /**
  * SecurityKey object.
  */
-export abstract class SecurityKey extends Object {
+export abstract class SecurityKey {
 	/**
 	 * SecurityKey constructor.
 	 */
-	constructor() {
-		super();
-	}
+	constructor() {}
 
 	/**
 	 * Reset the internal state.
