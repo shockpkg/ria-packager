@@ -1,5 +1,3 @@
-import forge from 'node-forge';
-
 import {SecurityCertificate} from '../certificate';
 
 /**
@@ -7,46 +5,19 @@ import {SecurityCertificate} from '../certificate';
  */
 export class SecurityCertificateX509 extends SecurityCertificate {
 	/**
-	 * Forge certificate.
+	 * X509 certificate in PEM format.
 	 */
-	protected _forgeCertificate: Readonly<forge.pki.Certificate> | null = null;
+	protected readonly _certificate;
 
 	/**
 	 * SecurityCertificateX509 constructor.
+	 *
+	 * @param certificate X509 certificate in PEM format.
 	 */
-	constructor() {
+	constructor(certificate: string) {
 		super();
-	}
 
-	/**
-	 * Reset the internal state.
-	 */
-	public reset() {
-		this._forgeCertificate = null;
-	}
-
-	/**
-	 * Read a forge certificate.
-	 *
-	 * @param certificate Forge certificate.
-	 */
-	public readForgeCertificate(certificate: Readonly<forge.pki.Certificate>) {
-		this.reset();
-
-		this._forgeCertificate = certificate;
-	}
-
-	/**
-	 * Encode as PEM string.
-	 *
-	 * @returns PEM string.
-	 */
-	public encodePem() {
-		const forgeCertificate = this._forgeCertificate;
-		if (!forgeCertificate) {
-			throw new Error('Certificate not initialized');
-		}
-		return forge.pki.certificateToPem(forgeCertificate);
+		this._certificate = certificate;
 	}
 
 	/**
@@ -56,7 +27,7 @@ export class SecurityCertificateX509 extends SecurityCertificate {
 	 */
 	public encodePemData() {
 		// Remove all the non-base64 lines, then decode.
-		const base64 = this.encodePem()
+		const base64 = this._certificate
 			.split(/[\r\n]+/)
 			.map(s => s.trim())
 			.filter(s => !s.startsWith('-'))

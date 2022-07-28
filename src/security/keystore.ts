@@ -27,5 +27,5 @@ export abstract class SecurityKeystore {
 	 *
 	 * @returns Private key instance.
 	 */
-	public abstract getKeyPrivate(): SecurityKeyPrivate;
+	public abstract getPrivateKey(): SecurityKeyPrivate;
 }

@@ -121,7 +121,7 @@ export abstract class Packager {
 
 			const keystore = this._getKeystore();
 			this._signature.certificate = keystore.getCertificate();
-			this._signature.keyPrivate = keystore.getKeyPrivate();
+			this._signature.privateKey = keystore.getPrivateKey();
 		}
 
 		await this._addMetaResourcesStart(applicationData);

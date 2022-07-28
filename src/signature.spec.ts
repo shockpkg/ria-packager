@@ -77,7 +77,7 @@ describe('signature', () => {
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
-			signature.keyPrivate = keystore.getKeyPrivate();
+			signature.privateKey = keystore.getPrivateKey();
 
 			for (const [name, data] of files) {
 				// eslint-disable-next-line no-await-in-loop
@@ -98,7 +98,7 @@ describe('signature', () => {
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
-			signature.keyPrivate = keystore.getKeyPrivate();
+			signature.privateKey = keystore.getPrivateKey();
 
 			signature.timestampUrl = timestampUrl;
 
@@ -122,7 +122,7 @@ describe('signature', () => {
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
-			signature.keyPrivate = keystore.getKeyPrivate();
+			signature.privateKey = keystore.getPrivateKey();
 
 			signature.timestampUrl = timestampUrl;
 
@@ -148,7 +148,7 @@ describe('signature', () => {
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
-			signature.keyPrivate = keystore.getKeyPrivate();
+			signature.privateKey = keystore.getPrivateKey();
 
 			signature.timestampUrl = timestampUrl;
 

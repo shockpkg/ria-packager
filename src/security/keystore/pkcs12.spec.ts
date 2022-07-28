@@ -12,7 +12,7 @@ describe('security/keystores/pkcs12', () => {
 			await keystore.readFile(file, pass);
 
 			expect(keystore.getCertificate()).toBeTruthy();
-			expect(keystore.getKeyPrivate()).toBeTruthy();
+			expect(keystore.getPrivateKey()).toBeTruthy();
 		});
 
 		it('reset', async () => {
@@ -21,7 +21,7 @@ describe('security/keystores/pkcs12', () => {
 			keystore.reset();
 
 			expect(() => keystore.getCertificate()).toThrow();
-			expect(() => keystore.getKeyPrivate()).toThrow();
+			expect(() => keystore.getPrivateKey()).toThrow();
 		});
 	});
 });

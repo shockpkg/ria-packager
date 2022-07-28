@@ -7,33 +7,19 @@ import {SecurityKeyPrivate} from '../private';
  */
 export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	/**
-	 * Forge private key.
+	 * RSA private key in PEM format.
 	 */
-	protected _forgePrivateKey: Readonly<forge.pki.PrivateKey> | null = null;
+	protected readonly _privateKey: string;
 
 	/**
 	 * SecurityKeyPrivateRsa constructor.
-	 */
-	constructor() {
-		super();
-	}
-
-	/**
-	 * Reset the internal state.
-	 */
-	public reset() {
-		this._forgePrivateKey = null;
-	}
-
-	/**
-	 * Read a forge private key.
 	 *
-	 * @param privateKey Forge private key.
+	 * @param privateKey RSA private key in PEM format.
 	 */
-	public readForgeKeyPrivate(privateKey: Readonly<forge.pki.PrivateKey>) {
-		this.reset();
+	constructor(privateKey: string) {
+		super();
 
-		this._forgePrivateKey = privateKey;
+		this._privateKey = privateKey;
 	}
 
 	/**
@@ -44,11 +30,7 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	 * @returns The signature.
 	 */
 	public sign(data: Readonly<Buffer>, digest: string) {
-		const privateKey = this._forgePrivateKey;
-		if (!privateKey) {
-			throw new Error('Private key not initialized');
-		}
-
+		const privateKey = forge.pki.privateKeyFromPem(this._privateKey);
 		digest = digest.toLowerCase();
 		if (digest !== 'sha1') {
 			throw new Error(`Unsupported digest algorithm: ${digest}`);

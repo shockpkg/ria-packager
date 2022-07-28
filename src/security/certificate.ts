@@ -8,11 +8,6 @@ export abstract class SecurityCertificate {
 	constructor() {}
 
 	/**
-	 * Reset the internal state.
-	 */
-	public abstract reset(): void;
-
-	/**
 	 * Encode for certchain data.
 	 *
 	 * @returns Certchain data.

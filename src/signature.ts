@@ -111,7 +111,7 @@ export class Signature {
 	/**
 	 * Private key.
 	 */
-	public keyPrivate: SecurityKeyPrivate | null = null;
+	public privateKey: SecurityKeyPrivate | null = null;
 
 	/**
 	 * Timestamp URL.
@@ -173,7 +173,7 @@ export class Signature {
 	 */
 	public defaults() {
 		this.certificate = null;
-		this.keyPrivate = null;
+		this.privateKey = null;
 		this.timestampUrl = null;
 		this.timestampUriSignature = false;
 		this.timestampUriPackage = true;
@@ -245,7 +245,7 @@ export class Signature {
 			throw new Error('Must call after: digest');
 		}
 
-		const {keyPrivate} = this;
+		const {privateKey: keyPrivate} = this;
 		if (!keyPrivate) {
 			throw new Error('Private key not set');
 		}

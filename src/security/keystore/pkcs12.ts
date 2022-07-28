@@ -18,7 +18,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	/**
 	 * Private key.
 	 */
-	protected _keyPrivate: SecurityKeyPrivateRsa | null = null;
+	protected _privateKey: SecurityKeyPrivateRsa | null = null;
 
 	/**
 	 * SecurityKeystorePkcs12 constructor.
@@ -32,7 +32,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 */
 	public reset() {
 		this._certificate = null;
-		this._keyPrivate = null;
+		this._privateKey = null;
 	}
 
 	/**
@@ -53,8 +53,8 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 *
 	 * @returns Private key instance.
 	 */
-	public getKeyPrivate() {
-		const r = this._keyPrivate;
+	public getPrivateKey() {
+		const r = this._privateKey;
 		if (!r) {
 			throw new Error('No private key');
 		}
@@ -77,7 +77,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 			: forge.pkcs12.pkcs12FromAsn1(asn1, true);
 
 		const certificates: forge.pki.Certificate[] = [];
-		const keyPrivates: forge.pki.PrivateKey[] = [];
+		const privateKeys: forge.pki.PrivateKey[] = [];
 		for (const safeContent of p12.safeContents) {
 			for (const safeBag of safeContent.safeBags) {
 				switch (safeBag.type) {
@@ -94,7 +94,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 						if (!key) {
 							throw new Error('Internal error');
 						}
-						keyPrivates.push(key);
+						privateKeys.push(key);
 						break;
 					}
 					default: {
@@ -109,22 +109,26 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 				`Found multiple certificates: ${certificates.length}`
 			);
 		}
-		if (keyPrivates.length > 1) {
+		if (privateKeys.length > 1) {
 			throw new Error(
-				`Found multiple private keys: ${keyPrivates.length}`
+				`Found multiple private keys: ${privateKeys.length}`
 			);
 		}
 
 		const certificate = certificates.length
-			? this._createCertificateX509(certificates[0])
+			? this._createCertificateX509(
+					forge.pki.certificateToPem(certificates[0])
+			  )
 			: null;
 
-		const keyPrivate = keyPrivates.length
-			? this._createSecurityKeyPrivateRsa(keyPrivates[0])
+		const privateKey = privateKeys.length
+			? this._createSecurityKeyPrivateRsa(
+					forge.pki.privateKeyToPem(privateKeys[0])
+			  )
 			: null;
 
 		this._certificate = certificate;
-		this._keyPrivate = keyPrivate;
+		this._privateKey = privateKey;
 	}
 
 	/**
@@ -141,28 +145,20 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	/**
 	 * Create CertificateX509.
 	 *
-	 * @param certificate Force certificate.
+	 * @param certificate X509 certificate in PEM format.
 	 * @returns New CertificateX509.
 	 */
-	protected _createCertificateX509(
-		certificate: Readonly<forge.pki.Certificate>
-	) {
-		const r = new SecurityCertificateX509();
-		r.readForgeCertificate(certificate);
-		return r;
+	protected _createCertificateX509(certificate: string) {
+		return new SecurityCertificateX509(certificate);
 	}
 
 	/**
 	 * Create KeyPrivateRsa.
 	 *
-	 * @param keyPrivate Force private key.
+	 * @param privateKey RSA private key in PEM format.
 	 * @returns New KeyPrivateRsa.
 	 */
-	protected _createSecurityKeyPrivateRsa(
-		keyPrivate: Readonly<forge.pki.PrivateKey>
-	) {
-		const r = new SecurityKeyPrivateRsa();
-		r.readForgeKeyPrivate(keyPrivate);
-		return r;
+	protected _createSecurityKeyPrivateRsa(privateKey: string) {
+		return new SecurityKeyPrivateRsa(privateKey);
 	}
 }
