@@ -3,57 +3,6 @@ import forge from 'node-forge';
 
 import {NAME, VERSION} from '../meta';
 
-const userAgent = `${NAME}/${VERSION}`;
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SecurityTimestamperRequestOptions = {
-	//
-	/**
-	 * URL string.
-	 */
-	url: string;
-
-	/**
-	 * Request method.
-	 */
-	method?: string;
-
-	/**
-	 * Request headers.
-	 */
-	headers?: {[key: string]: string};
-
-	/**
-	 * Request body.
-	 */
-	body?: any;
-
-	/**
-	 * Body encoding used for callback functions.
-	 */
-	encoding?: string | null;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SecurityTimestamperRequestResponse = {
-	//
-	/**
-	 * Status code.
-	 */
-	statusCode: number;
-};
-
-export type SecurityTimestamperRequestCallback = (
-	error: Error | null,
-	response: SecurityTimestamperRequestResponse,
-	body: any
-) => void;
-
-export type SecurityTimestamperRequest = (
-	obj: SecurityTimestamperRequestOptions,
-	cb: SecurityTimestamperRequestCallback
-) => any;
-
 /**
  * SecurityTimestamper object.
  */
@@ -62,6 +11,14 @@ export class SecurityTimestamper {
 	 * The timestamp server URL.
 	 */
 	public url: string;
+
+	/**
+	 * The default headers for HTTP requests.
+	 */
+	public headers: {[header: string]: string} = {
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		'User-Agent': `${NAME}/${VERSION}`
+	};
 
 	/**
 	 * SecurityTimestamper constructor.
@@ -86,92 +43,22 @@ export class SecurityTimestamper {
 	}
 
 	/**
-	 * Create a request object.
-	 *
-	 * @returns Request object.
-	 */
-	protected _createRequest(): SecurityTimestamperRequest {
-		return (
-			options: SecurityTimestamperRequestOptions,
-			cb: SecurityTimestamperRequestCallback
-		) => {
-			let response: SecurityTimestamperRequestResponse = {
-				statusCode: 0
-			};
-			const {encoding} = options;
-			(async () => {
-				const res = await fetch(options.url, {
-					method: options.method || 'GET',
-					headers: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
-						'User-Agent': userAgent,
-						...(options.headers || {})
-					},
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-					body: options.body || null
-				});
-				response = {
-					statusCode: res.status
-				};
-				return res.buffer();
-			})().then(
-				data => {
-					cb(
-						null,
-						response,
-						encoding === null
-							? data
-							: data.toString(encoding as BufferEncoding)
-					);
-				},
-				err => {
-					cb(err as Error, response, null);
-				}
-			);
-		};
-	}
-
-	/**
 	 * Send message request and return response or error on failure.
 	 *
 	 * @param message Encoded message.
 	 * @returns Encoded response.
 	 */
 	protected async _sendRequest(message: Readonly<Buffer>) {
-		const {url} = this;
-		const req = this._createRequest();
-
-		const [response, body] = await new Promise<
-			[SecurityTimestamperRequestResponse, Buffer]
-		>((resolve, reject) => {
-			req(
-				{
-					method: 'POST',
-					url,
-					headers: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
-						'Content-Type': 'application/timestamp-query'
-					},
-					body: message,
-					encoding: null
-				},
-				(error, response, body) => {
-					if (error) {
-						reject(error);
-						return;
-					}
-					resolve([response, body]);
-				}
-			);
+		const {url, headers} = this;
+		const response = await fetch(url, {
+			method: 'POST',
+			headers,
+			body: message
 		});
-
-		const {statusCode} = response;
-		if (statusCode !== 200) {
-			throw new Error(
-				`Unexpected status code: ${statusCode}: ${body.toString()}`
-			);
+		if (response.status !== 200) {
+			throw new Error(`Status code: ${response.status}: ${url}`);
 		}
-		return body;
+		return Buffer.from(await response.arrayBuffer());
 	}
 
 	/**
