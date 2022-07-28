@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import forge from 'node-forge';
 
 import {NAME, VERSION} from '../meta';
@@ -50,6 +49,7 @@ export class SecurityTimestamper {
 	 */
 	protected async _sendRequest(message: Readonly<Buffer>) {
 		const {url, headers} = this;
+		const {default: fetch} = await import('node-fetch');
 		const response = await fetch(url, {
 			method: 'POST',
 			headers,
