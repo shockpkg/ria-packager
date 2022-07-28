@@ -44,9 +44,10 @@ function extractTimestamp(xml: string) {
 }
 
 async function getKeystore() {
-	const r = new SecurityKeystorePkcs12();
-	await r.readFile(fixtureFile('signature', 'key.p12'), 'password');
-	return r;
+	return SecurityKeystorePkcs12.fromFile(
+		fixtureFile('signature', 'key.p12'),
+		'password'
+	);
 }
 
 // Hijack the request sender to replay known response.

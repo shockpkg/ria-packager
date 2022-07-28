@@ -36,11 +36,11 @@ import {
 	SecurityKeystorePkcs12
 } from '@shockpkg/ria-packager';
 
-const keystore = new SecurityKeystorePkcs12();
-await keystore.readFile('key.p12', 'password');
-
 const packager = new PackagerAirInstaller('application.air');
-packager.keystore = keystore;
+packager.keystore = await SecurityKeystorePkcs12.fromFile(
+	'key.p12',
+	'password'
+);
 packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:
@@ -66,12 +66,12 @@ import {
 	SecurityKeystorePkcs12
 } from '@shockpkg/ria-packager';
 
-const keystore = new SecurityKeystorePkcs12();
-await keystore.readFile('key.p12', 'password');
-
 const packager = new PackagerAdlWindows('application');
 packager.sdkPath = 'airsdk-win.zip';
-packager.keystore = keystore;
+packager.keystore = await SecurityKeystorePkcs12.fromFile(
+	'key.p12',
+	'password'
+);
 packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:
@@ -104,12 +104,12 @@ import {
 	SecurityKeystorePkcs12
 } from '@shockpkg/ria-packager';
 
-const keystore = new SecurityKeystorePkcs12();
-await keystore.readFile('key.p12', 'password');
-
 const packager = new PackagerBundleMac('application.app');
 packager.sdkPath = 'airsdk-mac.zip';
-packager.keystore = keystore;
+packager.keystore = await SecurityKeystorePkcs12.fromFile(
+	'key.p12',
+	'password'
+);
 packager.timestampUrl = 'http://timestamp.digicert.com/';
 
 // Options:

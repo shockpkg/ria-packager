@@ -8,16 +8,14 @@ const pass = 'password';
 describe('security/keystores/pkcs12', () => {
 	describe('Signature', () => {
 		it('readFile', async () => {
-			const keystore = new SecurityKeystorePkcs12();
-			await keystore.readFile(file, pass);
+			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 
 			expect(keystore.getCertificate()).toBeTruthy();
 			expect(keystore.getPrivateKey()).toBeTruthy();
 		});
 
 		it('reset', async () => {
-			const keystore = new SecurityKeystorePkcs12();
-			await keystore.readFile(file, pass);
+			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 			keystore.reset();
 
 			expect(() => keystore.getCertificate()).toThrow();

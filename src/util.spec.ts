@@ -205,9 +205,7 @@ export function versionBefore(version: number[], major: number, minor: number) {
 }
 
 export async function fixtureKeystoreRead() {
-	const keystore = new SecurityKeystorePkcs12();
-	await keystore.readFile(fixtureFile('key.p12'), 'password');
-	return keystore;
+	return SecurityKeystorePkcs12.fromFile(fixtureFile('key.p12'), 'password');
 }
 
 export const platformIsMac = process.platform === 'darwin';

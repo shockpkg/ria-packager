@@ -161,4 +161,35 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	protected _createSecurityKeyPrivateRsa(privateKey: string) {
 		return new SecurityKeyPrivateRsa(privateKey);
 	}
+
+	/**
+	 * Create from data.
+	 *
+	 * @param data File data.
+	 * @param password The password if necessary.
+	 * @returns New instance.
+	 */
+	public static fromData(
+		data: Readonly<Buffer>,
+		password: string | null = null
+	) {
+		const T = this.prototype.constructor as typeof SecurityKeystorePkcs12;
+		const r = new T();
+		r.readData(data, password);
+		return r;
+	}
+
+	/**
+	 * Create from file.
+	 *
+	 * @param path File path.
+	 * @param password The password if necessary.
+	 * @returns New instance.
+	 */
+	public static async fromFile(path: string, password: string | null = null) {
+		const T = this.prototype.constructor as typeof SecurityKeystorePkcs12;
+		const r = new T();
+		await r.readFile(path, password);
+		return r;
+	}
 }
