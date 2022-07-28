@@ -512,7 +512,7 @@ export class ZipperEntry {
 	 */
 	protected _bufferCrc32(data: Readonly<Buffer>) {
 		// Cast to number to ensure no dependency on library types.
-		return bufferCrc32.unsigned(data as Buffer) as unknown as number;
+		return bufferCrc32.unsigned(data) as unknown as number;
 	}
 
 	/**
@@ -523,7 +523,7 @@ export class ZipperEntry {
 	 */
 	protected async _zlibDeflateRaw(data: Readonly<Buffer>) {
 		return new Promise<Buffer>((resolve, reject) => {
-			deflateRaw(data as Buffer, (err, comp) => {
+			deflateRaw(data, (err, comp) => {
 				if (err) {
 					reject(err);
 					return;
