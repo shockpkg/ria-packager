@@ -40,7 +40,7 @@ export class HasherSha256 extends Hasher {
 	 * @param data Data to be hashed.
 	 */
 	public update(data: Readonly<Buffer>) {
-		this._hash.update(data as Buffer);
+		this._hash.update(data);
 	}
 
 	/**

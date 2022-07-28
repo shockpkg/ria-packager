@@ -24,7 +24,7 @@ export class HasherSha1 extends Hasher {
 	 * @returns Byte size.
 	 */
 	public get bytes() {
-		return 32;
+		return 20;
 	}
 
 	/**
@@ -40,7 +40,7 @@ export class HasherSha1 extends Hasher {
 	 * @param data Data to be hashed.
 	 */
 	public update(data: Readonly<Buffer>) {
-		this._hash.update(data as Buffer);
+		this._hash.update(data);
 	}
 
 	/**
