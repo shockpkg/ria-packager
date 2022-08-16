@@ -12,10 +12,106 @@ import {IconIco} from '@shockpkg/icon-encoder';
 import {
 	pathRelativeBaseMatch,
 	pathRelativeBase,
-	bufferToArrayBuffer
+	bufferToArrayBuffer,
+	align
 } from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
+
+// IMAGE_DATA_DIRECTORY indexes.
+const IDD_RESOURCE = 2;
+const IDD_BASE_RELOCATION = 5;
+
+// IMAGE_SECTION_HEADER characteristics.
+const IMAGE_SCN_CNT_CODE = 0x00000020;
+const IMAGE_SCN_CNT_INITIALIZED_DATA = 0x00000040;
+const IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080;
+
+/**
+ * Assert the given section is last section.
+ *
+ * @param exe NtExecutable instance.
+ * @param index ImageDirectory index.
+ * @param name Friendly name for messages.
+ */
+function exeAssertLastSection(exe: NtExecutable, index: number, name: string) {
+	const section = exe.getSectionByEntry(index);
+	if (!section) {
+		throw new Error(`Missing section: ${index}:${name}`);
+	}
+	const allSections = exe.getAllSections();
+	let last = allSections[0].info;
+	for (const {info} of allSections) {
+		if (info.pointerToRawData > last.pointerToRawData) {
+			last = info;
+		}
+	}
+	const {info} = section;
+	if (info.pointerToRawData < last.pointerToRawData) {
+		throw new Error(`Not the last section: ${index}:${name}`);
+	}
+}
+
+/**
+ * Removes the reloc section if exists, fails if not the last section.
+ *
+ * @param exe NtExecutable instance.
+ * @returns Restore function.
+ */
+function exeRemoveReloc(exe: NtExecutable) {
+	const section = exe.getSectionByEntry(IDD_BASE_RELOCATION);
+	if (!section) {
+		return () => {};
+	}
+	const {size} =
+		exe.newHeader.optionalHeaderDataDirectory.get(IDD_BASE_RELOCATION);
+	exeAssertLastSection(exe, IDD_BASE_RELOCATION, '.reloc');
+	exe.setSectionByEntry(IDD_BASE_RELOCATION, null);
+	return () => {
+		exe.setSectionByEntry(IDD_BASE_RELOCATION, section);
+		const {virtualAddress} =
+			exe.newHeader.optionalHeaderDataDirectory.get(IDD_BASE_RELOCATION);
+		exe.newHeader.optionalHeaderDataDirectory.set(IDD_BASE_RELOCATION, {
+			virtualAddress,
+			size
+		});
+	};
+}
+
+/**
+ * Update the sizes in EXE headers.
+ *
+ * @param exe NtExecutable instance.
+ */
+function exeUpdateSizes(exe: NtExecutable) {
+	const {optionalHeader} = exe.newHeader;
+	const {fileAlignment} = optionalHeader;
+	let sizeOfCode = 0;
+	let sizeOfInitializedData = 0;
+	let sizeOfUninitializedData = 0;
+	for (const {
+		info: {characteristics, sizeOfRawData, virtualSize}
+	} of exe.getAllSections()) {
+		// eslint-disable-next-line no-bitwise
+		if (characteristics & IMAGE_SCN_CNT_CODE) {
+			sizeOfCode += sizeOfRawData;
+		}
+		// eslint-disable-next-line no-bitwise
+		if (characteristics & IMAGE_SCN_CNT_INITIALIZED_DATA) {
+			sizeOfInitializedData += Math.max(
+				sizeOfRawData,
+				align(virtualSize, fileAlignment)
+			);
+		}
+		// eslint-disable-next-line no-bitwise
+		if (characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA) {
+			sizeOfUninitializedData += align(virtualSize, fileAlignment);
+		}
+	}
+	optionalHeader.sizeOfCode = sizeOfCode;
+	optionalHeader.sizeOfInitializedData = sizeOfInitializedData;
+	optionalHeader.sizeOfUninitializedData = sizeOfUninitializedData;
+}
 
 /**
  * Helper function to resize images using lanczos algorithm.
@@ -354,7 +450,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			return;
 		}
 
-		// Read EXE file and parse resources.
+		// Parse EXE.
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
 		const exe = NtExecutable.from(
@@ -365,13 +461,20 @@ export class PackagerBundleWindows extends PackagerBundle {
 				true
 			)
 		);
-		const res = NtExecutableResource.from(exe);
+
+		// Remove reloc so rsrc can safely be resized.
+		const relocRestore = exeRemoveReloc(exe);
+
+		// Remove rsrc to modify.
+		exeAssertLastSection(exe, IDD_RESOURCE, '.rsrc');
+		const rsrc = NtExecutableResource.from(exe);
+		exe.setSectionByEntry(IDD_RESOURCE, null);
 
 		// Check that icons and version info not present.
-		if (Resource.IconGroupEntry.fromEntries(res.entries).length) {
+		if (Resource.IconGroupEntry.fromEntries(rsrc.entries).length) {
 			throw new Error('Executable resources contains unexpected icons');
 		}
-		if (Resource.VersionInfo.fromEntries(res.entries).length) {
+		if (Resource.VersionInfo.fromEntries(rsrc.entries).length) {
 			throw new Error(
 				'Executable resources contains unexpected version info'
 			);
@@ -392,7 +495,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 			// Add this group to the list.
 			Resource.IconGroupEntry.replaceIconsForResource(
-				res.entries,
+				rsrc.entries,
 				iconGroupId,
 				0,
 				ico.icons.map(icon => icon.data)
@@ -400,7 +503,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 			// List all the resources now in the list.
 			const entriesById = new Map(
-				res.entries.map((resource, index) => [
+				rsrc.entries.map((resource, index) => [
 					resource.id,
 					{index, resource}
 				])
@@ -428,7 +531,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// Update the group entry.
-			res.entries[entryInfo.index] = iconGroup.generateEntry();
+			rsrc.entries[entryInfo.index] = iconGroup.generateEntry();
 		}
 
 		// Add the version info if any.
@@ -461,16 +564,24 @@ export class PackagerBundleWindows extends PackagerBundle {
 				}
 			}
 
-			versionInfo.outputToResourceEntries(res.entries);
+			versionInfo.outputToResourceEntries(rsrc.entries);
 		}
 
 		// Update the codepage on all resources, matches the official packager.
-		for (const entry of res.entries) {
+		for (const entry of rsrc.entries) {
 			entry.codepage = codepage;
 		}
 
-		// Update resources and write EXE file.
-		res.outputResource(exe);
+		// Update resources.
+		rsrc.outputResource(exe, false, true);
+
+		// Add reloc back.
+		relocRestore();
+
+		// Update sizes.
+		exeUpdateSizes(exe);
+
+		// Write the EXE file.
 		await writeFile(appBinaryPathFull, Buffer.from(exe.generate()));
 	}
 
