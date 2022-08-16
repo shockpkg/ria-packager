@@ -162,14 +162,14 @@ jobs:
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
-              - air-sdk-33.1.1.889-windows
+              - air-sdk-33.1.1.929-windows
 
           # 33 mac
           - node-version: '16.16.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
-              - air-sdk-33.1.1.889-mac
+              - air-sdk-33.1.1.929-mac
 
     runs-on: ubuntu-20.04
 
