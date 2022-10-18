@@ -171,6 +171,20 @@ jobs:
             PKG:
               - air-sdk-33.1.1.929-mac
 
+          # 50 windows
+          - node-version: '16.18.0' # LTS (current)
+            NO_FORMATTED: 1
+            NO_LINT: 1
+            PKG:
+              - air-sdk-50.0.1.1-windows
+
+          # 50 mac
+          - node-version: '16.18.0' # LTS (current)
+            NO_FORMATTED: 1
+            NO_LINT: 1
+            PKG:
+              - air-sdk-50.0.1.1-mac
+
     runs-on: ubuntu-20.04
 
     steps:
