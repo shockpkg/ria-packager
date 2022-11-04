@@ -23,7 +23,6 @@ jobs:
           - node-version: '19.0.0' # Latest
             PKG: ''
 
-          # 1 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
@@ -33,7 +32,6 @@ jobs:
               - air-sdk-1.1.0.5790-windows
               - air-sdk-1.1.0.5790-windows
 
-          # 1 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
@@ -43,7 +41,6 @@ jobs:
               - air-sdk-1.5.0.7220-mac-zip
               - air-sdk-1.5.3.9120-mac-zip
 
-          # 2 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
@@ -51,7 +48,6 @@ jobs:
               - air-sdk-2.0.1.12090-windows
               - air-sdk-2.7.1.19610-windows
 
-          # 2 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
@@ -59,126 +55,108 @@ jobs:
               - air-sdk-2.0.1.12090-mac-zip
               - air-sdk-2.7.1.19610-mac-zip
 
-          # 3.0 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.0.0.4080-windows
 
-          # 3.0 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.0.0.4080-mac-zip
 
-          # 3.2 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.2.0.2070-windows
 
-          # 3.2 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.2.0.2070-mac-zip
 
-          # 3.6 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.6.0.6090-windows
 
-          # 3.6 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-3.6.0.6090-mac-zip
 
-          # 25 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-25.0.0.134-windows
 
-          # 25 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-25.0.0.134-mac-zip
 
-          # 27 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-27.0.0.132-windows
 
-          # 27 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-27.0.0.128-mac-zip
 
-          # 32 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-32.0.0.116-windows
 
-          # 32 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-32.0.0.116-mac-zip
 
-          # 33.0.2 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-33.0.2.330-windows
 
-          # 33.0.2 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-33.0.2.330-mac
 
-          # 33 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-33.1.1.929-windows
 
-          # 33 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-33.1.1.929-mac
 
-          # 50 windows
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
               - air-sdk-50.0.1.1-windows
 
-          # 50 mac
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
@@ -198,6 +176,13 @@ jobs:
 
       - name: Dependencies
         run: npm ci
+
+      - name: shockpkg Cache
+        uses: actions/cache@v3
+        if: matrix.config.PKG != ''
+        with:
+          key: shockpkg-${{ join(matrix.config.PKG, '_') }}
+          path: shockpkg
 
       - name: shockpkg Update
         run: npm run shockpkg -- update --summary
