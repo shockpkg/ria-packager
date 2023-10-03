@@ -155,13 +155,13 @@ jobs:
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
-              - air-sdk-50.2.3.5-windows
+              - air-sdk-50.2.3.6-windows
 
           - node-version: '18.12.0' # LTS (current)
             NO_FORMATTED: 1
             NO_LINT: 1
             PKG:
-              - air-sdk-50.2.3.5-mac
+              - air-sdk-50.2.3.6-mac
 
     runs-on: ubuntu-20.04
 
