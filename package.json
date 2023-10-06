@@ -28,6 +28,7 @@
 		"node": ">=18.12.0"
 	},
 	"scripts": {
+		"shockpkg": "shockpkg",
 		"clean": "rimraf *.log* dts esm cjs spec/packages",
 		"lint": "eslint .",
 		"format": "prettier -w .",
