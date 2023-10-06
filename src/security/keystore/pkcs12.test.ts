@@ -8,16 +8,16 @@ import {SecurityKeystorePkcs12} from './pkcs12';
 const file = fixtureFile('signature', 'key.p12');
 const pass = 'password';
 
-describe('security/keystores/pkcs12', () => {
-	describe('Signature', () => {
-		it('readFile', async () => {
+void describe('security/keystores/pkcs12', () => {
+	void describe('Signature', () => {
+		void it('readFile', async () => {
 			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 
 			ok(keystore.getCertificate());
 			ok(keystore.getPrivateKey());
 		});
 
-		it('reset', async () => {
+		void it('reset', async () => {
 			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 			keystore.reset();
 

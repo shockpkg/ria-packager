@@ -7,9 +7,9 @@ import {PackagerAir} from '../air';
 
 import {PackagerAirInstaller} from './installer';
 
-describe('packages/airs/installer', () => {
-	describe('PackagerAirInstaller', () => {
-		it('instanceof PackagerAir', () => {
+void describe('packages/airs/installer', () => {
+	void describe('PackagerAirInstaller', () => {
+		void it('instanceof PackagerAir', () => {
 			ok(PackagerAirInstaller.prototype instanceof PackagerAir);
 		});
 

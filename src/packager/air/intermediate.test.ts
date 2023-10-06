@@ -7,9 +7,9 @@ import {PackagerAir} from '../air';
 
 import {PackagerAirIntermediate} from './intermediate';
 
-describe('packages/airs/intermediate', () => {
-	describe('PackagerAirIntermediate', () => {
-		it('instanceof PackagerAir', () => {
+void describe('packages/airs/intermediate', () => {
+	void describe('PackagerAirIntermediate', () => {
+		void it('instanceof PackagerAir', () => {
 			ok(PackagerAirIntermediate.prototype instanceof PackagerAir);
 		});
 

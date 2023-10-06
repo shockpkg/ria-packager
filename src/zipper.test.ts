@@ -11,7 +11,7 @@ class BufferCollector extends Writable {
 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	public _write(
-		chunk: any,
+		chunk: unknown,
 		encoding: string,
 		callback: (error?: Error | null) => void
 	) {
@@ -55,9 +55,9 @@ function bufferHex(data: Buffer) {
 		.toUpperCase();
 }
 
-describe('zipper', () => {
-	describe('Zipper', () => {
-		it('stream writting', async () => {
+void describe('zipper', () => {
+	void describe('Zipper', () => {
+		void it('stream writting', async () => {
 			const out = new BufferCollector();
 			const zipper = new Zipper(out);
 			zipper.comment = 'archive comment';

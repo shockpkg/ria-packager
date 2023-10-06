@@ -13,9 +13,9 @@ import {PackagerAdl} from '../adl';
 
 import {PackagerAdlWindows} from './windows';
 
-describe('packages/adls/windows', () => {
-	describe('PackagerAdlWindows', () => {
-		it('instanceof PackagerAdl', () => {
+void describe('packages/adls/windows', () => {
+	void describe('PackagerAdlWindows', () => {
+		void it('instanceof PackagerAdl', () => {
 			ok(PackagerAdlWindows.prototype instanceof PackagerAdl);
 		});
 
@@ -31,8 +31,7 @@ describe('packages/adls/windows', () => {
 			architecture,
 			extras
 		} of generateSamplesWindows()) {
-			// eslint-disable-next-line no-await-in-loop
-			it(uid, async () => {
+			void it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
 				const dir = await cleanPackageDir('adls', 'windows', uid);
 

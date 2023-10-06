@@ -63,7 +63,7 @@ class SignatureReplay extends Signature {
 	}
 }
 
-async function expectError(tester: () => Promise<any>) {
+async function expectError(tester: () => Promise<unknown>) {
 	let error: Error | null = null;
 	try {
 		await tester();
@@ -73,9 +73,9 @@ async function expectError(tester: () => Promise<any>) {
 	ok(error);
 }
 
-describe('signature', () => {
-	describe('Signature', () => {
-		it('Timestamp: OFF', async () => {
+void describe('signature', () => {
+	void describe('Signature', () => {
+		void it('Timestamp: OFF', async () => {
 			const signature = new Signature();
 
 			const keystore = await getKeystore();
@@ -96,7 +96,7 @@ describe('signature', () => {
 			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
 		});
 
-		it('Timestamp: REPLAY', async () => {
+		void it('Timestamp: REPLAY', async () => {
 			const signature = new SignatureReplay();
 
 			const keystore = await getKeystore();
@@ -120,7 +120,7 @@ describe('signature', () => {
 			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
 		});
 
-		it('Timestamp: REAL', async () => {
+		void it('Timestamp: REAL', async () => {
 			const signature = new Signature();
 
 			const keystore = await getKeystore();
@@ -146,7 +146,7 @@ describe('signature', () => {
 			strictEqual(extracted.removed, expected.toString('utf8'));
 		});
 
-		it('Linear Methods', async () => {
+		void it('Linear Methods', async () => {
 			const signature = new SignatureReplay();
 
 			const keystore = await getKeystore();

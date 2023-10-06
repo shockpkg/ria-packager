@@ -9,7 +9,7 @@ import {Packager} from '../packager';
  * @param name Child tag name or null.
  * @returns Tag list.
  */
-const childTags = (el: Readonly<Element>, name: String | null = null) => {
+const childTags = (el: Readonly<Element>, name: string | null = null) => {
 	const {childNodes} = el;
 	const r: Element[] = [];
 	// eslint-disable-next-line

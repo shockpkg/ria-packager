@@ -32,7 +32,7 @@ export function test(
 		}
 
 		for (const [uid, descriptor] of samples) {
-			it(uid, async () => {
+			void it(uid, async () => {
 				const dir = await cleanPackageDir('airs', name, uid);
 				const path = pathJoin(dir, `${sample.name}${ext}`);
 

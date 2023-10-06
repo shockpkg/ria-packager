@@ -648,7 +648,7 @@ export class Zipper {
 	public async close() {
 		await this._writeOutput(this.getDirectoryBuffer());
 		await new Promise<void>((resolve, reject) => {
-			this._output.end((err: any) => {
+			this._output.end((err: Error) => {
 				if (err) {
 					reject(err);
 					return;

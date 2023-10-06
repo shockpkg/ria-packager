@@ -28,9 +28,9 @@ const versionStrings = {
 	Comments: 'Custom Comments'
 };
 
-describe('packages/bundles/windows', () => {
-	describe('PackagerBundleWindows', () => {
-		it('instanceof PackagerBundle', () => {
+void describe('packages/bundles/windows', () => {
+	void describe('PackagerBundleWindows', () => {
+		void it('instanceof PackagerBundle', () => {
 			ok(PackagerBundleWindows.prototype instanceof PackagerBundle);
 		});
 
@@ -50,8 +50,7 @@ describe('packages/bundles/windows', () => {
 				continue;
 			}
 
-			// eslint-disable-next-line no-await-in-loop
-			it(uid, async () => {
+			void it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
 				const dir = await cleanPackageDir('bundles', 'windows', uid);
 

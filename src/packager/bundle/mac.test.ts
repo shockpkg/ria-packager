@@ -17,9 +17,9 @@ import {PackagerBundle} from '../bundle';
 
 import {PackagerBundleMac} from './mac';
 
-describe('packages/bundles/mac', () => {
-	describe('PackagerBundleMac', () => {
-		it('instanceof PackagerBundle', () => {
+void describe('packages/bundles/mac', () => {
+	void describe('PackagerBundleMac', () => {
+		void it('instanceof PackagerBundle', () => {
 			ok(PackagerBundleMac.prototype instanceof PackagerBundle);
 		});
 
@@ -39,7 +39,7 @@ describe('packages/bundles/mac', () => {
 				continue;
 			}
 
-			it(uid, async () => {
+			void it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
 
 				// Only test DMG files on macOS.

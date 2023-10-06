@@ -14,9 +14,9 @@ import {PackagerAdl} from '../adl';
 
 import {PackagerAdlMac} from './mac';
 
-describe('packages/adls/mac', () => {
-	describe('PackagerAdlMac', () => {
-		it('instanceof PackagerAdl', () => {
+void describe('packages/adls/mac', () => {
+	void describe('PackagerAdlMac', () => {
+		void it('instanceof PackagerAdl', () => {
 			ok(PackagerAdlMac.prototype instanceof PackagerAdl);
 		});
 
@@ -31,7 +31,7 @@ describe('packages/adls/mac', () => {
 			descriptor,
 			extras
 		} of generateSamplesMac()) {
-			it(uid, async () => {
+			void it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
 
 				// Only test DMG files on macOS.

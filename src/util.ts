@@ -1,4 +1,4 @@
-// @ts-ignore-file
+// @ts-expect-error: No types.
 import {quoteForCmd, quoteForSh} from 'puka';
 
 /**
