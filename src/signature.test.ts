@@ -1,5 +1,7 @@
 /* eslint-disable max-classes-per-file */
-import {readFile} from 'fs/promises';
+import {describe, it} from 'node:test';
+import {ok, strictEqual, throws} from 'node:assert';
+import {readFile} from 'node:fs/promises';
 
 import {fixtureFile, timestampUrl} from './util.spec';
 import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
@@ -68,7 +70,7 @@ async function expectError(tester: () => Promise<any>) {
 	} catch (err) {
 		error = err as Error;
 	}
-	expect(error).toBeTruthy();
+	ok(error);
 }
 
 describe('signature', () => {
@@ -91,7 +93,7 @@ describe('signature', () => {
 
 			// Check that code matches expected code.
 			const expected = await readFile(expectedTimestampNo);
-			expect(encoded.toString('utf8')).toEqual(expected.toString('utf8'));
+			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
 		});
 
 		it('Timestamp: REPLAY', async () => {
@@ -115,7 +117,7 @@ describe('signature', () => {
 
 			// Check that code matches expected code.
 			const expected = await readFile(expectedTimestampYes);
-			expect(encoded.toString('utf8')).toEqual(expected.toString('utf8'));
+			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
 		});
 
 		it('Timestamp: REAL', async () => {
@@ -141,7 +143,7 @@ describe('signature', () => {
 			const extracted = extractTimestamp(encoded.toString('utf8'));
 
 			const expected = await readFile(expectedTimestampNo);
-			expect(extracted.removed).toEqual(expected.toString('utf8'));
+			strictEqual(extracted.removed, expected.toString('utf8'));
 		});
 
 		it('Linear Methods', async () => {
@@ -158,17 +160,15 @@ describe('signature', () => {
 
 			const expectedEncode = (data: Buffer, timestamp: boolean) => {
 				const expected = timestamp ? expectedYes : expectedNo;
-				expect(data.toString('utf8')).toEqual(
-					expected.toString('utf8')
-				);
+				strictEqual(data.toString('utf8'), expected.toString('utf8'));
 			};
 
 			const itter = async () => {
 				signature.reset();
 
-				expect(() => signature.sign()).toThrow();
+				throws(() => signature.sign());
 				await expectError(async () => signature.timestamp());
-				expect(() => signature.encode()).toThrow();
+				throws(() => signature.encode());
 
 				for (const [name, data] of files) {
 					// eslint-disable-next-line no-await-in-loop
@@ -176,30 +176,30 @@ describe('signature', () => {
 					signature.addFile(name, d);
 				}
 
-				expect(() => signature.sign()).toThrow();
+				throws(() => signature.sign());
 				await expectError(async () => signature.timestamp());
-				expect(() => signature.encode()).toThrow();
+				throws(() => signature.encode());
 
 				signature.digest();
 
-				expect(() => signature.digest()).toThrow();
-				expect(() => signature.addFile('a', Buffer.alloc(4))).toThrow();
+				throws(() => signature.digest());
+				throws(() => signature.addFile('a', Buffer.alloc(4)));
 				await expectError(async () => signature.timestamp());
-				expect(() => signature.encode()).toThrow();
+				throws(() => signature.encode());
 
 				signature.sign();
 
-				expect(() => signature.addFile('b', Buffer.alloc(4))).toThrow();
-				expect(() => signature.digest()).toThrow();
-				expect(() => signature.sign()).toThrow();
+				throws(() => signature.addFile('b', Buffer.alloc(4)));
+				throws(() => signature.digest());
+				throws(() => signature.sign());
 
 				expectedEncode(signature.encode(), false);
 
 				await signature.timestamp();
 
-				expect(() => signature.addFile('c', Buffer.alloc(4))).toThrow();
-				expect(() => signature.digest()).toThrow();
-				expect(() => signature.sign()).toThrow();
+				throws(() => signature.addFile('c', Buffer.alloc(4)));
+				throws(() => signature.digest());
+				throws(() => signature.sign());
 				await expectError(async () => signature.timestamp());
 
 				expectedEncode(signature.encode(), true);

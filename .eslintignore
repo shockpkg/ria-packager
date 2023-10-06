@@ -1,4 +1,5 @@
-/lib
-/module.mjs
+/dts
+/esm
+/cjs
 /shockpkg
 /spec/packages

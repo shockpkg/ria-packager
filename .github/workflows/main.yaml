@@ -7,163 +7,113 @@ jobs:
     strategy:
       matrix:
         config:
-          - node-version: '14.15.0' # LTS
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.12.0' # LTS
             PKG: ''
 
-          - node-version: '16.13.0' # LTS
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
+            CODE_CHECK: 1
             PKG: ''
 
-          - node-version: '18.12.0' # LTS (current)
+          - node-version: '20.8.0' # Latest
             PKG: ''
 
-          - node-version: '19.0.0' # Latest
-            PKG: ''
-
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-1.0.7.4880-windows
               - air-sdk-1.1.0.5790-windows
               - air-sdk-1.1.0.5790-windows
               - air-sdk-1.1.0.5790-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-1.0.7.4880-mac-zip
               - air-sdk-1.1.0.5790-mac-zip
               - air-sdk-1.5.0.7220-mac-zip
               - air-sdk-1.5.3.9120-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-2.0.1.12090-windows
               - air-sdk-2.7.1.19610-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-2.0.1.12090-mac-zip
               - air-sdk-2.7.1.19610-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.0.0.4080-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.0.0.4080-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.2.0.2070-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.2.0.2070-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.6.0.6090-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-3.6.0.6090-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-25.0.0.134-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-25.0.0.134-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-27.0.0.132-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-27.0.0.128-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-32.0.0.116-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-32.0.0.116-mac-zip
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-33.0.2.330-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-33.0.2.330-mac
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-33.1.1.929-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-33.1.1.929-mac
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-50.2.3.6-windows
 
-          - node-version: '18.12.0' # LTS (current)
-            NO_FORMATTED: 1
-            NO_LINT: 1
+          - node-version: '18.18.0' # LTS (current)
             PKG:
               - air-sdk-50.2.3.6-mac
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -206,17 +156,17 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        if: matrix.config.NO_LINT != 1
+        if: matrix.config.CODE_CHECK == 1
 
       - name: Formatted
         run: npm run formatted
-        if: matrix.config.NO_FORMATTED != 1
+        if: matrix.config.CODE_CHECK == 1
 
   publish:
     if: startsWith(github.ref, 'refs/tags/')
     needs: build
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -225,7 +175,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.12.0'
+          node-version: '18.18.0'
           registry-url: https://registry.npmjs.org/
 
       - name: Dependencies

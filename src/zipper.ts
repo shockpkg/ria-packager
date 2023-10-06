@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
-import {Writable} from 'stream';
-import {deflateRaw} from 'zlib';
+import {Writable} from 'node:stream';
+import {deflateRaw} from 'node:zlib';
 
 import bufferCrc32 from 'buffer-crc32';
 

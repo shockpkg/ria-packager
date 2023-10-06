@@ -1,11 +1,10 @@
-import {readdirSync} from 'fs';
-import {mkdir, rm} from 'fs/promises';
-import {join as pathJoin} from 'path';
+import {statSync, readdirSync} from 'node:fs';
+import {mkdir, rm} from 'node:fs/promises';
+import {join as pathJoin} from 'node:path';
 
 import {Manager} from '@shockpkg/core';
 
 import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
-import {pathRelativeBase} from './util';
 import {IPackagerResourceOptions} from './packager';
 
 // eslint-disable-next-line no-process-env
@@ -146,12 +145,22 @@ export function* generateSamplesMac() {
 let getInstalledPackagesCache: string[] | null = null;
 export function getInstalledPackagesSync() {
 	if (!getInstalledPackagesCache) {
-		// eslint-disable-next-line no-process-env
-		const installed = process.env.RIA_PACKAGER_INSTALLED || null;
-		if (installed) {
-			getInstalledPackagesCache = installed.split(',');
-		} else {
-			getInstalledPackagesCache = [];
+		getInstalledPackagesCache = [];
+		try {
+			const dir = 'shockpkg';
+			for (const d of readdirSync(dir, {withFileTypes: true})) {
+				if (d.name.startsWith('.') || !d.isDirectory()) {
+					continue;
+				}
+				const st = statSync(`${dir}/${d.name}/.shockpkg/package.json`);
+				if (st.isFile()) {
+					getInstalledPackagesCache.push(d.name);
+				}
+			}
+		} catch (err) {
+			if (!(err && (err as {code: string}).code === 'ENOENT')) {
+				throw err;
+			}
 		}
 	}
 	return getInstalledPackagesCache;
@@ -219,7 +228,7 @@ export function fixtureFile(...path: string[]) {
 }
 
 export async function getPackageFile(pkg: string) {
-	return new Manager().with(async manager => manager.packageInstallFile(pkg));
+	return new Manager().file(pkg);
 }
 
 export async function cleanPackageDir(...path: string[]) {
@@ -228,26 +237,3 @@ export async function cleanPackageDir(...path: string[]) {
 	await mkdir(dir, {recursive: true});
 	return dir;
 }
-
-describe('util', () => {
-	describe('pathRelativeBase', () => {
-		it('file', () => {
-			expect(pathRelativeBase('test', 'test')).toBe('');
-			expect(pathRelativeBase('test/', 'test')).toBe('');
-			expect(pathRelativeBase('test', 'Test')).toBe(null);
-		});
-
-		it('file nocase', () => {
-			expect(pathRelativeBase('test', 'Test', true)).toBe('');
-		});
-
-		it('dir', () => {
-			expect(pathRelativeBase('test/123', 'test')).toBe('123');
-			expect(pathRelativeBase('test/123', 'Test')).toBe(null);
-		});
-
-		it('dir nocase', () => {
-			expect(pathRelativeBase('test/123', 'Test', true)).toBe('123');
-		});
-	});
-});

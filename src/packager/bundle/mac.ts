@@ -1,5 +1,5 @@
-import {mkdir, readFile, utimes, writeFile} from 'fs/promises';
-import {dirname, join as pathJoin} from 'path';
+import {mkdir, readFile, utimes, writeFile} from 'node:fs/promises';
+import {dirname, join as pathJoin} from 'node:path';
 
 import {PathType} from '@shockpkg/archive-files';
 import {IconIcns} from '@shockpkg/icon-encoder';

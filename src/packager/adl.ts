@@ -1,4 +1,4 @@
-import {join as pathJoin} from 'path';
+import {join as pathJoin} from 'node:path';
 
 import {PathType} from '@shockpkg/archive-files';
 

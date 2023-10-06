@@ -21,7 +21,9 @@ yarn.lock
 .vscode
 
 # Build files
-/lib
+/dts
+/esm
+/cjs
 
 # Test files
 /shockpkg

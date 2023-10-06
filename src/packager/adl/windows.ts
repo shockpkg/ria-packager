@@ -1,5 +1,5 @@
-import {mkdir, utimes, writeFile} from 'fs/promises';
-import {dirname, join as pathJoin} from 'path';
+import {mkdir, utimes, writeFile} from 'node:fs/promises';
+import {dirname, join as pathJoin} from 'node:path';
 
 import {quoteCmd} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';

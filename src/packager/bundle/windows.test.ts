@@ -1,8 +1,8 @@
-import {join as pathJoin} from 'path';
+import {describe, it} from 'node:test';
+import {ok} from 'node:assert';
 
 import {
-	platformIsMac,
-	generateSamplesMac,
+	generateSamplesWindows,
 	cleanPackageDir,
 	fixtureFile,
 	fixtureKeystoreRead,
@@ -13,17 +13,28 @@ import {
 } from '../../util.spec';
 import {PackagerBundle} from '../bundle';
 
-import {PackagerBundleMac} from './mac';
+import {PackagerBundleWindows} from './windows';
 
-describe('packages/bundles/mac', () => {
-	describe('PackagerBundleMac', () => {
+const fileVersion = '3.14.15.92';
+const productVersion = '3.1.4.1';
+const versionStrings = {
+	CompanyName: 'Custom Company Name',
+	FileDescription: 'Custom File Description',
+	LegalCopyright: 'Custom Legal Copyright',
+	ProductName: 'Custom Pruduct Name',
+	LegalTrademarks: 'Custom Legal Trademarks',
+	OriginalFilename: 'CustomOriginalFilename.exe',
+	InternalName: 'CustomInternalName',
+	Comments: 'Custom Comments'
+};
+
+describe('packages/bundles/windows', () => {
+	describe('PackagerBundleWindows', () => {
 		it('instanceof PackagerBundle', () => {
-			expect(
-				PackagerBundleMac.prototype instanceof PackagerBundle
-			).toBeTrue();
+			ok(PackagerBundleWindows.prototype instanceof PackagerBundle);
 		});
 
-		if (!shouldTest('bundle-mac')) {
+		if (!shouldTest('bundle-windows')) {
 			return;
 		}
 
@@ -33,48 +44,29 @@ describe('packages/bundles/mac', () => {
 			uid,
 			descriptor,
 			extras
-		} of generateSamplesMac()) {
+		} of generateSamplesWindows()) {
 			// No captive runtime before SDK 3.0.
 			if (versionBefore(sdk.version, 3, 0)) {
 				continue;
 			}
 
+			// eslint-disable-next-line no-await-in-loop
 			it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
+				const dir = await cleanPackageDir('bundles', 'windows', uid);
 
-				// Only test DMG files on macOS.
-				if (/\.dmg$/i.test(sdkPath) && !platformIsMac) {
-					return;
-				}
-
-				const dir = await cleanPackageDir('bundles', 'mac', uid);
-				const path = pathJoin(dir, `${sample.name}.app`);
-
-				const packager = new PackagerBundleMac(path);
-
-				// Enable various legacy behaviors based on SDK version.
-				if (versionBefore(sdk.version, 3, 2)) {
-					packager.plistDocumentTypeNameIsDescription = false;
-				}
-				if (versionBefore(sdk.version, 3, 6)) {
-					packager.plistHighResolutionCapable = false;
-				}
-				if (versionBefore(sdk.version, 25, 0)) {
-					packager.frameworkCleanHelpers = false;
-				}
-				if (versionBefore(sdk.version, 27, 0)) {
-					packager.plistHasAppTransportSecurity = false;
-				}
-
+				const packager = new PackagerBundleWindows(dir);
 				if (extras) {
-					// Enable all of the extra features.
+					// Enable all of the extra features (except architecture).
 					packager.debug = true;
+					packager.frameworkCleanHelpers = true;
+					packager.preserveResourceMtime = true;
 					packager.applicationIconModern = true;
 					packager.fileTypeIconModern = true;
-					packager.infoPlistFile = fixtureFile('Info.plist');
-					packager.pkgInfoFile = fixtureFile('PkgInfo');
-					packager.frameworkCleanOsFiles = true;
-					packager.preserveResourceMtime = true;
+					packager.fileVersion = fileVersion;
+					packager.productVersion = productVersion;
+					packager.versionStrings = versionStrings;
+					packager.architecture = null;
 				}
 
 				packager.keystore = await fixtureKeystoreRead();

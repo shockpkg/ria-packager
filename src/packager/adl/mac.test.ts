@@ -1,5 +1,9 @@
+import {describe, it} from 'node:test';
+import {ok} from 'node:assert';
+
 import {
-	generateSamplesWindows,
+	platformIsMac,
+	generateSamplesMac,
 	cleanPackageDir,
 	fixtureFile,
 	getPackageFile,
@@ -8,17 +12,15 @@ import {
 } from '../../util.spec';
 import {PackagerAdl} from '../adl';
 
-import {PackagerAdlWindows} from './windows';
+import {PackagerAdlMac} from './mac';
 
-describe('packages/adls/windows', () => {
-	describe('PackagerAdlWindows', () => {
+describe('packages/adls/mac', () => {
+	describe('PackagerAdlMac', () => {
 		it('instanceof PackagerAdl', () => {
-			expect(
-				PackagerAdlWindows.prototype instanceof PackagerAdl
-			).toBeTrue();
+			ok(PackagerAdlMac.prototype instanceof PackagerAdl);
 		});
 
-		if (!shouldTest('adl-windows')) {
+		if (!shouldTest('adl-mac')) {
 			return;
 		}
 
@@ -27,25 +29,26 @@ describe('packages/adls/windows', () => {
 			sample,
 			uid,
 			descriptor,
-			architecture,
 			extras
-		} of generateSamplesWindows()) {
-			// eslint-disable-next-line no-await-in-loop
+		} of generateSamplesMac()) {
 			it(uid, async () => {
 				const sdkPath = await getPackageFile(sdk.name);
-				const dir = await cleanPackageDir('adls', 'windows', uid);
 
-				const packager = new PackagerAdlWindows(dir);
+				// Only test DMG files on macOS.
+				if (/\.dmg$/i.test(sdkPath) && !platformIsMac) {
+					return;
+				}
+
+				const dir = await cleanPackageDir('adls', 'mac', uid);
+
+				const packager = new PackagerAdlMac(dir);
+
 				if (extras) {
 					// Enable all of the extra features.
 					packager.debug = true;
 					packager.preserveResourceMtime = true;
 					if (!versionBefore(sdk.version, 2, 0)) {
 						packager.profile = 'extendedDesktop';
-					}
-					// 64-bit launcher adl64.exe was not added until later.
-					if (!versionBefore(sdk.version, 33, 0)) {
-						packager.architecture = architecture;
 					}
 				}
 

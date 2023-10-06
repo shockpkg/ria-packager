@@ -1,4 +1,6 @@
-import {Writable} from 'stream';
+import {describe, it} from 'node:test';
+import {strictEqual} from 'node:assert';
+import {Writable} from 'node:stream';
 
 import {Zipper} from './zipper';
 
@@ -68,14 +70,15 @@ describe('zipper', () => {
 
 				const {buffer, offset} = out.flushBuffer();
 				const hex = bufferHex(buffer);
-				expect(hex).toBe(
+				strictEqual(
+					hex,
 					[
 						'50 4B 03 04 14 00 00 00 08 00 00 00 00 00 76 0A',
 						'E3 F6 05 00 00 00 0C 00 00 00 00 00 00 00 4B 4C',
 						'44 00 00'
 					].join(' ')
 				);
-				expect(offset).toBe(0);
+				strictEqual(offset, 0);
 			}
 
 			{
@@ -104,7 +107,8 @@ describe('zipper', () => {
 
 				const {buffer, offset} = out.flushBuffer();
 				const hex = bufferHex(buffer);
-				expect(hex).toBe(
+				strictEqual(
+					hex,
 					[
 						'50 4B 03 04 12 34 BC 9A 08 00 5C 64 99 4F F9 EF',
 						'BE 71 03 00 00 00 01 00 00 00 09 00 11 00 62 2F',
@@ -112,7 +116,7 @@ describe('zipper', () => {
 						'55 78 04 00 D2 04 2E 16 4B 02 00'
 					].join(' ')
 				);
-				expect(offset).toBe(35);
+				strictEqual(offset, 35);
 			}
 
 			{
@@ -143,7 +147,8 @@ describe('zipper', () => {
 
 				const {buffer, offset} = out.flushBuffer();
 				const hex = bufferHex(buffer);
-				expect(hex).toBe(
+				strictEqual(
+					hex,
 					[
 						'50 4B 03 04 14 00 00 00 00 00 00 00 00 00 E7 2E',
 						'B0 FF 0C 00 00 00 0C 00 00 00 09 00 1A 00 63 2F',
@@ -152,14 +157,15 @@ describe('zipper', () => {
 						'6C 63 63 63 63 63 63 63 63 63 63 63 63'
 					].join(' ')
 				);
-				expect(offset).toBe(94);
+				strictEqual(offset, 94);
 			}
 
 			await zipper.close();
 
 			const {buffer, offset} = out.flushBuffer();
 			const hex = bufferHex(buffer);
-			expect(hex).toBe(
+			strictEqual(
+				hex,
 				[
 					'50 4B 01 02 14 00 14 00 00 00 08 00 00 00 00 00',
 					'76 0A E3 F6 05 00 00 00 0C 00 00 00 00 00 00 00',
@@ -178,7 +184,7 @@ describe('zipper', () => {
 					'69 76 65 20 63 6F 6D 6D 65 6E 74'
 				].join(' ')
 			);
-			expect(offset).toBe(171);
+			strictEqual(offset, 171);
 		});
 	});
 });

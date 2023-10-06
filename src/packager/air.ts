@@ -1,7 +1,7 @@
-import {createWriteStream} from 'fs';
-import {mkdir, open} from 'fs/promises';
-import {dirname} from 'path';
-import {Writable} from 'stream';
+import {createWriteStream} from 'node:fs';
+import {mkdir, open} from 'node:fs/promises';
+import {dirname} from 'node:path';
+import {Writable} from 'node:stream';
 
 import {Zipper, ZipperEntry} from '../zipper';
 import {IPackagerResourceOptions, Packager} from '../packager';

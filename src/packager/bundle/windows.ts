@@ -1,5 +1,12 @@
-import {copyFile, mkdir, readFile, stat, utimes, writeFile} from 'fs/promises';
-import {dirname, join as pathJoin} from 'path';
+import {
+	copyFile,
+	mkdir,
+	readFile,
+	stat,
+	utimes,
+	writeFile
+} from 'node:fs/promises';
+import {dirname, join as pathJoin} from 'node:path';
 
 import {signatureSet} from 'portable-executable-signature';
 import {NtExecutable, NtExecutableResource, Resource, Data} from 'resedit';

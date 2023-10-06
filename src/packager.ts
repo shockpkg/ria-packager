@@ -1,5 +1,5 @@
-import {lstat, readFile, stat} from 'fs/promises';
-import {join as pathJoin, basename} from 'path';
+import {lstat, readFile, stat} from 'node:fs/promises';
+import {join as pathJoin, basename} from 'node:path';
 
 import {
 	ArchiveDir,

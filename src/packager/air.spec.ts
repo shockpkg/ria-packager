@@ -1,4 +1,5 @@
-import {join as pathJoin} from 'path';
+import {it} from 'node:test';
+import {join as pathJoin} from 'node:path';
 
 import {
 	generateSamples,

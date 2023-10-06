@@ -1,3 +1,6 @@
+import {describe, it} from 'node:test';
+import {ok, throws} from 'node:assert';
+
 import {fixtureFile} from '../../util.spec';
 
 import {SecurityKeystorePkcs12} from './pkcs12';
@@ -10,16 +13,16 @@ describe('security/keystores/pkcs12', () => {
 		it('readFile', async () => {
 			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 
-			expect(keystore.getCertificate()).toBeTruthy();
-			expect(keystore.getPrivateKey()).toBeTruthy();
+			ok(keystore.getCertificate());
+			ok(keystore.getPrivateKey());
 		});
 
 		it('reset', async () => {
 			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
 			keystore.reset();
 
-			expect(() => keystore.getCertificate()).toThrow();
-			expect(() => keystore.getPrivateKey()).toThrow();
+			throws(() => keystore.getCertificate());
+			throws(() => keystore.getPrivateKey());
 		});
 	});
 });
