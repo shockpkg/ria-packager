@@ -9,7 +9,6 @@ import {
 import {dirname, join as pathJoin} from 'node:path';
 
 import {signatureSet} from 'portable-executable-signature';
-import {NtExecutable, NtExecutableResource, Resource, Data} from 'resedit';
 import {createImage} from '@rgba-image/create-image';
 import {fromPng, toPng} from '@rgba-image/png';
 import {lanczos} from '@rgba-image/lanczos';
@@ -30,89 +29,120 @@ const IMAGE_SCN_CNT_INITIALIZED_DATA = 0x00000040;
 const IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080;
 
 /**
- * Assert the given section is last section.
+ * Use resedit in CJS compatible way.
  *
- * @param exe NtExecutable instance.
- * @param index ImageDirectory index.
- * @param name Friendly name for messages.
+ * @returns Dependant classes and functions.
  */
-function exeAssertLastSection(exe: NtExecutable, index: number, name: string) {
-	const section = exe.getSectionByEntry(index);
-	if (!section) {
-		throw new Error(`Missing section: ${index}:${name}`);
-	}
-	const allSections = exe.getAllSections();
-	let last = allSections[0].info;
-	for (const {info} of allSections) {
-		if (info.pointerToRawData > last.pointerToRawData) {
-			last = info;
-		}
-	}
-	const {info} = section;
-	if (info.pointerToRawData < last.pointerToRawData) {
-		throw new Error(`Not the last section: ${index}:${name}`);
-	}
-}
+async function importResedit() {
+	const {NtExecutable, NtExecutableResource, Resource, Data} = await import(
+		'resedit'
+	);
+	return {
+		NtExecutable,
+		NtExecutableResource,
+		Resource,
+		Data,
 
-/**
- * Removes the reloc section if exists, fails if not the last section.
- *
- * @param exe NtExecutable instance.
- * @returns Restore function.
- */
-function exeRemoveReloc(exe: NtExecutable) {
-	const section = exe.getSectionByEntry(IDD_BASE_RELOCATION);
-	if (!section) {
-		return () => {};
-	}
-	const {size} =
-		exe.newHeader.optionalHeaderDataDirectory.get(IDD_BASE_RELOCATION);
-	exeAssertLastSection(exe, IDD_BASE_RELOCATION, '.reloc');
-	exe.setSectionByEntry(IDD_BASE_RELOCATION, null);
-	return () => {
-		exe.setSectionByEntry(IDD_BASE_RELOCATION, section);
-		const {virtualAddress} =
-			exe.newHeader.optionalHeaderDataDirectory.get(IDD_BASE_RELOCATION);
-		exe.newHeader.optionalHeaderDataDirectory.set(IDD_BASE_RELOCATION, {
-			virtualAddress,
-			size
-		});
+		/**
+		 * Assert the given section is last section.
+		 *
+		 * @param exe NtExecutable instance.
+		 * @param index ImageDirectory index.
+		 * @param name Friendly name for messages.
+		 */
+		exeAssertLastSection(
+			exe: (typeof NtExecutable)['prototype'],
+			index: number,
+			name: string
+		) {
+			const section = exe.getSectionByEntry(index);
+			if (!section) {
+				throw new Error(`Missing section: ${index}:${name}`);
+			}
+			const allSections = exe.getAllSections();
+			let last = allSections[0].info;
+			for (const {info} of allSections) {
+				if (info.pointerToRawData > last.pointerToRawData) {
+					last = info;
+				}
+			}
+			const {info} = section;
+			if (info.pointerToRawData < last.pointerToRawData) {
+				throw new Error(`Not the last section: ${index}:${name}`);
+			}
+		},
+
+		/**
+		 * Removes the reloc section if exists, fails if not the last section.
+		 *
+		 * @param exe NtExecutable instance.
+		 * @returns Restore function.
+		 */
+		exeRemoveReloc(exe: (typeof NtExecutable)['prototype']) {
+			const section = exe.getSectionByEntry(IDD_BASE_RELOCATION);
+			if (!section) {
+				return () => {};
+			}
+			const {size} =
+				exe.newHeader.optionalHeaderDataDirectory.get(
+					IDD_BASE_RELOCATION
+				);
+			this.exeAssertLastSection(exe, IDD_BASE_RELOCATION, '.reloc');
+			exe.setSectionByEntry(IDD_BASE_RELOCATION, null);
+			return () => {
+				exe.setSectionByEntry(IDD_BASE_RELOCATION, section);
+				const {virtualAddress} =
+					exe.newHeader.optionalHeaderDataDirectory.get(
+						IDD_BASE_RELOCATION
+					);
+				exe.newHeader.optionalHeaderDataDirectory.set(
+					IDD_BASE_RELOCATION,
+					{
+						virtualAddress,
+						size
+					}
+				);
+			};
+		},
+
+		/**
+		 * Update the sizes in EXE headers.
+		 *
+		 * @param exe NtExecutable instance.
+		 */
+		exeUpdateSizes(exe: (typeof NtExecutable)['prototype']) {
+			const {optionalHeader} = exe.newHeader;
+			const {fileAlignment} = optionalHeader;
+			let sizeOfCode = 0;
+			let sizeOfInitializedData = 0;
+			let sizeOfUninitializedData = 0;
+			for (const {
+				info: {characteristics, sizeOfRawData, virtualSize}
+			} of exe.getAllSections()) {
+				// eslint-disable-next-line no-bitwise
+				if (characteristics & IMAGE_SCN_CNT_CODE) {
+					sizeOfCode += sizeOfRawData;
+				}
+				// eslint-disable-next-line no-bitwise
+				if (characteristics & IMAGE_SCN_CNT_INITIALIZED_DATA) {
+					sizeOfInitializedData += Math.max(
+						sizeOfRawData,
+						align(virtualSize, fileAlignment)
+					);
+				}
+				// eslint-disable-next-line no-bitwise
+				if (characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA) {
+					sizeOfUninitializedData += align(
+						virtualSize,
+						fileAlignment
+					);
+				}
+			}
+			optionalHeader.sizeOfCode = sizeOfCode;
+			optionalHeader.sizeOfInitializedData = sizeOfInitializedData;
+			optionalHeader.sizeOfUninitializedData = sizeOfUninitializedData;
+		}
 	};
-}
-
-/**
- * Update the sizes in EXE headers.
- *
- * @param exe NtExecutable instance.
- */
-function exeUpdateSizes(exe: NtExecutable) {
-	const {optionalHeader} = exe.newHeader;
-	const {fileAlignment} = optionalHeader;
-	let sizeOfCode = 0;
-	let sizeOfInitializedData = 0;
-	let sizeOfUninitializedData = 0;
-	for (const {
-		info: {characteristics, sizeOfRawData, virtualSize}
-	} of exe.getAllSections()) {
-		// eslint-disable-next-line no-bitwise
-		if (characteristics & IMAGE_SCN_CNT_CODE) {
-			sizeOfCode += sizeOfRawData;
-		}
-		// eslint-disable-next-line no-bitwise
-		if (characteristics & IMAGE_SCN_CNT_INITIALIZED_DATA) {
-			sizeOfInitializedData += Math.max(
-				sizeOfRawData,
-				align(virtualSize, fileAlignment)
-			);
-		}
-		// eslint-disable-next-line no-bitwise
-		if (characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA) {
-			sizeOfUninitializedData += align(virtualSize, fileAlignment);
-		}
-	}
-	optionalHeader.sizeOfCode = sizeOfCode;
-	optionalHeader.sizeOfInitializedData = sizeOfInitializedData;
-	optionalHeader.sizeOfUninitializedData = sizeOfUninitializedData;
 }
 
 /**
@@ -453,25 +483,26 @@ export class PackagerBundleWindows extends PackagerBundle {
 		}
 
 		// Parse EXE.
+		const resedit = await importResedit();
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
-		const exe = NtExecutable.from(
+		const exe = resedit.NtExecutable.from(
 			signatureSet(await readFile(appBinaryPathFull), null, true, true)
 		);
 
 		// Remove reloc so rsrc can safely be resized.
-		const relocRestore = exeRemoveReloc(exe);
+		const relocRestore = resedit.exeRemoveReloc(exe);
 
 		// Remove rsrc to modify.
-		exeAssertLastSection(exe, IDD_RESOURCE, '.rsrc');
-		const rsrc = NtExecutableResource.from(exe);
+		resedit.exeAssertLastSection(exe, IDD_RESOURCE, '.rsrc');
+		const rsrc = resedit.NtExecutableResource.from(exe);
 		exe.setSectionByEntry(IDD_RESOURCE, null);
 
 		// Check that icons and version info not present.
-		if (Resource.IconGroupEntry.fromEntries(rsrc.entries).length) {
+		if (resedit.Resource.IconGroupEntry.fromEntries(rsrc.entries).length) {
 			throw new Error('Executable resources contains unexpected icons');
 		}
-		if (Resource.VersionInfo.fromEntries(rsrc.entries).length) {
+		if (resedit.Resource.VersionInfo.fromEntries(rsrc.entries).length) {
 			throw new Error(
 				'Executable resources contains unexpected version info'
 			);
@@ -485,13 +516,13 @@ export class PackagerBundleWindows extends PackagerBundle {
 		let resIdsNext = 100;
 		for (const iconData of icons) {
 			// Parse ico.
-			const ico = Data.IconFile.from(iconData);
+			const ico = resedit.Data.IconFile.from(iconData);
 
 			// Get the next icon group ID.
 			const iconGroupId = resIdsNext++;
 
 			// Add this group to the list.
-			Resource.IconGroupEntry.replaceIconsForResource(
+			resedit.Resource.IconGroupEntry.replaceIconsForResource(
 				rsrc.entries,
 				iconGroupId,
 				0,
@@ -513,7 +544,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 			}
 
 			// Read icon group entry.
-			const [iconGroup] = Resource.IconGroupEntry.fromEntries([
+			const [iconGroup] = resedit.Resource.IconGroupEntry.fromEntries([
 				entryInfo.resource
 			]);
 
@@ -533,7 +564,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Add the version info if any.
 		if (versionStrings) {
-			const versionInfo = Resource.VersionInfo.createEmpty();
+			const versionInfo = resedit.Resource.VersionInfo.createEmpty();
 			versionInfo.setStringValues(
 				{
 					lang,
@@ -576,7 +607,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		relocRestore();
 
 		// Update sizes.
-		exeUpdateSizes(exe);
+		resedit.exeUpdateSizes(exe);
 
 		// Write the EXE file.
 		await writeFile(appBinaryPathFull, Buffer.from(exe.generate()));
