@@ -107,17 +107,6 @@ export function align(i: number, align: number) {
 }
 
 /**
- * Get ArrayBuffer from Buffer.
- *
- * @param buffer Buffer instance.
- * @returns ArrayBuffer copy.
- */
-export function bufferToArrayBuffer(buffer: Readonly<Buffer>) {
-	const {byteOffset, byteLength} = buffer;
-	return buffer.buffer.slice(byteOffset, byteOffset + byteLength);
-}
-
-/**
  * Quote string for SH.
  *
  * @param str String to be quoted.

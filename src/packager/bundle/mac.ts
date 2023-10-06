@@ -833,7 +833,8 @@ export class PackagerBundleMac extends PackagerBundle {
 
 			// eslint-disable-next-line no-await-in-loop
 			const data = await readFile(this._getResourcePath(path));
-			icns.addFromPng(data, types);
+			// eslint-disable-next-line no-await-in-loop
+			await icns.addFromPng(data, types);
 		}
 		await writeFile(path, icns.encode());
 	}
@@ -866,7 +867,8 @@ export class PackagerBundleMac extends PackagerBundle {
 
 			// eslint-disable-next-line no-await-in-loop
 			const data = await readFile(this._getResourcePath(path));
-			icns.addFromPng(data, [type]);
+			// eslint-disable-next-line no-await-in-loop
+			await icns.addFromPng(data, [type]);
 		}
 		await writeFile(path, icns.encode());
 	}

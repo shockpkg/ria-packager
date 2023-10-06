@@ -16,12 +16,7 @@ import {lanczos} from '@rgba-image/lanczos';
 import {PathType} from '@shockpkg/archive-files';
 import {IconIco} from '@shockpkg/icon-encoder';
 
-import {
-	pathRelativeBaseMatch,
-	pathRelativeBase,
-	bufferToArrayBuffer,
-	align
-} from '../../util';
+import {pathRelativeBaseMatch, pathRelativeBase, align} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
 
@@ -461,12 +456,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		const appBinaryPath = this.getAppBinaryPath();
 		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
 		const exe = NtExecutable.from(
-			signatureSet(
-				bufferToArrayBuffer(await readFile(appBinaryPathFull)),
-				null,
-				true,
-				true
-			)
+			signatureSet(await readFile(appBinaryPathFull), null, true, true)
 		);
 
 		// Remove reloc so rsrc can safely be resized.
@@ -495,7 +485,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		let resIdsNext = 100;
 		for (const iconData of icons) {
 			// Parse ico.
-			const ico = Data.IconFile.from(bufferToArrayBuffer(iconData));
+			const ico = Data.IconFile.from(iconData);
 
 			// Get the next icon group ID.
 			const iconGroupId = resIdsNext++;
@@ -729,7 +719,8 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 			// eslint-disable-next-line no-await-in-loop
 			const data = await readFile(this._getResourcePath(path));
-			ico.addFromPng(data, false);
+			// eslint-disable-next-line no-await-in-loop
+			await ico.addFromPng(data, false);
 		}
 		return ico.encode();
 	}
@@ -755,13 +746,15 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 			// eslint-disable-next-line no-await-in-loop
 			const data = await readFile(this._getResourcePath(path));
-			ico.addFromPng(data, false);
+			// eslint-disable-next-line no-await-in-loop
+			await ico.addFromPng(data, false);
 		}
 
 		// Add a 256x256 icon if possible.
 		const icon256 = await this._getIcon256x256Data(icon);
 		if (icon256) {
-			ico.addFromPng(icon256, true);
+			// eslint-disable-next-line no-await-in-loop
+			await ico.addFromPng(icon256, true);
 		}
 		return ico.encode();
 	}
