@@ -1,3 +1,5 @@
+import {base64Decode} from '@shockpkg/plist-dom';
+
 import {SecurityCertificate} from '../certificate';
 
 /**
@@ -32,7 +34,7 @@ export class SecurityCertificateX509 extends SecurityCertificate {
 			.map(s => s.trim())
 			.filter(s => !s.startsWith('-'))
 			.join('');
-		return Buffer.from(base64, 'base64');
+		return base64Decode(base64);
 	}
 
 	/**

@@ -12,5 +12,5 @@ export abstract class SecurityCertificate {
 	 *
 	 * @returns Certchain data.
 	 */
-	public abstract encodeCertchain(): Buffer;
+	public abstract encodeCertchain(): Uint8Array;
 }

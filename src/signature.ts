@@ -496,9 +496,9 @@ export class Signature {
 		}
 
 		// Not exactly complete, but enough for self-signed anyway.
-		const certchain: Buffer[] = [];
-		const crlValidationCerts: Buffer[] = [];
-		const crls: Buffer[] = [];
+		const certchain: Uint8Array[] = [];
+		const crlValidationCerts: Uint8Array[] = [];
+		const crls: Uint8Array[] = [];
 
 		// Add the certificate data.
 		certchain.push(certificate.encodeCertchain());
