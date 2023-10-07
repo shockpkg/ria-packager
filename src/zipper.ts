@@ -17,7 +17,7 @@ export class ZipperEntryExtraField {
 	/**
 	 * Data for the type.
 	 */
-	public data: Buffer | null = null;
+	public data: Uint8Array = new Uint8Array(0);
 
 	/**
 	 * Zipper Entry Extra Field constructor.
@@ -25,18 +25,27 @@ export class ZipperEntryExtraField {
 	constructor() {}
 
 	/**
+	 * Get the encode size.
+	 *
+	 * @returns Encode size.
+	 */
+	public get size() {
+		return 4 + this.data.length;
+	}
+
+	/**
 	 * Encode type and data as buffer.
 	 *
 	 * @returns Buffer data.
 	 */
-	public toBuffer() {
-		const {data} = this;
-		const b = Buffer.alloc(4);
-		b.writeUInt16LE(this.type, 0);
-		if (data) {
-			b.writeUInt16LE(data.length, 2);
-		}
-		return data ? Buffer.concat([b, data]) : b;
+	public encode() {
+		const {data, type, size} = this;
+		const d = new Uint8Array(size);
+		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+		v.setUint16(0, type, true);
+		v.setUint16(2, data.length, true);
+		d.set(data, 4);
+		return d;
 	}
 
 	/**
@@ -97,10 +106,11 @@ export class ZipperEntryExtraField {
 	 * @param gid Group ID.
 	 */
 	protected _initInfoZipUnix2(local: boolean, uid: number, gid: number) {
-		const d = local ? Buffer.alloc(4) : null;
-		if (d) {
-			d.writeUInt16LE(uid, 0);
-			d.writeUInt16LE(gid, 2);
+		const d = local ? new Uint8Array(4) : new Uint8Array(0);
+		if (local) {
+			const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+			v.setUint16(0, uid, true);
+			v.setUint16(2, gid, true);
 		}
 
 		// Type: 'Ux'
@@ -123,8 +133,7 @@ export class ZipperEntryExtraField {
 		ctime: Readonly<Date> | number | null
 	) {
 		let flags = 0;
-		const flagsB = Buffer.alloc(1);
-		const buffers = [flagsB];
+		const times: number[] = [];
 		[mtime, atime, ctime].forEach((v, i) => {
 			if (v === null) {
 				return;
@@ -132,21 +141,25 @@ export class ZipperEntryExtraField {
 
 			// eslint-disable-next-line no-bitwise
 			flags |= 1 << i;
-			if (!local && !i) {
-				return;
+			if (local || i) {
+				times.push(
+					typeof v === 'number' ? v : Math.round(v.getTime() / 1000)
+				);
 			}
-
-			const time =
-				typeof v === 'number' ? v : Math.round(v.getTime() / 1000);
-			const b = Buffer.alloc(4);
-			b.writeUInt32LE(time, 0);
-			buffers.push(b);
 		});
-		flagsB.writeUInt8(flags, 0);
+
+		const d = new Uint8Array(1 + times.length * 4);
+		let i = 0;
+		d[i++] = flags;
+		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+		for (const time of times) {
+			v.setUint32(i, time, true);
+			i += 4;
+		}
 
 		// Type: 'UT'
 		this.type = 0x5455;
-		this.data = Buffer.concat(buffers);
+		this.data = d;
 	}
 }
 
@@ -308,7 +321,7 @@ export class ZipperEntry {
 	 * @returns Extra fields as data.
 	 */
 	public getExtraFieldsLocalBuffer() {
-		return Buffer.concat(this.extraFieldsLocal.map(e => e.toBuffer()));
+		return Buffer.concat(this.extraFieldsLocal.map(e => e.encode()));
 	}
 
 	/**
@@ -317,7 +330,7 @@ export class ZipperEntry {
 	 * @returns Extra fields as data.
 	 */
 	public getExtraFieldsCentralBuffer() {
-		return Buffer.concat(this.extraFieldsCentral.map(e => e.toBuffer()));
+		return Buffer.concat(this.extraFieldsCentral.map(e => e.encode()));
 	}
 
 	/**
