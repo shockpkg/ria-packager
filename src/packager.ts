@@ -18,7 +18,6 @@ import {HasherSha256} from './hasher/sha256';
  * Options for adding resources.
  */
 export interface IPackagerResourceOptions {
-	//
 	/**
 	 * Mark file as executable.
 	 */
