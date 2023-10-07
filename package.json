@@ -51,9 +51,6 @@
 	"copyright": "Copyright (c) 2019-2023 JrMasterModelBuilder",
 	"license": "MPL-2.0",
 	"dependencies": {
-		"@rgba-image/create-image": "^0.2.0",
-		"@rgba-image/lanczos": "^0.1.1",
-		"@rgba-image/png": "^0.1.1",
 		"@shockpkg/archive-files": "^3.0.0",
 		"@shockpkg/icon-encoder": "^3.1.1",
 		"@shockpkg/plist-dom": "^4.0.3",

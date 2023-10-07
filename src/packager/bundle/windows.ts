@@ -9,9 +9,6 @@ import {
 import {dirname, join as pathJoin} from 'node:path';
 
 import {signatureSet} from 'portable-executable-signature';
-import {createImage} from '@rgba-image/create-image';
-import {fromPng, toPng} from '@rgba-image/png';
-import {lanczos} from '@rgba-image/lanczos';
 import {PathType} from '@shockpkg/archive-files';
 import {IconIco} from '@shockpkg/icon-encoder';
 import {
@@ -21,7 +18,12 @@ import {
 	Data
 } from '@shockpkg/resedit';
 
-import {pathRelativeBaseMatch, pathRelativeBase, align} from '../../util';
+import {
+	pathRelativeBaseMatch,
+	pathRelativeBase,
+	align,
+	pngHalfSize
+} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
 
@@ -122,24 +124,6 @@ function exeUpdateSizes(exe: (typeof NtExecutable)['prototype']) {
 	optionalHeader.sizeOfCode = sizeOfCode;
 	optionalHeader.sizeOfInitializedData = sizeOfInitializedData;
 	optionalHeader.sizeOfUninitializedData = sizeOfUninitializedData;
-}
-
-/**
- * Helper function to resize images using lanczos algorithm.
- *
- * @param img Image object.
- * @param w Resized width.
- * @param h Resized height.
- * @returns Resized image.
- */
-function resizeLanczos(
-	img: Readonly<ReturnType<typeof createImage>>,
-	w: number,
-	h: number
-) {
-	const r = createImage(w, h);
-	lanczos(img, r, 0, 0, img.width, img.height, 0, 0, w, h);
-	return r;
 }
 
 /**
@@ -775,27 +759,21 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 * Uses the lanczos algorithm to resize icon down.
 	 *
 	 * @param icon Icon info.
-	 * @returns Encoded icon.
+	 * @returns Encoded icon or null.
 	 */
 	protected async _getIcon256x256Data(icon: Readonly<IIcon>) {
 		const {image512x512, image1024x1024} = icon;
 
-		// Resize 512x512 icon down if available.
-		if (image512x512) {
-			const d = await readFile(this._getResourcePath(image512x512));
-			return toPng(resizeLanczos(fromPng(d), 256, 256));
+		// Resize 512x512 or 1024x1024 icon down if available.
+		let image = image512x512;
+		let x = 1;
+		if (!image) {
+			image = image1024x1024;
+			x = 2;
 		}
 
-		// Resize 1024x1024 icon down if available.
-		// Do this in two half-res steps to minorly improve quality.
-		if (image1024x1024) {
-			const d = await readFile(this._getResourcePath(image1024x1024));
-			return toPng(
-				resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)
-			);
-		}
-
-		// Otherwise no icon to resize down.
-		return null;
+		return image
+			? pngHalfSize(await readFile(this._getResourcePath(image)), x)
+			: null;
 	}
 }
