@@ -225,7 +225,7 @@ export class Signature {
 		const manifest = this._templated('packageManifest', [
 			this._packageManifest.join('')
 		]);
-		const digest = this._hashSha256(Buffer.from(manifest, 'utf8'));
+		const digest = this._hashSha256(new TextEncoder().encode(manifest));
 		const signed = this._templated('SignedInfo', [
 			this._base64Encode(digest)
 		]);
@@ -254,7 +254,7 @@ export class Signature {
 
 		const keyInfo = this._buildKeyInfo();
 		const signature = keyPrivate.sign(
-			Buffer.from(signedInfo, 'utf8'),
+			new TextEncoder().encode(signedInfo),
 			'sha1'
 		);
 
@@ -286,7 +286,7 @@ export class Signature {
 
 		const timestamper = this._createSecurityTimestamper(timestampUrl);
 		const timestamp = await timestamper.timestamp(
-			this._hashSha1(Buffer.from(message, 'utf8')),
+			this._hashSha1(new TextEncoder().encode(message)),
 			'sha1'
 		);
 
