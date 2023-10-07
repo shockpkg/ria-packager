@@ -260,26 +260,21 @@ export class PackagerBundleMac extends PackagerBundle {
 	}
 
 	/**
-	 * Get PkgInfo data if any specified, from data or file.
+	 * Get PkgInfo data if from data or file, else default.
 	 *
-	 * @returns PkgInfo data or null.
+	 * @returns PkgInfo data.
 	 */
 	public async getPkgInfoData() {
 		const {pkgInfoData, pkgInfoFile} = this;
 		if (typeof pkgInfoData === 'string') {
 			return new TextEncoder().encode(pkgInfoData);
 		}
-		return pkgInfoData || (pkgInfoFile ? readFile(pkgInfoFile) : null);
-	}
-
-	/**
-	 * Get PkgInfo data if any specified, or default.
-	 *
-	 * @returns PkgInfo data.
-	 */
-	public async getPkgInfoDataOrDefault() {
-		const r = await this.getPkgInfoData();
-		return r || new TextEncoder().encode('APPL????');
+		return (
+			pkgInfoData ||
+			(pkgInfoFile
+				? readFile(pkgInfoFile)
+				: new TextEncoder().encode('APPL????'))
+		);
 	}
 
 	/**
@@ -688,7 +683,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * Write out PkgInfo file.
 	 */
 	protected async _writePkgInfo() {
-		const data = await this.getPkgInfoDataOrDefault();
+		const data = await this.getPkgInfoData();
 		const path = pathJoin(this.path, this.appPkgInfoPath);
 		await writeFile(path, data);
 	}
