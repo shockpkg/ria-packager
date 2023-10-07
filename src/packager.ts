@@ -297,7 +297,7 @@ export abstract class Packager {
 	 */
 	public async addResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions> | null = null
 	) {
 		if (!this._isOpen) {
@@ -386,8 +386,8 @@ export abstract class Packager {
 	 * @returns Mimetype buffer.
 	 */
 	protected _getMimetypeData() {
-		// The mimetype if UTF-8.
-		return Buffer.from(this.mimetype, 'utf8');
+		// The mimetype is UTF-8.
+		return new TextEncoder().encode(this.mimetype);
 	}
 
 	/**
@@ -482,7 +482,7 @@ export abstract class Packager {
 	 */
 	protected async _addMetaResourceHash() {
 		const path = this._metaResourceHashPath;
-		const data = Buffer.alloc(this._hasher.bytes);
+		const data = new Uint8Array(this._hasher.bytes);
 		await this._addResource(path, data, {}, false, false);
 	}
 
@@ -491,7 +491,7 @@ export abstract class Packager {
 	 */
 	protected async _addMetaResourceDebug() {
 		const path = this._metaResourceDebugPath;
-		const data = Buffer.alloc(0);
+		const data = new Uint8Array(0);
 		await this._addResource(path, data, {}, true, true);
 	}
 
