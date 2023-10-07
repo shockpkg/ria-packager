@@ -118,7 +118,7 @@ export class SecurityTimestamper {
 		);
 
 		// Could be set to some bytes.
-		// ie: reqPolicy = new forge.util.DataBuffer(Buffer.from('test'));
+		// ie: reqPolicy = 'some bytes';
 		const reqPolicy = null;
 		const asn1ReqPolicy = reqPolicy
 			? forge.asn1.create(
