@@ -93,7 +93,10 @@ void describe('signature', () => {
 
 			// Check that code matches expected code.
 			const expected = await readFile(expectedTimestampNo);
-			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
+			strictEqual(
+				new TextDecoder().decode(encoded),
+				expected.toString('utf8')
+			);
 		});
 
 		void it('Timestamp: REPLAY', async () => {
@@ -117,7 +120,10 @@ void describe('signature', () => {
 
 			// Check that code matches expected code.
 			const expected = await readFile(expectedTimestampYes);
-			strictEqual(encoded.toString('utf8'), expected.toString('utf8'));
+			strictEqual(
+				new TextDecoder().decode(encoded),
+				expected.toString('utf8')
+			);
 		});
 
 		void it('Timestamp: REAL', async () => {
@@ -140,7 +146,9 @@ void describe('signature', () => {
 
 			// Check that code without timestamp matched expected code.
 			const encoded = signature.encode();
-			const extracted = extractTimestamp(encoded.toString('utf8'));
+			const extracted = extractTimestamp(
+				new TextDecoder().decode(encoded)
+			);
 
 			const expected = await readFile(expectedTimestampNo);
 			strictEqual(extracted.removed, expected.toString('utf8'));
@@ -158,9 +166,12 @@ void describe('signature', () => {
 			const expectedNo = await readFile(expectedTimestampNo);
 			const expectedYes = await readFile(expectedTimestampYes);
 
-			const expectedEncode = (data: Buffer, timestamp: boolean) => {
+			const expectedEncode = (data: Uint8Array, timestamp: boolean) => {
 				const expected = timestamp ? expectedYes : expectedNo;
-				strictEqual(data.toString('utf8'), expected.toString('utf8'));
+				strictEqual(
+					new TextDecoder().decode(data),
+					expected.toString('utf8')
+				);
 			};
 
 			const itter = async () => {

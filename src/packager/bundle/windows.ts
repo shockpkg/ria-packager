@@ -398,7 +398,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 */
 	protected async _writeResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions>
 	) {
 		// Write resource to file.

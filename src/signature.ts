@@ -199,7 +199,7 @@ export class Signature {
 	 * @param uri File URI.
 	 * @param data File data.
 	 */
-	public addFile(uri: string, data: Readonly<Buffer>) {
+	public addFile(uri: string, data: Readonly<Uint8Array>) {
 		if (this._signedInfo || this._manifestDigest) {
 			throw new Error('Cannot call after: digest');
 		}
@@ -312,15 +312,14 @@ export class Signature {
 
 		const timestamp = this._timestamp ? this._createTimestampXml() : '';
 
-		return Buffer.from(
+		return new TextEncoder().encode(
 			this._templated('PackageSignature', [
 				this._base64Encode(manifestDigest),
 				this._base64Encode(signature),
 				keyInfo,
 				this._packageManifest.join(''),
 				timestamp
-			]),
-			'utf8'
+			])
 		);
 	}
 

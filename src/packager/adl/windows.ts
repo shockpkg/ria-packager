@@ -94,7 +94,7 @@ export class PackagerAdlWindows extends PackagerAdl {
 	 */
 	protected async _writeResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions>
 	) {
 		// Write resource to file.

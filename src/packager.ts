@@ -414,7 +414,7 @@ export abstract class Packager {
 	 */
 	protected async _addResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions>,
 		hashed: boolean,
 		signed: boolean
@@ -585,7 +585,7 @@ export abstract class Packager {
 	 */
 	protected abstract _writeResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions>
 	): Promise<void>;
 }
