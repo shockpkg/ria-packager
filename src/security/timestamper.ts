@@ -162,7 +162,9 @@ export class SecurityTimestamper {
 			].filter(Boolean) as forge.asn1.Asn1[]
 		);
 
-		return Buffer.from(forge.asn1.toDer(tsaReqDef).toHex(), 'hex');
+		return Buffer.from(
+			forge.util.binary.raw.decode(forge.asn1.toDer(tsaReqDef).bytes())
+		);
 	}
 
 	/**
@@ -266,7 +268,9 @@ export class SecurityTimestamper {
 			throw new Error('Missing PKI TSTInfo');
 		}
 
-		return Buffer.from(forge.asn1.toDer(tst).toHex(), 'hex');
+		return Buffer.from(
+			forge.util.binary.raw.decode(forge.asn1.toDer(tst).bytes())
+		);
 	}
 
 	/**
