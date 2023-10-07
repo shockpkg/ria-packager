@@ -1,3 +1,5 @@
+import {base64Encode} from '@shockpkg/plist-dom';
+
 import {SecurityCertificate} from './security/certificate';
 import {SecurityKeyPrivate} from './security/key/private';
 import {SecurityTimestamper} from './security/timestamper';
@@ -161,7 +163,7 @@ export class Signature {
 	/**
 	 * Timestamp info.
 	 */
-	protected _timestamp: Buffer | null = null;
+	protected _timestamp: Uint8Array | null = null;
 
 	/**
 	 * Signature constructor.
@@ -283,11 +285,9 @@ export class Signature {
 		]);
 
 		const timestamper = this._createSecurityTimestamper(timestampUrl);
-		const timestamp = Buffer.from(
-			await timestamper.timestamp(
-				this._hashSha1(Buffer.from(message, 'utf8')),
-				'sha1'
-			)
+		const timestamp = await timestamper.timestamp(
+			this._hashSha1(Buffer.from(message, 'utf8')),
+			'sha1'
 		);
 
 		this._timestamp = timestamp;
@@ -422,18 +422,13 @@ export class Signature {
 	 * @returns Encoded data.
 	 */
 	protected _base64Encode(
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		chunk = 76,
 		delimit = '\n'
 	) {
-		let b64 = data.toString('base64');
 		const chunks = [];
-		while (b64.length > chunk) {
+		for (let b64 = base64Encode(data); b64; b64 = b64.substring(chunk)) {
 			chunks.push(b64.substring(0, chunk));
-			b64 = b64.substring(chunk);
-		}
-		if (b64.length) {
-			chunks.push(b64);
 		}
 		return chunks.join(delimit);
 	}
