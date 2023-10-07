@@ -3,33 +3,7 @@
 import {Writable} from 'node:stream';
 import {deflateRaw} from 'node:zlib';
 
-import bufferCrc32 from 'buffer-crc32';
-
-/**
- * Convert Date object or timestamp to DOS date and time values.
- *
- * @param date Data object or timestamp.
- * @returns Date and time values.
- */
-function dateToDosTime(date: Readonly<Date> | number) {
-	const d = typeof date === 'number' ? new Date(date * 1000) : date;
-	return {
-		date:
-			// eslint-disable-next-line no-bitwise
-			(d.getDate() & 0x1f) |
-			// eslint-disable-next-line no-bitwise
-			(((d.getMonth() + 1) & 0xf) << 5) |
-			// eslint-disable-next-line no-bitwise
-			(((d.getFullYear() - 1980) & 0x7f) << 9),
-		time:
-			// eslint-disable-next-line no-bitwise
-			Math.floor(d.getSeconds() / 2) |
-			// eslint-disable-next-line no-bitwise
-			((d.getMinutes() & 0x3f) << 5) |
-			// eslint-disable-next-line no-bitwise
-			((d.getHours() & 0x1f) << 11)
-	};
-}
+import {crc32} from '@shockpkg/icon-encoder';
 
 /**
  * Zipper Entry Extra Field object.
@@ -430,7 +404,7 @@ export class ZipperEntry {
 		if (!data) {
 			return null;
 		}
-		const crc32 = this._bufferCrc32(data);
+		const crc32 = this._crc32(data);
 
 		if (compress === false) {
 			this.crc32 = crc32;
@@ -501,7 +475,23 @@ export class ZipperEntry {
 	 * @returns DOS time.
 	 */
 	protected _dateToDosTime(date: Readonly<Date> | number) {
-		return dateToDosTime(date);
+		const d = typeof date === 'number' ? new Date(date * 1000) : date;
+		return {
+			date:
+				// eslint-disable-next-line no-bitwise
+				(d.getDate() & 0x1f) |
+				// eslint-disable-next-line no-bitwise
+				(((d.getMonth() + 1) & 0xf) << 5) |
+				// eslint-disable-next-line no-bitwise
+				(((d.getFullYear() - 1980) & 0x7f) << 9),
+			time:
+				// eslint-disable-next-line no-bitwise
+				Math.floor(d.getSeconds() / 2) |
+				// eslint-disable-next-line no-bitwise
+				((d.getMinutes() & 0x3f) << 5) |
+				// eslint-disable-next-line no-bitwise
+				((d.getHours() & 0x1f) << 11)
+		};
 	}
 
 	/**
@@ -510,9 +500,9 @@ export class ZipperEntry {
 	 * @param data Data to be hashed.
 	 * @returns CRC32 hash.
 	 */
-	protected _bufferCrc32(data: Readonly<Buffer>) {
-		// Cast to number to ensure no dependency on library types.
-		return bufferCrc32.unsigned(data) as unknown as number;
+	protected _crc32(data: Readonly<Uint8Array>) {
+		// eslint-disable-next-line no-bitwise
+		return crc32(data) >>> 0;
 	}
 
 	/**
