@@ -1,6 +1,7 @@
 import forge from 'node-forge';
 
 import {NAME, VERSION} from '../meta';
+import {IFetch} from '../types';
 
 /**
  * SecurityTimestamper object.
@@ -18,6 +19,12 @@ export class SecurityTimestamper {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		'User-Agent': `${NAME}/${VERSION}`
 	};
+
+	/**
+	 * A fetch-like interface requiring only a sebset of features.
+	 */
+	public fetch: IFetch | null =
+		typeof fetch === 'undefined' ? null : (fetch as IFetch);
 
 	/**
 	 * SecurityTimestamper constructor.
@@ -49,8 +56,7 @@ export class SecurityTimestamper {
 	 */
 	protected async _sendRequest(message: Readonly<Buffer>) {
 		const {url, headers} = this;
-		const {default: fetch} = await import('node-fetch');
-		const response = await fetch(url, {
+		const response = await global.fetch(url, {
 			method: 'POST',
 			headers,
 			body: message
@@ -263,5 +269,18 @@ export class SecurityTimestamper {
 		}
 
 		return Buffer.from(forge.asn1.toDer(tst).toHex(), 'hex');
+	}
+
+	/**
+	 * Ensure fetch-like function is set.
+	 *
+	 * @returns The fetch-like function.
+	 */
+	protected _ensureFetch(): IFetch {
+		const {fetch} = this;
+		if (!fetch) {
+			throw new Error('Default fetch not available');
+		}
+		return fetch;
 	}
 }

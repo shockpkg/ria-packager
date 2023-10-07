@@ -1,4 +1,5 @@
 export * from './meta';
+export * from './types';
 export * from './util';
 export * from './hasher';
 export * from './hasher/';
