@@ -36,7 +36,7 @@ export class ZipperEntryExtraField {
 	/**
 	 * Encode type and data as buffer.
 	 *
-	 * @returns Buffer data.
+	 * @returns Encoded data.
 	 */
 	public encode() {
 		const {data, type} = this;
@@ -639,30 +639,6 @@ export class Zipper {
 	}
 
 	/**
-	 * Get directory buffer data.
-	 *
-	 * @returns Directory data.
-	 */
-	public getDirectoryBuffer() {
-		const {_offset, entries, comment} = this;
-		const directoryData = Buffer.concat(
-			entries.map(e => e.encodeCentral())
-		);
-
-		const end = Buffer.alloc(22);
-		end.writeUInt32LE(this.signature, 0);
-		end.writeUInt16LE(0, 4);
-		end.writeUInt16LE(0, 6);
-		end.writeUInt16LE(entries.length, 8);
-		end.writeUInt16LE(entries.length, 10);
-		end.writeUInt32LE(directoryData.length, 12);
-		end.writeUInt32LE(_offset, 16);
-		end.writeUInt16LE(comment.length, 20);
-
-		return Buffer.concat([directoryData, end, comment]);
-	}
-
-	/**
 	 * Add Entry and any associated data.
 	 *
 	 * @param entry Entry object.
@@ -693,7 +669,39 @@ export class Zipper {
 	 * Close stream.
 	 */
 	public async close() {
-		await this._writeOutput(this.getDirectoryBuffer());
+		const {_offset, entries, comment} = this;
+		let size = 0;
+		for (const e of entries) {
+			const d = e.encodeCentral();
+			// eslint-disable-next-line no-await-in-loop
+			await this._writeOutput(d);
+			size += d.length;
+		}
+
+		const d = new Uint8Array(22 + comment.length);
+		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+		let i = 0;
+
+		v.setUint32(i, this.signature, true);
+		i += 4;
+		v.setUint16(i, 0, true);
+		i += 2;
+		v.setUint16(i, 0, true);
+		i += 2;
+		v.setUint16(i, entries.length, true);
+		i += 2;
+		v.setUint16(i, entries.length, true);
+		i += 2;
+		v.setUint32(i, size, true);
+		i += 4;
+		v.setUint32(i, _offset, true);
+		i += 4;
+		v.setUint16(i, comment.length, true);
+		i += 2;
+		d.set(comment, i);
+
+		await this._writeOutput(d);
+
 		await new Promise<void>((resolve, reject) => {
 			this._output.end((err: Error) => {
 				if (err) {
