@@ -588,7 +588,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		exeUpdateSizes(exe);
 
 		// Write the EXE file.
-		await writeFile(appBinaryPathFull, Buffer.from(exe.generate()));
+		await writeFile(appBinaryPathFull, new Uint8Array(exe.generate()));
 	}
 
 	/**
@@ -783,17 +783,15 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Resize 512x512 icon down if available.
 		if (image512x512) {
 			const d = await readFile(this._getResourcePath(image512x512));
-			return Buffer.from(toPng(resizeLanczos(fromPng(d), 256, 256)));
+			return toPng(resizeLanczos(fromPng(d), 256, 256));
 		}
 
 		// Resize 1024x1024 icon down if available.
 		// Do this in two half-res steps to minorly improve quality.
 		if (image1024x1024) {
 			const d = await readFile(this._getResourcePath(image1024x1024));
-			return Buffer.from(
-				toPng(
-					resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)
-				)
+			return toPng(
+				resizeLanczos(resizeLanczos(fromPng(d), 512, 512), 256, 256)
 			);
 		}
 
