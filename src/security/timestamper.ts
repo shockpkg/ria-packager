@@ -80,8 +80,6 @@ export class SecurityTimestamper {
 			throw new Error(`Unsupported digest algorithm: ${digest}`);
 		}
 
-		const hashedMessage = forge.util.decode64(digested.toString('base64'));
-
 		const certReq = true;
 
 		const hashAlgoDef = forge.asn1.create(
@@ -114,7 +112,7 @@ export class SecurityTimestamper {
 					forge.asn1.Class.UNIVERSAL,
 					forge.asn1.Type.OCTETSTRING,
 					false,
-					hashedMessage
+					String.fromCharCode(...digested)
 				)
 			]
 		);
@@ -175,7 +173,7 @@ export class SecurityTimestamper {
 	 */
 	protected _decodeResponse(response: Readonly<Buffer>) {
 		const object = forge.asn1.fromDer(
-			forge.util.decode64(response.toString('base64'))
+			new forge.util.ByteStringBuffer(response)
 		);
 
 		const validator = {
