@@ -190,7 +190,7 @@ export abstract class PackagerAir extends Packager {
 	 */
 	protected async _writeResource(
 		destination: string,
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		options: Readonly<IPackagerResourceOptions>
 	) {
 		const zipper = this._activeZipper();

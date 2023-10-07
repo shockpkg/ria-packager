@@ -512,13 +512,13 @@ export class ZipperEntry {
 	 * @returns Compressed data.
 	 */
 	protected async _zlibDeflateRaw(data: Readonly<Uint8Array>) {
-		return new Promise<Buffer>((resolve, reject) => {
-			deflateRaw(data, (err, comp) => {
+		return new Promise<Uint8Array>((resolve, reject) => {
+			deflateRaw(data, (err, d) => {
 				if (err) {
 					reject(err);
 					return;
 				}
-				resolve(comp);
+				resolve(new Uint8Array(d.buffer, d.byteOffset, d.byteLength));
 			});
 		});
 	}
