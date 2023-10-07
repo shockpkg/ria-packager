@@ -37,12 +37,12 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 		}
 
 		const md = forge.md.sha1.create();
-		md.update(forge.util.decode64(data.toString('base64')));
+		md.update(String.fromCharCode(...data));
 		const signature = (
 			privateKey as {
 				sign: (md: forge.md.MessageDigest, algo: string) => string;
 			}
 		).sign(md, 'RSASSA-PKCS1-V1_5');
-		return Buffer.from(forge.util.encode64(signature), 'base64');
+		return Buffer.from(forge.util.binary.raw.decode(signature));
 	}
 }
