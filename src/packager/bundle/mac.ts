@@ -16,11 +16,6 @@ import {pathRelativeBaseMatch, pathRelativeBase} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
 
-export interface IFileTypeIcon {
-	data?: Buffer | null;
-	file?: string | null;
-}
-
 /**
  * PackagerBundleMac object.
  */
@@ -47,7 +42,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * Info.plist data.
 	 */
-	public infoPlistData: string | Readonly<Buffer> | null = null;
+	public infoPlistData: string | Readonly<Uint8Array> | null = null;
 
 	/**
 	 * PkgInfo file.
@@ -57,7 +52,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * PkgInfo data.
 	 */
-	public pkgInfoData: string | Readonly<Buffer> | null = null;
+	public pkgInfoData: string | Readonly<Uint8Array> | null = null;
 
 	/**
 	 * Remove unnecessary OS files from older versions of the framework.
@@ -239,11 +234,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	public async getInfoPlistDocument() {
 		const {infoPlistData, infoPlistFile} = this;
-		let xml;
+		let xml: string;
 		if (typeof infoPlistData === 'string') {
 			xml = infoPlistData;
 		} else if (infoPlistData) {
-			xml = infoPlistData.toString('utf8');
+			xml = new TextDecoder().decode(infoPlistData);
 		} else if (infoPlistFile) {
 			xml = await readFile(infoPlistFile, 'utf8');
 		} else {
@@ -272,7 +267,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	public async getPkgInfoData() {
 		const {pkgInfoData, pkgInfoFile} = this;
 		if (typeof pkgInfoData === 'string') {
-			return Buffer.from(pkgInfoData, 'ascii');
+			return new TextEncoder().encode(pkgInfoData);
 		}
 		return pkgInfoData || (pkgInfoFile ? readFile(pkgInfoFile) : null);
 	}
@@ -284,7 +279,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	public async getPkgInfoDataOrDefault() {
 		const r = await this.getPkgInfoData();
-		return r || Buffer.from('APPL????', 'ascii');
+		return r || new TextEncoder().encode('APPL????');
 	}
 
 	/**
