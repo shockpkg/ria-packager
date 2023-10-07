@@ -29,7 +29,7 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	 * @param digest Digest algorithm.
 	 * @returns The signature.
 	 */
-	public sign(data: Readonly<Buffer>, digest: string) {
+	public sign(data: Readonly<Uint8Array>, digest: string) {
 		const privateKey = forge.pki.privateKeyFromPem(this._privateKey);
 		digest = digest.toLowerCase();
 		if (digest !== 'sha1') {
@@ -43,6 +43,6 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 				sign: (md: forge.md.MessageDigest, algo: string) => string;
 			}
 		).sign(md, 'RSASSA-PKCS1-V1_5');
-		return Buffer.from(forge.util.binary.raw.decode(signature));
+		return forge.util.binary.raw.decode(signature);
 	}
 }

@@ -18,5 +18,8 @@ export abstract class SecurityKeyPrivate extends SecurityKey {
 	 * @param digest Digest algorithm.
 	 * @returns The signature.
 	 */
-	public abstract sign(data: Readonly<Buffer>, digest: string): Buffer;
+	public abstract sign(
+		data: Readonly<Uint8Array>,
+		digest: string
+	): Uint8Array;
 }

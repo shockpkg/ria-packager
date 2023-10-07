@@ -153,7 +153,7 @@ export class Signature {
 	/**
 	 * Signature digest.
 	 */
-	protected _signature: Buffer | null = null;
+	protected _signature: Uint8Array | null = null;
 
 	/**
 	 * Key info.
