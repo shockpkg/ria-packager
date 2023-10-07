@@ -12,7 +12,7 @@ const pass = 'password';
 void describe('security/keystores/pkcs12', () => {
 	void describe('Signature', () => {
 		void it('readFile', async () => {
-			const keystore = SecurityKeystorePkcs12.fromData(
+			const keystore = SecurityKeystorePkcs12.decode(
 				await readFile(file),
 				pass
 			);
@@ -22,7 +22,7 @@ void describe('security/keystores/pkcs12', () => {
 		});
 
 		void it('reset', async () => {
-			const keystore = SecurityKeystorePkcs12.fromData(
+			const keystore = SecurityKeystorePkcs12.decode(
 				await readFile(file),
 				pass
 			);

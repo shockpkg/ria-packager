@@ -38,7 +38,7 @@ import {
 } from '@shockpkg/ria-packager';
 
 const packager = new PackagerAirInstaller('application.air');
-packager.keystore = SecurityKeystorePkcs12.fromData(
+packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
 	'password'
 );
@@ -70,7 +70,7 @@ import {
 
 const packager = new PackagerAdlWindows('application');
 packager.sdkPath = 'airsdk-win.zip';
-packager.keystore = SecurityKeystorePkcs12.fromData(
+packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
 	'password'
 );
@@ -109,7 +109,7 @@ import {
 
 const packager = new PackagerBundleMac('application.app');
 packager.sdkPath = 'airsdk-mac.zip';
-packager.keystore = SecurityKeystorePkcs12.fromData(
+packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
 	'password'
 );

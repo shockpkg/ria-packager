@@ -214,7 +214,7 @@ export function versionBefore(version: number[], major: number, minor: number) {
 }
 
 export async function fixtureKeystoreRead() {
-	return SecurityKeystorePkcs12.fromData(
+	return SecurityKeystorePkcs12.decode(
 		await readFile(fixtureFile('key.p12')),
 		'password'
 	);

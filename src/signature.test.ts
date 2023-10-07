@@ -46,7 +46,7 @@ function extractTimestamp(xml: string) {
 }
 
 async function getKeystore() {
-	return SecurityKeystorePkcs12.fromData(
+	return SecurityKeystorePkcs12.decode(
 		await readFile(fixtureFile('signature', 'key.p12')),
 		'password'
 	);

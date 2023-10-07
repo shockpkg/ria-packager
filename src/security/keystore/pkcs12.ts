@@ -60,15 +60,12 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	}
 
 	/**
-	 * Read data from buffer.
+	 * Decode from data buffer.
 	 *
 	 * @param data File data.
 	 * @param password The password if necessary.
 	 */
-	public readData(
-		data: Readonly<Uint8Array>,
-		password: string | null = null
-	) {
+	public decode(data: Readonly<Uint8Array>, password: string | null = null) {
 		this.reset();
 
 		const asn1 = forge.asn1.fromDer(new forge.util.ByteStringBuffer(data));
@@ -152,19 +149,19 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	}
 
 	/**
-	 * Create from data.
+	 * Create from data buffer.
 	 *
 	 * @param data File data.
 	 * @param password The password if necessary.
 	 * @returns New instance.
 	 */
-	public static fromData(
+	public static decode(
 		data: Readonly<Uint8Array>,
 		password: string | null = null
 	) {
 		const T = this.prototype.constructor as typeof SecurityKeystorePkcs12;
 		const r = new T();
-		r.readData(data, password);
+		r.decode(data, password);
 		return r;
 	}
 }
