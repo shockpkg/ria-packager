@@ -143,7 +143,7 @@ export class Signature {
 	/**
 	 * Manifest digest.
 	 */
-	protected _manifestDiest: Buffer | null = null;
+	protected _manifestDigest: Uint8Array | null = null;
 
 	/**
 	 * Signed data.
@@ -186,7 +186,7 @@ export class Signature {
 	 */
 	public reset() {
 		this._packageManifest = [];
-		this._manifestDiest = null;
+		this._manifestDigest = null;
 		this._signedInfo = null;
 		this._signature = null;
 		this._keyInfo = null;
@@ -200,7 +200,7 @@ export class Signature {
 	 * @param data File data.
 	 */
 	public addFile(uri: string, data: Readonly<Buffer>) {
-		if (this._signedInfo || this._manifestDiest) {
+		if (this._signedInfo || this._manifestDigest) {
 			throw new Error('Cannot call after: digest');
 		}
 
@@ -218,7 +218,7 @@ export class Signature {
 	 * Digest contents.
 	 */
 	public digest() {
-		if (this._signedInfo || this._manifestDiest) {
+		if (this._signedInfo || this._manifestDigest) {
 			throw new Error('Already called');
 		}
 
@@ -230,7 +230,7 @@ export class Signature {
 			this._base64Encode(digest)
 		]);
 
-		this._manifestDiest = digest;
+		this._manifestDigest = digest;
 		this._signedInfo = signed;
 	}
 
@@ -304,9 +304,9 @@ export class Signature {
 			throw new Error('Must call after: sign');
 		}
 
-		const manifestDiest = this._manifestDiest;
+		const manifestDigest = this._manifestDigest;
 		const keyInfo = this._keyInfo;
-		if (!manifestDiest || keyInfo === null) {
+		if (!manifestDigest || keyInfo === null) {
 			throw new Error('Internal error');
 		}
 
@@ -314,7 +314,7 @@ export class Signature {
 
 		return Buffer.from(
 			this._templated('PackageSignature', [
-				this._base64Encode(manifestDiest),
+				this._base64Encode(manifestDigest),
 				this._base64Encode(signature),
 				keyInfo,
 				this._packageManifest.join(''),
@@ -395,7 +395,7 @@ export class Signature {
 	 * @param data Data to be hashed.
 	 * @returns Hash digest.
 	 */
-	protected _hashSha1(data: Readonly<Buffer>) {
+	protected _hashSha1(data: Readonly<Uint8Array>) {
 		const hasher = this._createHasherSha1();
 		hasher.update(data);
 		return hasher.digest();
@@ -407,7 +407,7 @@ export class Signature {
 	 * @param data Data to be hashed.
 	 * @returns Hash digest.
 	 */
-	protected _hashSha256(data: Readonly<Buffer>) {
+	protected _hashSha256(data: Readonly<Uint8Array>) {
 		const hasher = this._createHasherSha256();
 		hasher.update(data);
 		return hasher.digest();

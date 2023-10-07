@@ -393,7 +393,7 @@ export class ZipperEntry {
 	 * @returns Resulting data, or null if no data passed.
 	 */
 	public async initData(
-		data: Readonly<Buffer> | null,
+		data: Readonly<Uint8Array> | null,
 		compress: boolean | null = null
 	) {
 		this.compression = 0;
@@ -511,7 +511,7 @@ export class ZipperEntry {
 	 * @param data Data to be compressed.
 	 * @returns Compressed data.
 	 */
-	protected async _zlibDeflateRaw(data: Readonly<Buffer>) {
+	protected async _zlibDeflateRaw(data: Readonly<Uint8Array>) {
 		return new Promise<Buffer>((resolve, reject) => {
 			deflateRaw(data, (err, comp) => {
 				if (err) {
@@ -613,7 +613,7 @@ export class Zipper {
 	 */
 	public async addEntry(
 		entry: ZipperEntry,
-		data: Readonly<Buffer> | null = null
+		data: Readonly<Uint8Array> | null = null
 	) {
 		const {_offset} = this;
 		const {sizeCompressed} = entry;
@@ -653,7 +653,7 @@ export class Zipper {
 	 *
 	 * @param data Data buffer.
 	 */
-	protected async _writeOutput(data: Readonly<Buffer>) {
+	protected async _writeOutput(data: Readonly<Uint8Array>) {
 		await new Promise<void>((resolve, reject) => {
 			this._output.write(data, err => {
 				if (err) {

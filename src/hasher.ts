@@ -24,12 +24,12 @@ export abstract class Hasher {
 	 *
 	 * @param data Data to be hashed.
 	 */
-	public abstract update(data: Readonly<Buffer>): void;
+	public abstract update(data: Readonly<Uint8Array>): void;
 
 	/**
 	 * Finish digest.
 	 *
 	 * @returns Digest data.
 	 */
-	public abstract digest(): Buffer;
+	public abstract digest(): Uint8Array;
 }

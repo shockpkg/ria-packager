@@ -39,7 +39,7 @@ export class HasherSha1 extends Hasher {
 	 *
 	 * @param data Data to be hashed.
 	 */
-	public update(data: Readonly<Buffer>) {
+	public update(data: Readonly<Uint8Array>) {
 		this._hash.update(data);
 	}
 
@@ -48,7 +48,8 @@ export class HasherSha1 extends Hasher {
 	 *
 	 * @returns Digest data.
 	 */
-	public digest(): Buffer {
-		return this._hash.digest();
+	public digest() {
+		const d = this._hash.digest();
+		return new Uint8Array(d.buffer, d.byteOffset, d.byteLength);
 	}
 }
