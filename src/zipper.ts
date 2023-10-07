@@ -603,7 +603,7 @@ export class Zipper {
 	/**
 	 * Archive comment.
 	 */
-	public comment = '';
+	public comment = new Uint8Array(0);
 
 	/**
 	 * Added entries.
@@ -639,25 +639,15 @@ export class Zipper {
 	}
 
 	/**
-	 * Get comment as data.
-	 *
-	 * @returns Comment data.
-	 */
-	public getCommentBuffer() {
-		return Buffer.from(this.comment, 'utf8');
-	}
-
-	/**
 	 * Get directory buffer data.
 	 *
 	 * @returns Directory data.
 	 */
 	public getDirectoryBuffer() {
-		const {_offset, entries} = this;
+		const {_offset, entries, comment} = this;
 		const directoryData = Buffer.concat(
 			entries.map(e => e.encodeCentral())
 		);
-		const commentBuffer = this.getCommentBuffer();
 
 		const end = Buffer.alloc(22);
 		end.writeUInt32LE(this.signature, 0);
@@ -667,9 +657,9 @@ export class Zipper {
 		end.writeUInt16LE(entries.length, 10);
 		end.writeUInt32LE(directoryData.length, 12);
 		end.writeUInt32LE(_offset, 16);
-		end.writeUInt16LE(commentBuffer.length, 20);
+		end.writeUInt16LE(comment.length, 20);
 
-		return Buffer.concat([directoryData, end, commentBuffer]);
+		return Buffer.concat([directoryData, end, comment]);
 	}
 
 	/**

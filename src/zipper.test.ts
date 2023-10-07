@@ -60,7 +60,7 @@ void describe('zipper', () => {
 		void it('stream writting', async () => {
 			const out = new BufferCollector();
 			const zipper = new Zipper(out);
-			zipper.comment = 'archive comment';
+			zipper.comment = Buffer.from('archive comment');
 
 			{
 				const entry = zipper.createEntry();
