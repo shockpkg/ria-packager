@@ -51,7 +51,7 @@ export abstract class Packager {
 	/**
 	 * File and directory names to exclude when added a directory.
 	 */
-	public excludes = [/^\./, /^ehthumbs\.db$/, /^Thumbs\.db$/];
+	public excludes = [/^\./, /^ehthumbs\.db$/i, /^Thumbs\.db$/i];
 
 	/**
 	 * Output path.
