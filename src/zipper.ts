@@ -29,7 +29,7 @@ export class ZipperEntryExtraField {
 	 *
 	 * @returns Encode size.
 	 */
-	public get size() {
+	public sizeof() {
 		return 4 + this.data.length;
 	}
 
@@ -39,8 +39,8 @@ export class ZipperEntryExtraField {
 	 * @returns Buffer data.
 	 */
 	public encode() {
-		const {data, type, size} = this;
-		const d = new Uint8Array(size);
+		const {data, type} = this;
+		const d = new Uint8Array(this.sizeof());
 		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
 		v.setUint16(0, type, true);
 		v.setUint16(2, data.length, true);
@@ -255,12 +255,12 @@ export class ZipperEntry {
 	/**
 	 * Entry path.
 	 */
-	public path = Buffer.alloc(0);
+	public path = new Uint8Array(0);
 
 	/**
 	 * Entry comment.
 	 */
-	public comment = Buffer.alloc(0);
+	public comment = new Uint8Array(0);
 
 	/**
 	 * Extra fields, local header.
@@ -276,6 +276,55 @@ export class ZipperEntry {
 	 * Zipper Entry constructor.
 	 */
 	constructor() {}
+
+	/**
+	 * Get the file record extra fields size.
+	 *
+	 * @returns Extra fields size.
+	 */
+	public sizeofExtraFieldsLocal() {
+		let r = 0;
+		for (const ef of this.extraFieldsLocal) {
+			r += ef.sizeof();
+		}
+		return r;
+	}
+
+	/**
+	 * Get the file record extra fields size.
+	 *
+	 * @returns Extra fields size.
+	 */
+	public sizeofLocal() {
+		return 30 + this.path.length + this.sizeofExtraFieldsLocal();
+	}
+
+	/**
+	 * Get the file record extra fields size.
+	 *
+	 * @returns Extra fields size.
+	 */
+	public sizeofExtraFieldsCentral() {
+		let r = 0;
+		for (const ef of this.extraFieldsCentral) {
+			r += ef.sizeof();
+		}
+		return r;
+	}
+
+	/**
+	 * Get the central record extra fields size.
+	 *
+	 * @returns Extra fields size.
+	 */
+	public sizeofCentral() {
+		return (
+			46 +
+			this.path.length +
+			this.comment.length +
+			this.sizeofExtraFieldsCentral()
+		);
+	}
 
 	/**
 	 * Create new ZipperEntryExtraField object.
@@ -298,80 +347,109 @@ export class ZipperEntry {
 	}
 
 	/**
-	 * Get the file record extra fields as data.
+	 * Get local record data.
 	 *
-	 * @returns Extra fields as data.
-	 */
-	public getExtraFieldsLocalBuffer() {
-		return Buffer.concat(this.extraFieldsLocal.map(e => e.encode()));
-	}
-
-	/**
-	 * Get the director entry extra fields as data.
-	 *
-	 * @returns Extra fields as data.
-	 */
-	public getExtraFieldsCentralBuffer() {
-		return Buffer.concat(this.extraFieldsCentral.map(e => e.encode()));
-	}
-
-	/**
-	 * Get file record data.
-	 *
-	 * @returns File record data.
+	 * @returns Local record data.
 	 */
 	public getLocalBuffer() {
-		const {path} = this;
-		const extraFieldsBuffer = this.getExtraFieldsLocalBuffer();
+		const {path, extraFieldsLocal} = this;
 
-		const head = Buffer.alloc(30);
-		head.writeUInt32LE(this.signatureLocal, 0);
-		head.writeUInt8(this.extractVersion, 4);
-		head.writeUInt8(this.extractHostOS, 5);
-		head.writeUInt16LE(this.flags, 6);
-		head.writeUInt16LE(this.compression, 8);
-		head.writeUInt16LE(this.time, 10);
-		head.writeUInt16LE(this.date, 12);
-		head.writeUInt32LE(this.crc32, 14);
-		head.writeUInt32LE(this.sizeCompressed, 18);
-		head.writeUInt32LE(this.sizeUncompressed, 22);
-		head.writeUInt16LE(path.length, 26);
-		head.writeUInt16LE(extraFieldsBuffer.length, 28);
+		const d = new Uint8Array(this.sizeofLocal());
+		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+		let i = 0;
 
-		return Buffer.concat([head, path, extraFieldsBuffer]);
+		v.setUint32(i, this.signatureLocal, true);
+		i += 4;
+		v.setUint8(i++, this.extractVersion);
+		v.setUint8(i++, this.extractHostOS);
+		v.setUint16(i, this.flags, true);
+		i += 2;
+		v.setUint16(i, this.compression, true);
+		i += 2;
+		v.setUint16(i, this.time, true);
+		i += 2;
+		v.setUint16(i, this.date, true);
+		i += 2;
+		v.setUint32(i, this.crc32, true);
+		i += 4;
+		v.setUint32(i, this.sizeCompressed, true);
+		i += 4;
+		v.setUint32(i, this.sizeUncompressed, true);
+		i += 4;
+		v.setUint16(i, path.length, true);
+		i += 2;
+		v.setUint16(i, this.sizeofExtraFieldsLocal(), true);
+		i += 2;
+
+		d.set(path, i);
+		i += path.length;
+
+		for (const ef of extraFieldsLocal) {
+			const e = ef.encode();
+			d.set(e, i);
+			i += e.length;
+		}
+		return d;
 	}
 
 	/**
-	 * Get directory entry data.
+	 * Get central record data.
 	 *
-	 * @returns Directory entry data.
+	 * @returns Central entry data.
 	 */
 	public getCentralBuffer() {
-		const {path, comment} = this;
-		const extraFieldsBuffer = this.getExtraFieldsCentralBuffer();
+		const {path, comment, extraFieldsCentral} = this;
+		const d = new Uint8Array(this.sizeofCentral());
+		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
+		let i = 0;
 
-		const head = Buffer.alloc(46);
-		head.writeUInt32LE(this.signatureCentral, 0);
-		head.writeUInt8(this.createVersion, 4);
-		head.writeUInt8(this.createHostOS, 5);
-		head.writeUInt8(this.extractVersion, 6);
-		head.writeUInt8(this.extractHostOS, 7);
-		head.writeUInt16LE(this.flags, 8);
-		head.writeUInt16LE(this.compression, 10);
-		head.writeUInt16LE(this.time, 12);
-		head.writeUInt16LE(this.date, 14);
-		head.writeUInt32LE(this.crc32, 16);
-		head.writeUInt32LE(this.sizeCompressed, 20);
-		head.writeUInt32LE(this.sizeUncompressed, 24);
-		head.writeUInt16LE(path.length, 28);
-		head.writeUInt16LE(extraFieldsBuffer.length, 30);
-		head.writeUInt16LE(comment.length, 32);
-		head.writeUInt16LE(this.diskNumberStart, 34);
-		head.writeUInt16LE(this.internalAttributes, 36);
-		head.writeUInt32LE(this.externalAttributes, 38);
-		head.writeUInt32LE(this.headerOffsetLocal, 42);
+		v.setUint32(i, this.signatureCentral, true);
+		i += 4;
+		v.setUint8(i++, this.createVersion);
+		v.setUint8(i++, this.createHostOS);
+		v.setUint8(i++, this.extractVersion);
+		v.setUint8(i++, this.extractHostOS);
+		v.setUint16(i, this.flags, true);
+		i += 2;
+		v.setUint16(i, this.compression, true);
+		i += 2;
+		v.setUint16(i, this.time, true);
+		i += 2;
+		v.setUint16(i, this.date, true);
+		i += 2;
+		v.setUint32(i, this.crc32, true);
+		i += 4;
+		v.setUint32(i, this.sizeCompressed, true);
+		i += 4;
+		v.setUint32(i, this.sizeUncompressed, true);
+		i += 4;
+		v.setUint16(i, path.length, true);
+		i += 2;
+		v.setUint16(i, this.sizeofExtraFieldsCentral(), true);
+		i += 2;
+		v.setUint16(i, comment.length, true);
+		i += 2;
+		v.setUint16(i, this.diskNumberStart, true);
+		i += 2;
+		v.setUint16(i, this.internalAttributes, true);
+		i += 2;
+		v.setUint32(i, this.externalAttributes, true);
+		i += 4;
+		v.setUint32(i, this.headerOffsetLocal, true);
+		i += 4;
 
-		return Buffer.concat([head, path, extraFieldsBuffer, comment]);
+		d.set(path, i);
+		i += path.length;
+
+		for (const ef of extraFieldsCentral) {
+			const e = ef.encode();
+			d.set(e, i);
+			i += e.length;
+		}
+
+		d.set(comment, i);
+
+		return d;
 	}
 
 	/**
