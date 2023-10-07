@@ -1,5 +1,6 @@
 import {describe, it} from 'node:test';
 import {ok, throws} from 'node:assert';
+import {readFile} from 'node:fs/promises';
 
 import {fixtureFile} from '../../util.spec';
 
@@ -11,14 +12,20 @@ const pass = 'password';
 void describe('security/keystores/pkcs12', () => {
 	void describe('Signature', () => {
 		void it('readFile', async () => {
-			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
+			const keystore = SecurityKeystorePkcs12.fromData(
+				await readFile(file),
+				pass
+			);
 
 			ok(keystore.getCertificate());
 			ok(keystore.getPrivateKey());
 		});
 
 		void it('reset', async () => {
-			const keystore = await SecurityKeystorePkcs12.fromFile(file, pass);
+			const keystore = SecurityKeystorePkcs12.fromData(
+				await readFile(file),
+				pass
+			);
 			keystore.reset();
 
 			throws(() => keystore.getCertificate());

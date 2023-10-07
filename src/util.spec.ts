@@ -1,5 +1,5 @@
 import {statSync, readdirSync} from 'node:fs';
-import {mkdir, rm} from 'node:fs/promises';
+import {mkdir, readFile, rm} from 'node:fs/promises';
 import {join as pathJoin} from 'node:path';
 
 import {Manager} from '@shockpkg/core';
@@ -214,7 +214,10 @@ export function versionBefore(version: number[], major: number, minor: number) {
 }
 
 export async function fixtureKeystoreRead() {
-	return SecurityKeystorePkcs12.fromFile(fixtureFile('key.p12'), 'password');
+	return SecurityKeystorePkcs12.fromData(
+		await readFile(fixtureFile('key.p12')),
+		'password'
+	);
 }
 
 export const platformIsMac = process.platform === 'darwin';

@@ -31,14 +31,15 @@ Currently there is no option for creating license files for packaging HARMAN SDK
 ## Installer
 
 ```js
+import {readFile} from 'node:fs';
 import {
 	PackagerAirInstaller,
 	SecurityKeystorePkcs12
 } from '@shockpkg/ria-packager';
 
 const packager = new PackagerAirInstaller('application.air');
-packager.keystore = await SecurityKeystorePkcs12.fromFile(
-	'key.p12',
+packager.keystore = SecurityKeystorePkcs12.fromData(
+	await readFile('key.p12'),
 	'password'
 );
 packager.timestampUrl = 'http://timestamp.digicert.com/';
@@ -61,6 +62,7 @@ await packager.withFile('src/application-app.xml', async packager => {
 ### Windows
 
 ```js
+import {readFile} from 'node:fs';
 import {
 	PackagerBundleWindows,
 	SecurityKeystorePkcs12
@@ -68,8 +70,8 @@ import {
 
 const packager = new PackagerAdlWindows('application');
 packager.sdkPath = 'airsdk-win.zip';
-packager.keystore = await SecurityKeystorePkcs12.fromFile(
-	'key.p12',
+packager.keystore = SecurityKeystorePkcs12.fromData(
+	await readFile('key.p12'),
 	'password'
 );
 packager.timestampUrl = 'http://timestamp.digicert.com/';
@@ -99,6 +101,7 @@ await packager.withFile('src/application-app.xml', async packager => {
 -   The default icon format does not include the obsolete `ICN#` and `ics#` encoded icons.
 
 ```js
+import {readFile} from 'node:fs';
 import {
 	PackagerBundleMac,
 	SecurityKeystorePkcs12
@@ -106,8 +109,8 @@ import {
 
 const packager = new PackagerBundleMac('application.app');
 packager.sdkPath = 'airsdk-mac.zip';
-packager.keystore = await SecurityKeystorePkcs12.fromFile(
-	'key.p12',
+packager.keystore = SecurityKeystorePkcs12.fromData(
+	await readFile('key.p12'),
 	'password'
 );
 packager.timestampUrl = 'http://timestamp.digicert.com/';

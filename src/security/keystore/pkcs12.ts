@@ -1,5 +1,3 @@
-import {readFile} from 'node:fs/promises';
-
 import forge from 'node-forge';
 
 import {SecurityCertificateX509} from '../certificate/x509';
@@ -67,7 +65,10 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 * @param data File data.
 	 * @param password The password if necessary.
 	 */
-	public readData(data: Readonly<Buffer>, password: string | null = null) {
+	public readData(
+		data: Readonly<Uint8Array>,
+		password: string | null = null
+	) {
 		this.reset();
 
 		const asn1 = forge.asn1.fromDer(new forge.util.ByteStringBuffer(data));
@@ -131,17 +132,6 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	}
 
 	/**
-	 * Read data from file.
-	 *
-	 * @param path File path.
-	 * @param password The password if necessary.
-	 */
-	public async readFile(path: string, password: string | null = null) {
-		const data = await readFile(path);
-		this.readData(data, password);
-	}
-
-	/**
 	 * Create CertificateX509.
 	 *
 	 * @param certificate X509 certificate in PEM format.
@@ -169,26 +159,12 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	 * @returns New instance.
 	 */
 	public static fromData(
-		data: Readonly<Buffer>,
+		data: Readonly<Uint8Array>,
 		password: string | null = null
 	) {
 		const T = this.prototype.constructor as typeof SecurityKeystorePkcs12;
 		const r = new T();
 		r.readData(data, password);
-		return r;
-	}
-
-	/**
-	 * Create from file.
-	 *
-	 * @param path File path.
-	 * @param password The password if necessary.
-	 * @returns New instance.
-	 */
-	public static async fromFile(path: string, password: string | null = null) {
-		const T = this.prototype.constructor as typeof SecurityKeystorePkcs12;
-		const r = new T();
-		await r.readFile(path, password);
 		return r;
 	}
 }
