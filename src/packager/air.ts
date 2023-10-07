@@ -169,8 +169,10 @@ export abstract class PackagerAir extends Packager {
 		// Encode the local file header.
 		const localBuffer = hashEntry.getLocalBuffer();
 
-		// Merge both the header and digest together.
-		const data = Buffer.concat([localBuffer, hashDigest]);
+		// Merge both the header and digest together, write all at once.
+		const data = new Uint8Array(localBuffer.length + hashDigest.length);
+		data.set(localBuffer);
+		data.set(hashDigest, localBuffer.length);
 
 		// Write that buffer at the offset.
 		const f = await open(this.path, 'r+');
