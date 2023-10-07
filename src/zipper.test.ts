@@ -60,12 +60,14 @@ void describe('zipper', () => {
 		void it('stream writting', async () => {
 			const out = new BufferCollector();
 			const zipper = new Zipper(out);
-			zipper.comment = Buffer.from('archive comment');
+			zipper.comment = new TextEncoder().encode('archive comment');
 
 			{
 				const entry = zipper.createEntry();
 
-				const data = await entry.initData(Buffer.from('aaaaaaaaaaaa'));
+				const data = await entry.initData(
+					new TextEncoder().encode('aaaaaaaaaaaa')
+				);
 				await zipper.addEntry(entry, data);
 
 				const {buffer, offset} = out.flushBuffer();
@@ -87,8 +89,8 @@ void describe('zipper', () => {
 				const dateUTC = new Date('2019-12-25 12:34:56 UTC');
 
 				const entry = zipper.createEntry();
-				entry.path = Buffer.from('b/b/b.txt');
-				entry.comment = Buffer.from('comment b');
+				entry.path = new TextEncoder().encode('b/b/b.txt');
+				entry.comment = new TextEncoder().encode('comment b');
 				entry.setDate(dateLocal);
 
 				entry.extractVersion = 0x12;
@@ -102,7 +104,10 @@ void describe('zipper', () => {
 				entry.addExtraFieldsExtendedTimestamp(dateUTC);
 				entry.addExtraFieldsInfoZipUnix2(1234, 5678);
 
-				const data = await entry.initData(Buffer.from('b'), true);
+				const data = await entry.initData(
+					new TextEncoder().encode('b'),
+					true
+				);
 				await zipper.addEntry(entry, data);
 
 				const {buffer, offset} = out.flushBuffer();
@@ -121,7 +126,7 @@ void describe('zipper', () => {
 
 			{
 				const entry = zipper.createEntry();
-				entry.path = Buffer.from('c/c/c.txt');
+				entry.path = new TextEncoder().encode('c/c/c.txt');
 
 				entry.addExtraFieldsExtendedTimestamp();
 				entry.addExtraFieldsInfoZipUnix2();
@@ -131,16 +136,16 @@ void describe('zipper', () => {
 
 				const exL = entry.createExtraField();
 				exL.type = 0xffff;
-				exL.data = Buffer.from('local');
+				exL.data = new TextEncoder().encode('local');
 				entry.extraFieldsLocal.push(exL);
 
 				const exC = entry.createExtraField();
 				exC.type = 0xffff;
-				exC.data = Buffer.from('central');
+				exC.data = new TextEncoder().encode('central');
 				entry.extraFieldsCentral.push(exC);
 
 				const data = await entry.initData(
-					Buffer.from('cccccccccccc'),
+					new TextEncoder().encode('cccccccccccc'),
 					false
 				);
 				await zipper.addEntry(entry, data);

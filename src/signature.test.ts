@@ -10,9 +10,9 @@ import {Signature} from './signature';
 
 const mimetype = 'application/vnd.adobe.air-application-installer-package+zip';
 
-const files: [string, () => Promise<Buffer>][] = [
+const files: [string, () => Promise<Uint8Array>][] = [
 	// eslint-disable-next-line @typescript-eslint/require-await
-	['mimetype', async () => Buffer.from(mimetype, 'utf8')],
+	['mimetype', async () => new TextEncoder().encode(mimetype)],
 	[
 		'META-INF/AIR/application.xml',
 		async () => readFile(fixtureFile('signature', 'application.xml'))
@@ -194,13 +194,13 @@ void describe('signature', () => {
 				signature.digest();
 
 				throws(() => signature.digest());
-				throws(() => signature.addFile('a', Buffer.alloc(4)));
+				throws(() => signature.addFile('a', new Uint8Array(4)));
 				await expectError(async () => signature.timestamp());
 				throws(() => signature.encode());
 
 				signature.sign();
 
-				throws(() => signature.addFile('b', Buffer.alloc(4)));
+				throws(() => signature.addFile('b', new Uint8Array(4)));
 				throws(() => signature.digest());
 				throws(() => signature.sign());
 
@@ -208,7 +208,7 @@ void describe('signature', () => {
 
 				await signature.timestamp();
 
-				throws(() => signature.addFile('c', Buffer.alloc(4)));
+				throws(() => signature.addFile('c', new Uint8Array(4)));
 				throws(() => signature.digest());
 				throws(() => signature.sign());
 				await expectError(async () => signature.timestamp());
