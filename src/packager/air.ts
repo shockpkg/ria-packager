@@ -201,7 +201,7 @@ export abstract class PackagerAir extends Packager {
 		const mtime = options.mtime || new Date();
 
 		const entry = zipper.createEntry();
-		entry.path = destination;
+		entry.path = Buffer.from(destination);
 		entry.createVersion = this._zipCreateVersion;
 		entry.createHostOS = this._zipCreateHostOS;
 		entry.internalAttributes = this._zipInternalAttributes;

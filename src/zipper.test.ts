@@ -87,8 +87,8 @@ void describe('zipper', () => {
 				const dateUTC = new Date('2019-12-25 12:34:56 UTC');
 
 				const entry = zipper.createEntry();
-				entry.path = 'b/b/b.txt';
-				entry.comment = 'comment b';
+				entry.path = Buffer.from('b/b/b.txt');
+				entry.comment = Buffer.from('comment b');
 				entry.setDate(dateLocal);
 
 				entry.extractVersion = 0x12;
@@ -121,7 +121,7 @@ void describe('zipper', () => {
 
 			{
 				const entry = zipper.createEntry();
-				entry.path = 'c/c/c.txt';
+				entry.path = Buffer.from('c/c/c.txt');
 
 				entry.addExtraFieldsExtendedTimestamp();
 				entry.addExtraFieldsInfoZipUnix2();

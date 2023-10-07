@@ -255,12 +255,12 @@ export class ZipperEntry {
 	/**
 	 * Entry path.
 	 */
-	public path = '';
+	public path = Buffer.alloc(0);
 
 	/**
 	 * Entry comment.
 	 */
-	public comment = '';
+	public comment = Buffer.alloc(0);
 
 	/**
 	 * Extra fields, local header.
@@ -298,24 +298,6 @@ export class ZipperEntry {
 	}
 
 	/**
-	 * Get path as data.
-	 *
-	 * @returns Path as data buffer.
-	 */
-	public getPathBuffer() {
-		return Buffer.from(this.path, 'utf8');
-	}
-
-	/**
-	 * Get comment as data.
-	 *
-	 * @returns Comment as data buffer.
-	 */
-	public getCommentBuffer() {
-		return Buffer.from(this.comment, 'utf8');
-	}
-
-	/**
 	 * Get the file record extra fields as data.
 	 *
 	 * @returns Extra fields as data.
@@ -339,7 +321,7 @@ export class ZipperEntry {
 	 * @returns File record data.
 	 */
 	public getLocalBuffer() {
-		const pathBuffer = this.getPathBuffer();
+		const {path} = this;
 		const extraFieldsBuffer = this.getExtraFieldsLocalBuffer();
 
 		const head = Buffer.alloc(30);
@@ -353,10 +335,10 @@ export class ZipperEntry {
 		head.writeUInt32LE(this.crc32, 14);
 		head.writeUInt32LE(this.sizeCompressed, 18);
 		head.writeUInt32LE(this.sizeUncompressed, 22);
-		head.writeUInt16LE(pathBuffer.length, 26);
+		head.writeUInt16LE(path.length, 26);
 		head.writeUInt16LE(extraFieldsBuffer.length, 28);
 
-		return Buffer.concat([head, pathBuffer, extraFieldsBuffer]);
+		return Buffer.concat([head, path, extraFieldsBuffer]);
 	}
 
 	/**
@@ -365,9 +347,8 @@ export class ZipperEntry {
 	 * @returns Directory entry data.
 	 */
 	public getCentralBuffer() {
-		const pathBuffer = this.getPathBuffer();
+		const {path, comment} = this;
 		const extraFieldsBuffer = this.getExtraFieldsCentralBuffer();
-		const commentBuffer = this.getCommentBuffer();
 
 		const head = Buffer.alloc(46);
 		head.writeUInt32LE(this.signatureCentral, 0);
@@ -382,20 +363,15 @@ export class ZipperEntry {
 		head.writeUInt32LE(this.crc32, 16);
 		head.writeUInt32LE(this.sizeCompressed, 20);
 		head.writeUInt32LE(this.sizeUncompressed, 24);
-		head.writeUInt16LE(pathBuffer.length, 28);
+		head.writeUInt16LE(path.length, 28);
 		head.writeUInt16LE(extraFieldsBuffer.length, 30);
-		head.writeUInt16LE(commentBuffer.length, 32);
+		head.writeUInt16LE(comment.length, 32);
 		head.writeUInt16LE(this.diskNumberStart, 34);
 		head.writeUInt16LE(this.internalAttributes, 36);
 		head.writeUInt32LE(this.externalAttributes, 38);
 		head.writeUInt32LE(this.headerOffsetLocal, 42);
 
-		return Buffer.concat([
-			head,
-			pathBuffer,
-			extraFieldsBuffer,
-			commentBuffer
-		]);
+		return Buffer.concat([head, path, extraFieldsBuffer, comment]);
 	}
 
 	/**
