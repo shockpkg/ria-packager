@@ -42,7 +42,7 @@ export class SecurityTimestamper {
 	 * @param digest Digest algorithm.
 	 * @returns Timestamp data.
 	 */
-	public async timestamp(digested: Readonly<Buffer>, digest: string) {
+	public async timestamp(digested: Readonly<Uint8Array>, digest: string) {
 		const encodedRequest = this._encodeRequest(digested, digest);
 		const response = await this._sendRequest(encodedRequest);
 		return this._decodeResponse(response);
@@ -54,7 +54,7 @@ export class SecurityTimestamper {
 	 * @param message Encoded message.
 	 * @returns Encoded response.
 	 */
-	protected async _sendRequest(message: Readonly<Buffer>) {
+	protected async _sendRequest(message: Readonly<Uint8Array>) {
 		const {url, headers} = this;
 		const response = await global.fetch(url, {
 			method: 'POST',
@@ -64,7 +64,7 @@ export class SecurityTimestamper {
 		if (response.status !== 200) {
 			throw new Error(`Status code: ${response.status}: ${url}`);
 		}
-		return Buffer.from(await response.arrayBuffer());
+		return new Uint8Array(await response.arrayBuffer());
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class SecurityTimestamper {
 	 * @param digest Digest algorithm.
 	 * @returns Encoded request.
 	 */
-	protected _encodeRequest(digested: Readonly<Buffer>, digest: string) {
+	protected _encodeRequest(digested: Readonly<Uint8Array>, digest: string) {
 		digest = digest.toLowerCase();
 		if (digest !== 'sha1') {
 			throw new Error(`Unsupported digest algorithm: ${digest}`);
@@ -162,8 +162,8 @@ export class SecurityTimestamper {
 			].filter(Boolean) as forge.asn1.Asn1[]
 		);
 
-		return Buffer.from(
-			forge.util.binary.raw.decode(forge.asn1.toDer(tsaReqDef).bytes())
+		return forge.util.binary.raw.decode(
+			forge.asn1.toDer(tsaReqDef).bytes()
 		);
 	}
 
@@ -173,7 +173,7 @@ export class SecurityTimestamper {
 	 * @param response Encoded response.
 	 * @returns Decoded response.
 	 */
-	protected _decodeResponse(response: Readonly<Buffer>) {
+	protected _decodeResponse(response: Readonly<Uint8Array>) {
 		const object = forge.asn1.fromDer(
 			new forge.util.ByteStringBuffer(response)
 		);
@@ -268,9 +268,7 @@ export class SecurityTimestamper {
 			throw new Error('Missing PKI TSTInfo');
 		}
 
-		return Buffer.from(
-			forge.util.binary.raw.decode(forge.asn1.toDer(tst).bytes())
-		);
+		return forge.util.binary.raw.decode(forge.asn1.toDer(tst).bytes());
 	}
 
 	/**

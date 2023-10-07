@@ -283,9 +283,11 @@ export class Signature {
 		]);
 
 		const timestamper = this._createSecurityTimestamper(timestampUrl);
-		const timestamp = await timestamper.timestamp(
-			this._hashSha1(Buffer.from(message, 'utf8')),
-			'sha1'
+		const timestamp = Buffer.from(
+			await timestamper.timestamp(
+				this._hashSha1(Buffer.from(message, 'utf8')),
+				'sha1'
+			)
 		);
 
 		this._timestamp = timestamp;

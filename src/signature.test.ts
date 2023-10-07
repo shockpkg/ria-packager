@@ -56,7 +56,7 @@ async function getKeystore() {
 class SignatureReplay extends Signature {
 	protected _createSecurityTimestamper(timestampUrl: string) {
 		return new (class extends SecurityTimestamper {
-			protected async _sendRequest(message: Buffer) {
+			protected async _sendRequest(message: Readonly<Uint8Array>) {
 				return readFile(replayTimestampBody);
 			}
 		})(timestampUrl);
