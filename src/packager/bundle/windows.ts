@@ -286,7 +286,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected async _open(applicationData: Readonly<Buffer>) {
+	protected async _open(applicationData: Readonly<Uint8Array>) {
 		const {frameworkCleanHelpers} = this;
 
 		const appBinaryPath = this.getAppBinaryPath();

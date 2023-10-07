@@ -103,7 +103,7 @@ export abstract class Packager {
 	 *
 	 * @param applicationData XML data.
 	 */
-	public async open(applicationData: Readonly<Buffer>) {
+	public async open(applicationData: Readonly<Uint8Array>) {
 		if (this._isOpen) {
 			throw new Error('Already open');
 		}
@@ -160,7 +160,7 @@ export abstract class Packager {
 	 * @returns Return value of the async function.
 	 */
 	public async with<T>(
-		applicationData: Readonly<Buffer>,
+		applicationData: Readonly<Uint8Array>,
 		func: (self: this) => Promise<T>
 	): Promise<T> {
 		await this.open(applicationData);
@@ -436,7 +436,9 @@ export abstract class Packager {
 	 *
 	 * @param applicationData XML data.
 	 */
-	protected async _addMetaResourcesStart(applicationData: Readonly<Buffer>) {
+	protected async _addMetaResourcesStart(
+		applicationData: Readonly<Uint8Array>
+	) {
 		await this._addMetaResourceMimetype();
 		await this._addMetaResourceApplication(applicationData);
 		await this._addMetaResourceHash();
@@ -469,7 +471,7 @@ export abstract class Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected async _addMetaResourceApplication(
-		applicationData: Readonly<Buffer>
+		applicationData: Readonly<Uint8Array>
 	) {
 		const path = this._metaResourceApplicationPath;
 		await this._addResource(path, applicationData, {}, true, true);
@@ -518,7 +520,7 @@ export abstract class Packager {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected _applicationInfoInit(applicationData: Readonly<Buffer>) {
+	protected _applicationInfoInit(applicationData: Readonly<Uint8Array>) {
 		// Do nothing.
 	}
 
@@ -569,7 +571,9 @@ export abstract class Packager {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected abstract _open(applicationData: Readonly<Buffer>): Promise<void>;
+	protected abstract _open(
+		applicationData: Readonly<Uint8Array>
+	): Promise<void>;
 
 	/**
 	 * Close implementation.

@@ -136,7 +136,7 @@ export abstract class PackagerAir extends Packager {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected async _open(applicationData: Readonly<Buffer>) {
+	protected async _open(applicationData: Readonly<Uint8Array>) {
 		const {path} = this;
 		await mkdir(dirname(path), {recursive: true});
 		this._zipper = this._createZipper(createWriteStream(path));

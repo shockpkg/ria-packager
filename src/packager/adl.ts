@@ -136,7 +136,7 @@ export abstract class PackagerAdl extends Packager {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected async _open(applicationData: Readonly<Buffer>) {
+	protected async _open(applicationData: Readonly<Uint8Array>) {
 		const {required, optional} = this._sdkComponents();
 
 		const components = [

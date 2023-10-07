@@ -171,11 +171,11 @@ export abstract class PackagerBundle extends Packager {
 	 *
 	 * @param applicationData The application descriptor data.
 	 */
-	protected _applicationInfoInit(applicationData: Readonly<Buffer>) {
+	protected _applicationInfoInit(applicationData: Readonly<Uint8Array>) {
 		super._applicationInfoInit(applicationData);
 
 		const doc = new DOMParser().parseFromString(
-			applicationData.toString('utf8'),
+			new TextDecoder().decode(applicationData),
 			'text/xml'
 		);
 		const root = doc.documentElement;
