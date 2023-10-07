@@ -38,7 +38,7 @@ export interface IFetchResponse {
 	headers: IFetchResponseHeaders;
 
 	/**
-	 * Response body as buffer.
+	 * Response body as data.
 	 */
 	arrayBuffer: () => Promise<ArrayBuffer>;
 }

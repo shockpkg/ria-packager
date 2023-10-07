@@ -60,7 +60,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	}
 
 	/**
-	 * Decode from data buffer.
+	 * Decode from file data.
 	 *
 	 * @param data File data.
 	 * @param password The password if necessary.
@@ -149,7 +149,7 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	}
 
 	/**
-	 * Create from data buffer.
+	 * Create from file data.
 	 *
 	 * @param data File data.
 	 * @param password The password if necessary.

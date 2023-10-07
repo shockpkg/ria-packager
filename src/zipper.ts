@@ -34,7 +34,7 @@ export class ZipperEntryExtraField {
 	}
 
 	/**
-	 * Encode type and data as buffer.
+	 * Encode type and data as data.
 	 *
 	 * @returns Encoded data.
 	 */
@@ -716,7 +716,7 @@ export class Zipper {
 	/**
 	 * Write data buffer to output stream.
 	 *
-	 * @param data Data buffer.
+	 * @param data Output data.
 	 */
 	protected async _writeOutput(data: Readonly<Uint8Array>) {
 		await new Promise<void>((resolve, reject) => {

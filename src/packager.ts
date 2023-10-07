@@ -383,7 +383,7 @@ export abstract class Packager {
 	/**
 	 * Get encoded mimetype data.
 	 *
-	 * @returns Mimetype buffer.
+	 * @returns Mimetype data.
 	 */
 	protected _getMimetypeData() {
 		// The mimetype is UTF-8.
