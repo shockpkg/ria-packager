@@ -351,7 +351,7 @@ export class ZipperEntry {
 	 *
 	 * @returns Local record data.
 	 */
-	public getLocalBuffer() {
+	public encodeLocal() {
 		const {path, extraFieldsLocal} = this;
 
 		const d = new Uint8Array(this.sizeofLocal());
@@ -397,7 +397,7 @@ export class ZipperEntry {
 	 *
 	 * @returns Central entry data.
 	 */
-	public getCentralBuffer() {
+	public encodeCentral() {
 		const {path, comment, extraFieldsCentral} = this;
 		const d = new Uint8Array(this.sizeofCentral());
 		const v = new DataView(d.buffer, d.byteOffset, d.byteLength);
@@ -655,7 +655,7 @@ export class Zipper {
 	public getDirectoryBuffer() {
 		const {_offset, entries} = this;
 		const directoryData = Buffer.concat(
-			entries.map(e => e.getCentralBuffer())
+			entries.map(e => e.encodeCentral())
 		);
 		const commentBuffer = this.getCommentBuffer();
 
@@ -693,7 +693,7 @@ export class Zipper {
 		}
 		entry.headerOffsetLocal = _offset;
 		this.entries.push(entry);
-		await this._writeOutput(entry.getLocalBuffer());
+		await this._writeOutput(entry.encodeLocal());
 		if (data) {
 			await this._writeOutput(data);
 		}
