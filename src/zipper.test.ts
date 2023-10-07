@@ -46,7 +46,7 @@ class BufferCollector extends Writable {
 	}
 }
 
-function bufferHex(data: Buffer) {
+function bufferHex(data: Readonly<Buffer>) {
 	return data
 		.toString('hex')
 		.split('')
