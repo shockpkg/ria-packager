@@ -231,38 +231,6 @@ export class PackagerBundleMac extends PackagerBundle {
 	}
 
 	/**
-	 * Get Info.plist data as DOM if any specified.
-	 *
-	 * @returns Info.plist DOM or null.
-	 */
-	public async getInfoPlistDocument() {
-		const {infoPlistData, infoPlistFile} = this;
-		let xml: string;
-		if (typeof infoPlistData === 'string') {
-			xml = infoPlistData;
-		} else if (infoPlistData) {
-			xml = new TextDecoder().decode(infoPlistData);
-		} else if (infoPlistFile) {
-			xml = await readFile(infoPlistFile, 'utf8');
-		} else {
-			return null;
-		}
-		const dom = new Plist();
-		dom.fromXml(xml);
-		return dom;
-	}
-
-	/**
-	 * Get Info.plist data as DOM if any specified, or default.
-	 *
-	 * @returns Info.plist DOM.
-	 */
-	public async getInfoPlistDocumentOrDefault() {
-		const dom = await this.getInfoPlistDocument();
-		return dom || new Plist();
-	}
-
-	/**
 	 * Get PkgInfo data if from data or file, else default.
 	 *
 	 * @returns PkgInfo data.
@@ -697,12 +665,22 @@ export class PackagerBundleMac extends PackagerBundle {
 	}
 
 	/**
-	 * Generate Info.plist DOM object.
+	 * Generate Info.plist XML string.
 	 *
-	 * @returns Plist DOM.
+	 * @returns XML string.
 	 */
 	protected async _generateInfoPlist() {
-		const dom = await this.getInfoPlistDocumentOrDefault();
+		const {infoPlistData, infoPlistFile} = this;
+
+		const dom = new Plist();
+		if (typeof infoPlistData === 'string') {
+			dom.fromXml(infoPlistData);
+		} else if (infoPlistData) {
+			dom.fromXml(new TextDecoder().decode(infoPlistData));
+		} else if (infoPlistFile) {
+			dom.fromXml(await readFile(infoPlistFile, 'utf8'));
+		}
+
 		const existing =
 			dom.value && dom.value.type === ValueDict.TYPE
 				? (dom.value as ValueDict)
@@ -763,22 +741,19 @@ export class PackagerBundleMac extends PackagerBundle {
 			}
 		}
 
-		return dom;
+		return dom.toXml({
+			indentRoot: true,
+			indentString: '    '
+		});
 	}
 
 	/**
 	 * Write out Info.plist file.
 	 */
 	protected async _writeInfoPlist() {
-		const dom = await this._generateInfoPlist();
+		const xml = await this._generateInfoPlist();
 		const path = pathJoin(this.path, this.appInfoPlistPath);
-		await writeFile(
-			path,
-			dom.toXml({
-				indentRoot: true,
-				indentString: '    '
-			})
-		);
+		await writeFile(path, xml);
 	}
 
 	/**
