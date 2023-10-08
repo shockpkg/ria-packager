@@ -4,9 +4,25 @@ import {deflateRaw} from 'node:zlib';
 
 import {crc32} from '@shockpkg/icon-encoder';
 
+/**
+ * Zipper write stream interface.
+ * A subset of Writable.
+ */
 export interface IZipperWriteStream {
-	end(cb: (err: Error) => void): void;
+	/**
+	 * Write data.
+	 *
+	 * @param data Data chunk.
+	 * @param cb Callback function.
+	 */
 	write(data: Readonly<Uint8Array>, cb: (err: Error) => void): void;
+
+	/**
+	 * Write end.
+	 *
+	 * @param cb Callback function.
+	 */
+	end(cb: (err: Error) => void): void;
 }
 
 /**
