@@ -1,9 +1,8 @@
 import {createWriteStream} from 'node:fs';
 import {mkdir, open} from 'node:fs/promises';
 import {dirname} from 'node:path';
-import {Writable} from 'node:stream';
 
-import {Zipper, ZipperEntry} from '../zipper';
+import {IZipperWriteStream, Zipper, ZipperEntry} from '../zipper';
 import {IPackagerResourceOptions, Packager} from '../packager';
 
 /**
@@ -90,7 +89,7 @@ export abstract class PackagerAir extends Packager {
 	 * @param writable Writable stream.
 	 * @returns Zipper instance.
 	 */
-	protected _createZipper(writable: Writable) {
+	protected _createZipper(writable: IZipperWriteStream) {
 		return new Zipper(writable);
 	}
 

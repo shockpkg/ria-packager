@@ -1,9 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
-import {Writable} from 'node:stream';
 import {deflateRaw} from 'node:zlib';
 
 import {crc32} from '@shockpkg/icon-encoder';
+
+export interface IZipperWriteStream {
+	end(cb: (err: Error) => void): void;
+	write(data: Readonly<Uint8Array>, cb: (err: Error) => void): void;
+}
 
 /**
  * Zipper Entry Extra Field object.
@@ -618,14 +622,14 @@ export class Zipper {
 	/**
 	 * Output stream.
 	 */
-	protected readonly _output: Writable;
+	protected readonly _output: IZipperWriteStream;
 
 	/**
 	 * Zipper constructor.
 	 *
 	 * @param output Writable stream.
 	 */
-	constructor(output: Writable) {
+	constructor(output: IZipperWriteStream) {
 		this._output = output;
 	}
 
