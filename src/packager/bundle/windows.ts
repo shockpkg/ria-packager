@@ -700,18 +700,19 @@ export class PackagerBundleWindows extends PackagerBundle {
 	protected async _encodeIconReference(icon: Readonly<IIcon>) {
 		// Add icons in the same order official packager would use.
 		const ico = new IconIco();
+		const readers = [];
 		for (const path of [
 			icon.image16x16,
 			icon.image48x48,
 			icon.image128x128,
 			icon.image32x32
 		]) {
-			if (!path) {
-				continue;
+			if (path) {
+				readers.push(async () => readFile(this._getResourcePath(path)));
 			}
-
-			// eslint-disable-next-line no-await-in-loop
-			const data = await readFile(this._getResourcePath(path));
+		}
+		const datas = await Promise.all(readers.map(async f => f()));
+		for (const data of datas) {
 			// eslint-disable-next-line no-await-in-loop
 			await ico.addFromPng(data, false);
 		}
@@ -727,27 +728,32 @@ export class PackagerBundleWindows extends PackagerBundle {
 	protected async _encodeIconModern(icon: Readonly<IIcon>) {
 		// Add icons in the same order official packager would use, plus extra.
 		const ico = new IconIco();
+		const readers = [];
 		for (const path of [
 			icon.image16x16,
 			icon.image48x48,
 			icon.image128x128,
 			icon.image32x32
 		]) {
-			if (!path) {
-				continue;
+			if (path) {
+				readers.push(async () =>
+					readFile(this._getResourcePath(path)).then(
+						d => [d, false] as [Buffer, boolean]
+					)
+				);
 			}
-
-			// eslint-disable-next-line no-await-in-loop
-			const data = await readFile(this._getResourcePath(path));
-			// eslint-disable-next-line no-await-in-loop
-			await ico.addFromPng(data, false);
 		}
-
-		// Add a 256x256 icon if possible.
-		const icon256 = await this._getIcon256x256Data(icon);
-		if (icon256) {
-			// eslint-disable-next-line no-await-in-loop
-			await ico.addFromPng(icon256, true);
+		readers.push(async () =>
+			this._getIcon256x256Data(icon).then(
+				d => [d, true] as [Uint8Array, boolean]
+			)
+		);
+		const datas = await Promise.all(readers.map(async f => f()));
+		for (const [data, png] of datas) {
+			if (data) {
+				// eslint-disable-next-line no-await-in-loop
+				await ico.addFromPng(data, png);
+			}
 		}
 		return ico.encode();
 	}

@@ -811,18 +811,23 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writeIconReference(path: string, icon: Readonly<IIcon>) {
 		// Add icons in the same order official packager would use.
 		const icns = new IconIcns();
+		const readers = [];
 		for (const [path, types] of [
 			[icon.image16x16, ['is32', 's8mk']],
 			[icon.image32x32, ['il32', 'l8mk']],
 			[icon.image48x48, ['ih32', 'h8mk']],
 			[icon.image128x128, ['it32', 't8mk']]
 		] as [string | null, string[]][]) {
-			if (!path) {
-				continue;
+			if (path) {
+				readers.push(async () =>
+					readFile(this._getResourcePath(path)).then(
+						d => [d, types] as [Buffer, string[]]
+					)
+				);
 			}
-
-			// eslint-disable-next-line no-await-in-loop
-			const data = await readFile(this._getResourcePath(path));
+		}
+		const datas = await Promise.all(readers.map(async f => f()));
+		for (const [data, types] of datas) {
 			// eslint-disable-next-line no-await-in-loop
 			await icns.addFromPng(data, types);
 		}
@@ -839,6 +844,7 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _writeIconModern(path: string, icon: Readonly<IIcon>) {
 		// Add icons in the same order iconutil would.
 		const icns = new IconIcns();
+		const readers = [];
 		for (const [path, type] of [
 			// [icon.image64x64, 'ic12'],
 			[icon.image128x128, 'ic07'],
@@ -851,12 +857,16 @@ export class PackagerBundleMac extends PackagerBundle {
 			[icon.image1024x1024, 'ic10'],
 			[icon.image32x32, 'ic11']
 		] as [string | null, string][]) {
-			if (!path) {
-				continue;
+			if (path) {
+				readers.push(async () =>
+					readFile(this._getResourcePath(path)).then(
+						d => [d, type] as [Buffer, string]
+					)
+				);
 			}
-
-			// eslint-disable-next-line no-await-in-loop
-			const data = await readFile(this._getResourcePath(path));
+		}
+		const datas = await Promise.all(readers.map(async f => f()));
+		for (const [data, type] of datas) {
 			// eslint-disable-next-line no-await-in-loop
 			await icns.addFromPng(data, [type]);
 		}
