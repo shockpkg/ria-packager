@@ -19,6 +19,13 @@ import {pathRelativeBaseMatch, pathRelativeBase} from '../../util';
 import {IPackagerResourceOptions} from '../../packager';
 import {IIcon, PackagerBundle} from '../bundle';
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+const asValue = (v: Value) => v;
+// eslint-disable-next-line jsdoc/require-jsdoc
+const toValueBoolean = (v: boolean) => new ValueBoolean(v);
+// eslint-disable-next-line jsdoc/require-jsdoc
+const toValueString = (v: string) => new ValueString(v);
+
 /**
  * PackagerBundleMac object.
  */
@@ -263,8 +270,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleExecutable(): Value | null {
-		return new ValueString(this._getFilename());
+	protected _getPlistCFBundleExecutable(): string | null {
+		return this._getFilename();
 	}
 
 	/**
@@ -272,8 +279,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleIdentifier(): Value | null {
-		return new ValueString(this._getId());
+	protected _getPlistCFBundleIdentifier(): string | null {
+		return this._getId();
 	}
 
 	/**
@@ -281,8 +288,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleShortVersionString(): Value | null {
-		return new ValueString(this._getVersionNumber());
+	protected _getPlistCFBundleShortVersionString(): string | null {
+		return this._getVersionNumber();
 	}
 
 	/**
@@ -290,12 +297,12 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleGetInfoString(): Value | null {
+	protected _getPlistCFBundleGetInfoString(): string | null {
 		// Strange when no copyright but matches official packager.
 		const copyright = this._getCopyright();
 		const versionNumber = this._getVersionNumber();
 		const add = copyright ? ` ${copyright}` : '';
-		return new ValueString(`${versionNumber},${add}`);
+		return `${versionNumber},${add}`;
 	}
 
 	/**
@@ -303,8 +310,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistNSHumanReadableCopyright(): Value | null {
-		return new ValueString(this._getCopyright() || '');
+	protected _getPlistNSHumanReadableCopyright(): string | null {
+		return this._getCopyright() || '';
 	}
 
 	/**
@@ -312,11 +319,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleIconFile(): Value | null {
+	protected _getPlistCFBundleIconFile(): string | null {
 		const icon = this._getIcon();
-		return icon && this._uidIcon(icon)
-			? new ValueString(this.appIcnsFile)
-			: null;
+		return icon && this._uidIcon(icon) ? this.appIcnsFile : null;
 	}
 
 	/**
@@ -324,12 +329,10 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleLocalizations(): Value | null {
+	protected _getPlistCFBundleLocalizations(): string[] | null {
 		const langs = this._applicationInfoSupportedLanguages;
 		const list = langs ? langs.trim().split(/\s+/) : null;
-		return list && list.length
-			? new ValueArray(list.map(s => new ValueString(s)))
-			: null;
+		return list?.length ? list : null;
 	}
 
 	/**
@@ -337,11 +340,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistNSHighResolutionCapable(): Value | null {
+	protected _getPlistNSHighResolutionCapable(): boolean | null {
 		return this.plistHighResolutionCapable
-			? new ValueBoolean(
-					this._applicationInfoRequestedDisplayResolution === 'high'
-			  )
+			? this._applicationInfoRequestedDisplayResolution === 'high'
 			: null;
 	}
 
@@ -350,13 +351,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistNSAppTransportSecurity(): Value | null {
+	protected _getPlistNSAppTransportSecurity(): Map<string, boolean> | null {
 		return this.plistHasAppTransportSecurity
-			? new ValueDict(
-					new Map([
-						['NSAllowsArbitraryLoads', new ValueBoolean(true)]
-					])
-			  )
+			? new Map([['NSAllowsArbitraryLoads', true]])
 			: null;
 	}
 
@@ -365,39 +362,33 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleDocumentTypes(): Value | null {
+	protected _getPlistCFBundleDocumentTypes():
+		| Map<string, string | string[]>[]
+		| null {
 		const extensionMapping = this._extensionMapping;
 		const fileTypes = this._applicationInfoFileTypes;
-		if (!fileTypes || !fileTypes.size) {
+		if (!fileTypes?.size) {
 			return null;
 		}
 		const useDesc = this.plistDocumentTypeNameIsDescription;
-		const list: ValueDict[] = [];
+		const list: Map<string, string | string[]>[] = [];
 		for (const [ext, info] of fileTypes) {
-			const dict = new ValueDict();
-			const {value} = dict;
-			value.set(
-				'CFBundleTypeExtensions',
-				new ValueArray([new ValueString(ext)])
-			);
-			value.set(
-				'CFBundleTypeMIMETypes',
-				new ValueArray([new ValueString(info.contentType)])
-			);
-			value.set(
+			const map = new Map<string, string | string[]>();
+			map.set('CFBundleTypeExtensions', [ext]);
+			map.set('CFBundleTypeMIMETypes', [info.contentType]);
+			map.set(
 				'CFBundleTypeName',
-				new ValueString(useDesc ? info.description || '' : info.name)
+				useDesc ? info.description || '' : info.name
 			);
-			value.set('CFBundleTypeRole', new ValueString('Editor'));
+			map.set('CFBundleTypeRole', 'Editor');
 
 			const iconFile = extensionMapping.get(ext);
 			if (iconFile) {
-				value.set('CFBundleTypeIconFile', new ValueString(iconFile));
+				map.set('CFBundleTypeIconFile', iconFile);
 			}
-
-			list.push(dict);
+			list.push(map);
 		}
-		return new ValueArray(list);
+		return list;
 	}
 
 	/**
@@ -405,8 +396,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleAllowMixedLocalizations(): Value | null {
-		return new ValueBoolean(true);
+	protected _getPlistCFBundleAllowMixedLocalizations(): boolean | null {
+		return true;
 	}
 
 	/**
@@ -414,8 +405,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundlePackageType(): Value | null {
-		return new ValueString('APPL');
+	protected _getPlistCFBundlePackageType(): string | null {
+		return 'APPL';
 	}
 
 	/**
@@ -423,8 +414,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistCFBundleInfoDictionaryVersion(): Value | null {
-		return new ValueString('6.0');
+	protected _getPlistCFBundleInfoDictionaryVersion(): string | null {
+		return '6.0';
 	}
 
 	/**
@@ -432,8 +423,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistLSMinimumSystemVersion(): Value | null {
-		return new ValueString('10.6');
+	protected _getPlistLSMinimumSystemVersion(): string | null {
+		return '10.6';
 	}
 
 	/**
@@ -441,8 +432,8 @@ export class PackagerBundleMac extends PackagerBundle {
 	 *
 	 * @returns The value or null if excluded.
 	 */
-	protected _getPlistLSRequiresCarbon(): Value | null {
-		return new ValueBoolean(true);
+	protected _getPlistLSRequiresCarbon(): boolean | null {
+		return true;
 	}
 
 	/**
@@ -693,14 +684,19 @@ export class PackagerBundleMac extends PackagerBundle {
 		 * A little helper to set values only once.
 		 *
 		 * @param key Key string.
-		 * @param value Value object.
+		 * @param value The value or null.
+		 * @param wrap Wrap value.
 		 */
-		const val = (key: string, value: Value | null) => {
+		const val = <T>(
+			key: string,
+			value: T | null,
+			wrap: (v: T) => Value
+		) => {
 			if (done.has(key)) {
 				return;
 			}
-			if (value) {
-				dict.value.set(key, value);
+			if (value !== null) {
+				dict.value.set(key, wrap(value));
 			}
 			done.add(key);
 		};
@@ -708,36 +704,105 @@ export class PackagerBundleMac extends PackagerBundle {
 		// Set all the values in the same order as the official packager.
 		val(
 			'CFBundleAllowMixedLocalizations',
-			this._getPlistCFBundleAllowMixedLocalizations()
+			this._getPlistCFBundleAllowMixedLocalizations(),
+			toValueBoolean
 		);
-		val('CFBundlePackageType', this._getPlistCFBundlePackageType());
+		val(
+			'CFBundlePackageType',
+			this._getPlistCFBundlePackageType(),
+			toValueString
+		);
 		val(
 			'CFBundleInfoDictionaryVersion',
-			this._getPlistCFBundleInfoDictionaryVersion()
+			this._getPlistCFBundleInfoDictionaryVersion(),
+			toValueString
 		);
-		val('LSMinimumSystemVersion', this._getPlistLSMinimumSystemVersion());
-		val('LSRequiresCarbon', this._getPlistLSRequiresCarbon());
-		val('CFBundleIdentifier', this._getPlistCFBundleIdentifier());
-		val('CFBundleGetInfoString', this._getPlistCFBundleGetInfoString());
+		val(
+			'LSMinimumSystemVersion',
+			this._getPlistLSMinimumSystemVersion(),
+			toValueString
+		);
+		val(
+			'LSRequiresCarbon',
+			this._getPlistLSRequiresCarbon(),
+			toValueBoolean
+		);
+		val(
+			'CFBundleIdentifier',
+			this._getPlistCFBundleIdentifier(),
+			toValueString
+		);
+		val(
+			'CFBundleGetInfoString',
+			this._getPlistCFBundleGetInfoString(),
+			toValueString
+		);
 		val(
 			'CFBundleShortVersionString',
-			this._getPlistCFBundleShortVersionString()
+			this._getPlistCFBundleShortVersionString(),
+			toValueString
 		);
 		val(
 			'NSHumanReadableCopyright',
-			this._getPlistNSHumanReadableCopyright()
+			this._getPlistNSHumanReadableCopyright(),
+			toValueString
 		);
-		val('CFBundleExecutable', this._getPlistCFBundleExecutable());
-		val('NSAppTransportSecurity', this._getPlistNSAppTransportSecurity());
-		val('NSHighResolutionCapable', this._getPlistNSHighResolutionCapable());
-		val('CFBundleIconFile', this._getPlistCFBundleIconFile());
-		val('CFBundleDocumentTypes', this._getPlistCFBundleDocumentTypes());
-		val('CFBundleLocalizations', this._getPlistCFBundleLocalizations());
+		val(
+			'CFBundleExecutable',
+			this._getPlistCFBundleExecutable(),
+			toValueString
+		);
+		val(
+			'NSAppTransportSecurity',
+			this._getPlistNSAppTransportSecurity(),
+			v => {
+				const r = new ValueDict();
+				for (const [k, d] of v) {
+					r.set(k, new ValueBoolean(d));
+				}
+				return r;
+			}
+		);
+		val(
+			'NSHighResolutionCapable',
+			this._getPlistNSHighResolutionCapable(),
+			toValueBoolean
+		);
+		val(
+			'CFBundleIconFile',
+			this._getPlistCFBundleIconFile(),
+			toValueString
+		);
+		val(
+			'CFBundleDocumentTypes',
+			this._getPlistCFBundleDocumentTypes(),
+			v => {
+				const r = new ValueArray();
+				for (const map of v) {
+					const d = new ValueDict();
+					for (const [k, t] of map) {
+						d.set(
+							k,
+							Array.isArray(t)
+								? new ValueArray(t.map(toValueString))
+								: new ValueString(t)
+						);
+					}
+					r.push(d);
+				}
+				return r;
+			}
+		);
+		val(
+			'CFBundleLocalizations',
+			this._getPlistCFBundleLocalizations(),
+			v => new ValueArray(v.map(toValueString))
+		);
 
 		// If any existing values, copy the ones not already set.
 		if (existing) {
 			for (const [key, value] of existing.value) {
-				val(key, value);
+				val(key, value, asValue);
 			}
 		}
 
