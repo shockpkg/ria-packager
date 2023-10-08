@@ -466,7 +466,9 @@ export class PackagerBundleMac extends PackagerBundle {
 		let extractedFramework = false;
 
 		// Extract everything needed from the SDK.
-		const sdk = await createArchiveByFileStatOrThrow(sdkPath);
+		const sdk = await createArchiveByFileStatOrThrow(sdkPath, {
+			nobrowse: this.nobrowse
+		});
 		await sdk.read(async entry => {
 			// Ignore any resource forks.
 			if (entry.type === PathType.RESOURCE_FORK) {
