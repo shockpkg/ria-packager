@@ -86,7 +86,7 @@ export function quoteCmd(str: string) {
 
 /**
  * Resize RGBA image data down by exactly half.
- * Input dimensions must be a power of 2, else error is thrown.
+ * Input dimensions must be a power of 2.
  *
  * @param rgba Image data.
  * @returns Image data.
