@@ -527,12 +527,16 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * Close implementation.
 	 */
 	protected async _close() {
-		await this._writeApplicationIcon();
-		await this._writeFileTypeIcons();
-		await this._writePkgInfo();
-		await this._writeInfoPlist();
-
-		this._extensionMapping.clear();
+		try {
+			await Promise.all([
+				this._writeApplicationIcon(),
+				this._writeFileTypeIcons(),
+				this._writePkgInfo()
+			]);
+			await this._writeInfoPlist();
+		} finally {
+			this._extensionMapping.clear();
+		}
 	}
 
 	/**
@@ -580,11 +584,11 @@ export class PackagerBundleMac extends PackagerBundle {
 		if (!icon || !this._uidIcon(icon)) {
 			return;
 		}
-		const modern = this.applicationIconModern;
+
 		const path = pathJoin(this.path, this.appIcnsPath);
 
 		// Write either a modern or a reference icon.
-		if (modern) {
+		if (this.applicationIconModern) {
 			// eslint-disable-next-line no-await-in-loop
 			await this._writeIconModern(path, icon);
 		} else {
@@ -598,15 +602,22 @@ export class PackagerBundleMac extends PackagerBundle {
 	 * Avoids writting duplicate icons where the file/data is the same.
 	 */
 	protected async _writeFileTypeIcons() {
-		this._extensionMapping.clear();
 		const mapping = this._extensionMapping;
+		mapping.clear();
 
 		const fileIcons = this._getFileTypes();
 		if (!fileIcons) {
 			return;
 		}
-		const modern = this.fileTypeIconModern;
 
+		// Write either a modern or a reference icon.
+		const write = this.fileTypeIconModern
+			? async (path: string, icon: IIcon) =>
+					this._writeIconModern(path, icon)
+			: async (path: string, icon: IIcon) =>
+					this._writeIconReference(path, icon);
+
+		const writes = [];
 		const did = new Map<string, string>();
 		let index = 0;
 		for (const [ext, {icon}] of fileIcons) {
@@ -634,16 +645,9 @@ export class PackagerBundleMac extends PackagerBundle {
 
 			// Get the path to write to.
 			const path = pathJoin(this.path, this._getFileTypeIconPath(name));
-
-			// Write either a modern or a reference icon.
-			if (modern) {
-				// eslint-disable-next-line no-await-in-loop
-				await this._writeIconModern(path, icon);
-			} else {
-				// eslint-disable-next-line no-await-in-loop
-				await this._writeIconReference(path, icon);
-			}
+			writes.push(write(path, icon));
 		}
+		await Promise.all(writes);
 	}
 
 	/**

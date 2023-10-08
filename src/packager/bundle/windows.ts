@@ -448,15 +448,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 		// Get any version strings.
 		const versionStrings = this.getVersionStrings();
 
-		// Get all the icons.
-		const applicationIcon = await this._encodeApplicationIcon();
-		const fileTypeIcons = await this._encodeFileTypeIcons();
-
-		// Assemble the icons into a list.
-		const icons = [
-			...(applicationIcon ? [applicationIcon] : []),
-			...(fileTypeIcons || [])
-		];
+		// Assemble all of the icons into a list.
+		const icons = await Promise.all([
+			this._encodeApplicationIcon().then(d => (d ? [d] : [])),
+			this._encodeFileTypeIcons().then(a => a || [])
+		]).then(([a, b]) => [...a, ...b]);
 
 		// Skip if nothing to be changed.
 		if (!versionStrings && !icons.length) {
@@ -660,10 +656,9 @@ export class PackagerBundleWindows extends PackagerBundle {
 		if (!icon || !this._uidIcon(icon)) {
 			return null;
 		}
-		const modern = this.applicationIconModern;
 
 		// Encode either a modern or a reference icon.
-		return modern
+		return this.applicationIconModern
 			? this._encodeIconModern(icon)
 			: this._encodeIconReference(icon);
 	}
@@ -679,7 +674,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 		if (!fileIcons) {
 			return null;
 		}
-		const modern = this.fileTypeIconModern;
+
+		// Encode either a modern or a reference icon.
+		const encode = this.fileTypeIconModern
+			? async (icon: IIcon) => this._encodeIconModern(icon)
+			: async (icon: IIcon) => this._encodeIconReference(icon);
 
 		const r = [];
 		const did = new Set<string>();
@@ -698,17 +697,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 			if (did.has(uid)) {
 				continue;
 			}
-			did.add(uid);
 
-			// Write either a modern or a reference icon.
-			r.push(
-				// eslint-disable-next-line no-await-in-loop
-				await (modern
-					? this._encodeIconModern(icon)
-					: this._encodeIconReference(icon))
-			);
+			did.add(uid);
+			r.push(encode(icon));
 		}
-		return r;
+		return Promise.all(r);
 	}
 
 	/**
