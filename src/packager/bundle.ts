@@ -153,20 +153,6 @@ export abstract class PackagerBundle extends Packager {
 	}
 
 	/**
-	 * Open the configured SDK.
-	 *
-	 * @returns Archive instance.
-	 */
-	protected async _openSdk() {
-		const {sdkPath} = this;
-		if (!sdkPath) {
-			throw new Error('SDK path not set');
-		}
-		const archive = await this._openArchive(sdkPath);
-		return archive;
-	}
-
-	/**
 	 * Init application info from descriptor data.
 	 *
 	 * @param applicationData The application descriptor data.

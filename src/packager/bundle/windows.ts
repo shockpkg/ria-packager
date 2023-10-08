@@ -9,7 +9,10 @@ import {
 import {dirname, join as pathJoin} from 'node:path';
 
 import {signatureSet} from 'portable-executable-signature';
-import {PathType} from '@shockpkg/archive-files';
+import {
+	PathType,
+	createArchiveByFileStatOrThrow
+} from '@shockpkg/archive-files';
 import {IconIco} from '@shockpkg/icon-encoder';
 import {
 	NtExecutable,
@@ -271,6 +274,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected async _open(applicationData: Readonly<Uint8Array>) {
+		const {sdkPath} = this;
+		if (!sdkPath) {
+			throw new Error('SDK path not set');
+		}
+
 		const {frameworkCleanHelpers} = this;
 
 		const appBinaryPath = this.getAppBinaryPath();
@@ -288,7 +296,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		let binaryInFrameworkPath = '';
 
 		// Extract everything needed from the SDK.
-		const sdk = await this._openSdk();
+		const sdk = await createArchiveByFileStatOrThrow(sdkPath);
 		await sdk.read(async entry => {
 			// Ignore any resource forks.
 			if (entry.type === PathType.RESOURCE_FORK) {

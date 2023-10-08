@@ -1,6 +1,9 @@
 import {join as pathJoin} from 'node:path';
 
-import {PathType} from '@shockpkg/archive-files';
+import {
+	PathType,
+	createArchiveByFileStatOrThrow
+} from '@shockpkg/archive-files';
 
 import {pathRelativeBaseMatch} from '../util';
 import {Packager} from '../packager';
@@ -92,20 +95,6 @@ export abstract class PackagerAdl extends Packager {
 	public abstract get appRunPath(): string;
 
 	/**
-	 * Open the configured SDK.
-	 *
-	 * @returns Archive instance.
-	 */
-	protected async _openSdk() {
-		const {sdkPath} = this;
-		if (!sdkPath) {
-			throw new Error('SDK path not set');
-		}
-		const archive = await this._openArchive(sdkPath);
-		return archive;
-	}
-
-	/**
 	 * Generate aruments.
 	 *
 	 * @returns Argument options.
@@ -137,6 +126,11 @@ export abstract class PackagerAdl extends Packager {
 	 * @param applicationData The application descriptor data.
 	 */
 	protected async _open(applicationData: Readonly<Uint8Array>) {
+		const {sdkPath} = this;
+		if (!sdkPath) {
+			throw new Error('SDK path not set');
+		}
+
 		const {required, optional} = this._sdkComponents();
 
 		const components = [
@@ -179,7 +173,7 @@ export abstract class PackagerAdl extends Packager {
 		};
 
 		// Extract everything needed from the SDK.
-		const sdk = await this._openSdk();
+		const sdk = await createArchiveByFileStatOrThrow(sdkPath);
 		await sdk.read(async entry => {
 			// Ignore any resource forks.
 			if (entry.type === PathType.RESOURCE_FORK) {

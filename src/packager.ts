@@ -1,13 +1,7 @@
-import {lstat, readFile, stat} from 'node:fs/promises';
+import {lstat, readFile} from 'node:fs/promises';
 import {join as pathJoin, basename} from 'node:path';
 
-import {
-	ArchiveDir,
-	ArchiveHdi,
-	createArchiveByFileExtension,
-	fsWalk,
-	pathNormalize
-} from '@shockpkg/archive-files';
+import {fsWalk, pathNormalize} from '@shockpkg/archive-files';
 
 import {SecurityKeystore} from './security/keystore';
 import {Signature} from './signature';
@@ -534,27 +528,6 @@ export abstract class Packager {
 	 */
 	protected _applicationInfoClear() {
 		// Do nothing.
-	}
-
-	/**
-	 * Open path as archive.
-	 *
-	 * @param path Archive path.
-	 * @returns Archive instance.
-	 */
-	protected async _openArchive(path: string) {
-		const st = await stat(path);
-		if (st.isDirectory()) {
-			return new ArchiveDir(path);
-		}
-		const archive = createArchiveByFileExtension(path);
-		if (!archive) {
-			throw new Error(`Unrecognized archive format: ${path}`);
-		}
-		if (archive instanceof ArchiveHdi) {
-			archive.nobrowse = this.nobrowse;
-		}
-		return archive;
 	}
 
 	/**

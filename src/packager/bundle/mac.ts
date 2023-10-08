@@ -1,7 +1,10 @@
 import {mkdir, readFile, utimes, writeFile} from 'node:fs/promises';
 import {dirname, join as pathJoin} from 'node:path';
 
-import {PathType} from '@shockpkg/archive-files';
+import {
+	PathType,
+	createArchiveByFileStatOrThrow
+} from '@shockpkg/archive-files';
 import {IconIcns} from '@shockpkg/icon-encoder';
 import {
 	Plist,
@@ -482,6 +485,11 @@ export class PackagerBundleMac extends PackagerBundle {
 	protected async _open(applicationData: Readonly<Uint8Array>) {
 		this._extensionMapping.clear();
 
+		const {sdkPath} = this;
+		if (!sdkPath) {
+			throw new Error('SDK path not set');
+		}
+
 		const appBinaryPath = this.getAppBinaryPath();
 		const appFrameworkPath = this.getAppFrameworkPath();
 
@@ -499,7 +507,7 @@ export class PackagerBundleMac extends PackagerBundle {
 		let extractedFramework = false;
 
 		// Extract everything needed from the SDK.
-		const sdk = await this._openSdk();
+		const sdk = await createArchiveByFileStatOrThrow(sdkPath);
 		await sdk.read(async entry => {
 			// Ignore any resource forks.
 			if (entry.type === PathType.RESOURCE_FORK) {
