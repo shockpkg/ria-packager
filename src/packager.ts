@@ -54,9 +54,9 @@ export abstract class Packager {
 	public excludes = [/^\./, /^ehthumbs\.db$/i, /^Thumbs\.db$/i];
 
 	/**
-	 * The nobrowse option when using hdiutil to mount disk image.
+	 * Set the nobrowse option on mounted disk images.
 	 */
-	public hdiutilNobrowse = false;
+	public nobrowse = false;
 
 	/**
 	 * Output path.
@@ -552,7 +552,7 @@ export abstract class Packager {
 			throw new Error(`Unrecognized archive format: ${path}`);
 		}
 		if (archive instanceof ArchiveHdi) {
-			archive.nobrowse = this.hdiutilNobrowse;
+			archive.nobrowse = this.nobrowse;
 		}
 		return archive;
 	}
