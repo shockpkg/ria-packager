@@ -1,7 +1,7 @@
 {
 	"name": "@shockpkg/ria-packager",
 	"description": "Package for creating Adobe AIR packages",
-	"version": "2.1.2",
+	"version": "3.0.0",
 	"keywords": [
 		"shockpkg",
 		"flash",
