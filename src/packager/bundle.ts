@@ -12,7 +12,7 @@ import {Packager} from '../packager';
 const childTags = (el: Readonly<Element>, name: string | null = null) => {
 	const {childNodes} = el;
 	const r: Element[] = [];
-	// eslint-disable-next-line
+	// eslint-disable-next-line @typescript-eslint/prefer-for-of
 	for (let i = 0; i < childNodes.length; i++) {
 		const child = childNodes[i] as Element;
 		const {tagName} = child;

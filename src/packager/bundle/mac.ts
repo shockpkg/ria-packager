@@ -589,10 +589,8 @@ export class PackagerBundleMac extends PackagerBundle {
 
 		// Write either a modern or a reference icon.
 		if (this.applicationIconModern) {
-			// eslint-disable-next-line no-await-in-loop
 			await this._writeIconModern(path, icon);
 		} else {
-			// eslint-disable-next-line no-await-in-loop
 			await this._writeIconReference(path, icon);
 		}
 	}
