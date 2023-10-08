@@ -9,7 +9,7 @@ export class HasherSha1 extends Hasher {
 	/**
 	 * Hasher stream.
 	 */
-	protected _hash = createHash('sha1');
+	private _hash_ = createHash('sha1');
 
 	/**
 	 * HasherSha1 constructor.
@@ -31,7 +31,7 @@ export class HasherSha1 extends Hasher {
 	 * Reset digest.
 	 */
 	public reset() {
-		this._hash = createHash('sha1');
+		this._hash_ = createHash('sha1');
 	}
 
 	/**
@@ -40,7 +40,7 @@ export class HasherSha1 extends Hasher {
 	 * @param data Data to be hashed.
 	 */
 	public update(data: Readonly<Uint8Array>) {
-		this._hash.update(data);
+		this._hash_.update(data);
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class HasherSha1 extends Hasher {
 	 * @returns Digest data.
 	 */
 	public digest() {
-		const d = this._hash.digest();
+		const d = this._hash_.digest();
 		return new Uint8Array(d.buffer, d.byteOffset, d.byteLength);
 	}
 }
