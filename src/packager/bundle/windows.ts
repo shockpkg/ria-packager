@@ -378,7 +378,15 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 * Close implementation.
 	 */
 	protected async _close() {
-		await this._updateResources();
+		const appBinaryModifier = await this._getAppBinaryModifier();
+		if (appBinaryModifier) {
+			const appBinaryPath = this.getAppBinaryPath();
+			const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
+			await writeFile(
+				appBinaryPathFull,
+				await appBinaryModifier(await readFile(appBinaryPathFull))
+			);
+		}
 	}
 
 	/**
@@ -432,9 +440,11 @@ export class PackagerBundleWindows extends PackagerBundle {
 	}
 
 	/**
-	 * Update main executable resources.
+	 * Get the main app binary data modifier function if any.
+	 *
+	 * @returns Modifier function or null.
 	 */
-	protected async _updateResources() {
+	protected async _getAppBinaryModifier() {
 		// Get any version strings.
 		const versionStrings = this.getVersionStrings();
 
@@ -450,137 +460,139 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 		// Skip if nothing to be changed.
 		if (!versionStrings && !icons.length) {
-			return;
+			return null;
 		}
 
-		// Parse EXE.
-		const appBinaryPath = this.getAppBinaryPath();
-		const appBinaryPathFull = pathJoin(this.path, appBinaryPath);
-		const exe = NtExecutable.from(
-			signatureSet(await readFile(appBinaryPathFull), null, true, true)
-		);
+		// eslint-disable-next-line @typescript-eslint/require-await
+		return async (data: Uint8Array) => {
+			// Parse EXE.
+			const exe = NtExecutable.from(signatureSet(data, null, true, true));
 
-		// Remove reloc so rsrc can safely be resized.
-		const relocRestore = exeRemoveReloc(exe);
+			// Remove reloc so rsrc can safely be resized.
+			const relocRestore = exeRemoveReloc(exe);
 
-		// Remove rsrc to modify.
-		exeAssertLastSection(exe, IDD_RESOURCE, '.rsrc');
-		const rsrc = NtExecutableResource.from(exe);
-		exe.setSectionByEntry(IDD_RESOURCE, null);
+			// Remove rsrc to modify.
+			exeAssertLastSection(exe, IDD_RESOURCE, '.rsrc');
+			const rsrc = NtExecutableResource.from(exe);
+			exe.setSectionByEntry(IDD_RESOURCE, null);
 
-		// Check that icons and version info not present.
-		if (Resource.IconGroupEntry.fromEntries(rsrc.entries).length) {
-			throw new Error('Executable resources contains unexpected icons');
-		}
-		if (Resource.VersionInfo.fromEntries(rsrc.entries).length) {
-			throw new Error(
-				'Executable resources contains unexpected version info'
-			);
-		}
-
-		// The lang and codepage resource values.
-		const lang = 1033;
-		const codepage = 1252;
-
-		// Add icons, resource ID 100 plus.
-		let resIdsNext = 100;
-		for (const iconData of icons) {
-			// Parse ico.
-			const ico = Data.IconFile.from(iconData);
-
-			// Get the next icon group ID.
-			const iconGroupId = resIdsNext++;
-
-			// Add this group to the list.
-			Resource.IconGroupEntry.replaceIconsForResource(
-				rsrc.entries,
-				iconGroupId,
-				0,
-				ico.icons.map(icon => icon.data)
-			);
-
-			// List all the resources now in the list.
-			const entriesById = new Map(
-				rsrc.entries.map((resource, index) => [
-					resource.id,
-					{index, resource}
-				])
-			);
-
-			// Get icon group info.
-			const entryInfo = entriesById.get(iconGroupId);
-			if (!entryInfo) {
-				throw new Error('Internal error');
+			// Check that icons and version info not present.
+			if (Resource.IconGroupEntry.fromEntries(rsrc.entries).length) {
+				throw new Error(
+					'Executable resources contains unexpected icons'
+				);
+			}
+			if (Resource.VersionInfo.fromEntries(rsrc.entries).length) {
+				throw new Error(
+					'Executable resources contains unexpected version info'
+				);
 			}
 
-			// Read icon group entry.
-			const [iconGroup] = Resource.IconGroupEntry.fromEntries([
-				entryInfo.resource
-			]);
+			// The lang and codepage resource values.
+			const lang = 1033;
+			const codepage = 1252;
 
-			// Change individual icon resource id values.
-			for (const icon of iconGroup.icons) {
-				const iconInfo = entriesById.get(icon.iconID);
-				if (!iconInfo) {
+			// Add icons, resource ID 100 plus.
+			let resIdsNext = 100;
+			for (const iconData of icons) {
+				// Parse ico.
+				const ico = Data.IconFile.from(iconData);
+
+				// Get the next icon group ID.
+				const iconGroupId = resIdsNext++;
+
+				// Add this group to the list.
+				Resource.IconGroupEntry.replaceIconsForResource(
+					rsrc.entries,
+					iconGroupId,
+					0,
+					ico.icons.map(icon => icon.data)
+				);
+
+				// List all the resources now in the list.
+				const entriesById = new Map(
+					rsrc.entries.map((resource, index) => [
+						resource.id,
+						{index, resource}
+					])
+				);
+
+				// Get icon group info.
+				const entryInfo = entriesById.get(iconGroupId);
+				if (!entryInfo) {
 					throw new Error('Internal error');
 				}
 
-				icon.iconID = iconInfo.resource.id = resIdsNext++;
-			}
+				// Read icon group entry.
+				const [iconGroup] = Resource.IconGroupEntry.fromEntries([
+					entryInfo.resource
+				]);
 
-			// Update the group entry.
-			rsrc.entries[entryInfo.index] = iconGroup.generateEntry();
-		}
+				// Change individual icon resource id values.
+				for (const icon of iconGroup.icons) {
+					const iconInfo = entriesById.get(icon.iconID);
+					if (!iconInfo) {
+						throw new Error('Internal error');
+					}
 
-		// Add the version info if any.
-		if (versionStrings) {
-			const versionInfo = Resource.VersionInfo.createEmpty();
-			versionInfo.setStringValues(
-				{
-					lang,
-					codepage
-				},
-				versionStrings
-			);
-
-			// Update integer values from parsed strings if possible.
-			const {FileVersion, ProductVersion} = versionStrings;
-			if (FileVersion) {
-				const uints = this._peVersionInts(FileVersion);
-				if (uints) {
-					const [ms, ls] = uints;
-					versionInfo.fixedInfo.fileVersionMS = ms;
-					versionInfo.fixedInfo.fileVersionLS = ls;
+					icon.iconID = iconInfo.resource.id = resIdsNext++;
 				}
+
+				// Update the group entry.
+				rsrc.entries[entryInfo.index] = iconGroup.generateEntry();
 			}
-			if (ProductVersion) {
-				const uints = this._peVersionInts(ProductVersion);
-				if (uints) {
-					const [ms, ls] = uints;
-					versionInfo.fixedInfo.productVersionMS = ms;
-					versionInfo.fixedInfo.productVersionLS = ls;
+
+			// Add the version info if any.
+			if (versionStrings) {
+				const versionInfo = Resource.VersionInfo.createEmpty();
+				versionInfo.setStringValues(
+					{
+						lang,
+						codepage
+					},
+					versionStrings
+				);
+
+				// Update integer values from parsed strings if possible.
+				const {FileVersion, ProductVersion} = versionStrings;
+				if (FileVersion) {
+					const uints = this._peVersionInts(FileVersion);
+					if (uints) {
+						const [ms, ls] = uints;
+						versionInfo.fixedInfo.fileVersionMS = ms;
+						versionInfo.fixedInfo.fileVersionLS = ls;
+					}
 				}
+				if (ProductVersion) {
+					const uints = this._peVersionInts(ProductVersion);
+					if (uints) {
+						const [ms, ls] = uints;
+						versionInfo.fixedInfo.productVersionMS = ms;
+						versionInfo.fixedInfo.productVersionLS = ls;
+					}
+				}
+
+				versionInfo.outputToResourceEntries(rsrc.entries);
 			}
 
-			versionInfo.outputToResourceEntries(rsrc.entries);
-		}
+			// Update the codepage on all resources.
+			// Matches the behavior of official packager.
+			for (const entry of rsrc.entries) {
+				entry.codepage = codepage;
+			}
 
-		// Update the codepage on all resources, matches the official packager.
-		for (const entry of rsrc.entries) {
-			entry.codepage = codepage;
-		}
+			// Update resources.
+			rsrc.outputResource(exe, false, true);
 
-		// Update resources.
-		rsrc.outputResource(exe, false, true);
+			// Add reloc back.
+			relocRestore();
 
-		// Add reloc back.
-		relocRestore();
+			// Update sizes.
+			exeUpdateSizes(exe);
 
-		// Update sizes.
-		exeUpdateSizes(exe);
-
-		// Write the EXE file.
-		await writeFile(appBinaryPathFull, new Uint8Array(exe.generate()));
+			// Encode new EXE file.
+			return new Uint8Array(exe.generate());
+		};
 	}
 
 	/**
