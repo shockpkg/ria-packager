@@ -21,8 +21,8 @@ jobs:
             PKG:
               - air-sdk-1.0.7.4880-windows
               - air-sdk-1.1.0.5790-windows
-              - air-sdk-1.1.0.5790-windows
-              - air-sdk-1.1.0.5790-windows
+              - air-sdk-1.5.0.7220-windows
+              - air-sdk-1.5.3.9120-windows
 
           - node-version: '18.18.0' # LTS (current)
             PKG:
