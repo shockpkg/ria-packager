@@ -42,6 +42,11 @@ void describe('packages/adls/mac', () => {
 				const dir = await cleanPackageDir('adls', 'mac', uid);
 
 				const packager = new PackagerAdlMac(dir);
+				packager.descriptorFile = fixtureFile(
+					sample.name,
+					sample.format,
+					descriptor
+				);
 
 				if (extras) {
 					// Enable all of the extra features.
@@ -54,12 +59,7 @@ void describe('packages/adls/mac', () => {
 
 				packager.sdkPath = sdkPath;
 
-				const descriptorFile = fixtureFile(
-					sample.name,
-					sample.format,
-					descriptor
-				);
-				await packager.withFile(descriptorFile, async packager => {
+				await packager.write(async packager => {
 					for (const {
 						type,
 						source,

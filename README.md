@@ -38,6 +38,7 @@ import {
 } from '@shockpkg/ria-packager';
 
 const packager = new PackagerAirInstaller('application.air');
+packager.descriptorFile = 'src/application-app.xml';
 packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
 	'password'
@@ -47,7 +48,7 @@ packager.timestampUrl = 'http://timestamp.digicert.com/';
 // Options:
 packager.profile = 'extendedDesktop';
 
-await packager.withFile('src/application-app.xml', async packager => {
+await packager.write(async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
 	await packager.addResourceDirectory('src/icons', 'icons');
 });
@@ -69,6 +70,7 @@ import {
 } from '@shockpkg/ria-packager';
 
 const packager = new PackagerAdlWindows('application');
+packager.descriptorFile = 'src/application-app.xml';
 packager.sdkPath = 'airsdk-win.zip';
 packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
@@ -88,7 +90,7 @@ packager.versionStrings = {
 };
 packager.architecture = 'x64';
 
-await packager.withFile('src/application-app.xml', async packager => {
+await packager.write(async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
 	await packager.addResourceDirectory('src/icons', 'icons');
 });
@@ -108,6 +110,7 @@ import {
 } from '@shockpkg/ria-packager';
 
 const packager = new PackagerBundleMac('application.app');
+packager.descriptorFile = 'src/application-app.xml';
 packager.sdkPath = 'airsdk-mac.zip';
 packager.keystore = SecurityKeystorePkcs12.decode(
 	await readFile('key.p12'),
@@ -120,7 +123,7 @@ packager.applicationIconModern = true;
 packager.fileTypeIconModern = true;
 packager.frameworkCleanOsFiles = true;
 
-await packager.withFile('src/application-app.xml', async packager => {
+await packager.write(async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
 	await packager.addResourceDirectory('src/icons', 'icons');
 });
@@ -138,13 +141,14 @@ Limitations:
 import {PackagerAdlWindows} from '@shockpkg/ria-packager';
 
 const packager = new PackagerAdlWindows('application');
+packager.descriptorFile = 'src/application-app.xml';
 packager.sdkPath = 'airsdk-win.zip';
 
 // Options:
 packager.profile = 'extendedDesktop';
 packager.architecture = 'x64';
 
-await packager.withFile('src/application-app.xml', async packager => {
+await packager.write(async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
 	await packager.addResourceDirectory('src/icons', 'icons');
 });
@@ -156,12 +160,13 @@ await packager.withFile('src/application-app.xml', async packager => {
 import {PackagerAdlMac} from '@shockpkg/ria-packager';
 
 const packager = new PackagerAdlMac('application');
+packager.descriptorFile = 'src/application-app.xml';
 packager.sdkPath = 'airsdk-mac.zip';
 
 // Options:
 packager.profile = 'extendedDesktop';
 
-await packager.withFile('src/application-app.xml', async packager => {
+await packager.write(async packager => {
 	await packager.addResourceFile('src/main.swf', 'main.swf');
 	await packager.addResourceDirectory('src/icons', 'icons');
 });

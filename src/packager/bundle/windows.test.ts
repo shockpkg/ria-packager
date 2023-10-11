@@ -55,6 +55,12 @@ void describe('packages/bundles/windows', () => {
 				const dir = await cleanPackageDir('bundles', 'windows', uid);
 
 				const packager = new PackagerBundleWindows(dir);
+				packager.descriptorFile = fixtureFile(
+					sample.name,
+					sample.format,
+					descriptor
+				);
+
 				if (extras) {
 					// Enable all of the extra features (except architecture).
 					packager.debug = true;
@@ -73,12 +79,7 @@ void describe('packages/bundles/windows', () => {
 
 				packager.sdkPath = sdkPath;
 
-				const descriptorFile = fixtureFile(
-					sample.name,
-					sample.format,
-					descriptor
-				);
-				await packager.withFile(descriptorFile, async packager => {
+				await packager.write(async packager => {
 					for (const {
 						type,
 						source,

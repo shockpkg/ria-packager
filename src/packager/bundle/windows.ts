@@ -270,10 +270,8 @@ export class PackagerBundleWindows extends PackagerBundle {
 
 	/**
 	 * Open implementation.
-	 *
-	 * @param applicationData The application descriptor data.
 	 */
-	protected async _open(applicationData: Readonly<Uint8Array>) {
+	protected async _open() {
 		const {sdkPath} = this;
 		if (!sdkPath) {
 			throw new Error('SDK path not set');

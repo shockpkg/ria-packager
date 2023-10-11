@@ -438,10 +438,8 @@ export class PackagerBundleMac extends PackagerBundle {
 
 	/**
 	 * Open implementation.
-	 *
-	 * @param applicationData The application descriptor data.
 	 */
-	protected async _open(applicationData: Readonly<Uint8Array>) {
+	protected async _open() {
 		this._extensionMapping.clear();
 
 		const {sdkPath} = this;

@@ -36,6 +36,12 @@ void describe('packages/adls/windows', () => {
 				const dir = await cleanPackageDir('adls', 'windows', uid);
 
 				const packager = new PackagerAdlWindows(dir);
+				packager.descriptorFile = fixtureFile(
+					sample.name,
+					sample.format,
+					descriptor
+				);
+
 				if (extras) {
 					// Enable all of the extra features.
 					packager.debug = true;
@@ -51,12 +57,7 @@ void describe('packages/adls/windows', () => {
 
 				packager.sdkPath = sdkPath;
 
-				const descriptorFile = fixtureFile(
-					sample.name,
-					sample.format,
-					descriptor
-				);
-				await packager.withFile(descriptorFile, async packager => {
+				await packager.write(async packager => {
 					for (const {
 						type,
 						source,

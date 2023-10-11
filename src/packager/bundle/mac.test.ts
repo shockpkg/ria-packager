@@ -51,6 +51,11 @@ void describe('packages/bundles/mac', () => {
 				const path = pathJoin(dir, `${sample.name}.app`);
 
 				const packager = new PackagerBundleMac(path);
+				packager.descriptorFile = fixtureFile(
+					sample.name,
+					sample.format,
+					descriptor
+				);
 
 				// Enable various legacy behaviors based on SDK version.
 				if (versionBefore(sdk.version, 3, 2)) {
@@ -82,12 +87,7 @@ void describe('packages/bundles/mac', () => {
 
 				packager.sdkPath = sdkPath;
 
-				const descriptorFile = fixtureFile(
-					sample.name,
-					sample.format,
-					descriptor
-				);
-				await packager.withFile(descriptorFile, async packager => {
+				await packager.write(async packager => {
 					for (const {
 						type,
 						source,

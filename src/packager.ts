@@ -43,6 +43,21 @@ export abstract class Packager {
 	public timestampUrl: string | null = null;
 
 	/**
+	 * Application descriptor file data.
+	 */
+	public descriptorData:
+		| string
+		| Readonly<Uint8Array>
+		| (() => Readonly<Uint8Array>)
+		| (() => Promise<Readonly<Uint8Array>>)
+		| null = null;
+
+	/**
+	 * Application descriptor file path.
+	 */
+	public descriptorFile: string | null = null;
+
+	/**
 	 * File and directory names to exclude when added a directory.
 	 */
 	public excludes = [/^\./, /^ehthumbs\.db$/i, /^Thumbs\.db$/i];
@@ -99,15 +114,15 @@ export abstract class Packager {
 
 	/**
 	 * Open with application descriptor XML data.
-	 *
-	 * @param applicationData XML data.
 	 */
-	public async open(applicationData: Readonly<Uint8Array>) {
+	public async open() {
 		if (this._isOpen) {
 			throw new Error('Already open');
 		}
-		this._applicationInfoInit(applicationData);
-		await this._open(applicationData);
+
+		const descriptorData = await this._getDescriptorData();
+		this._applicationInfoInit(descriptorData);
+		await this._open();
 		this._isOpen = true;
 
 		this._hasher.reset();
@@ -122,17 +137,7 @@ export abstract class Packager {
 			this._signature.privateKey = keystore.getPrivateKey();
 		}
 
-		await this._addMetaResourcesStart(applicationData);
-	}
-
-	/**
-	 * Open with application descriptor file.
-	 *
-	 * @param descriptorFile Application descriptor file.
-	 */
-	public async openFile(descriptorFile: string) {
-		const applicationData = await readFile(descriptorFile);
-		await this.open(applicationData);
+		await this._addMetaResourcesStart(descriptorData);
 	}
 
 	/**
@@ -154,36 +159,11 @@ export abstract class Packager {
 	/**
 	 * Run asyncronous function with automatic open and close.
 	 *
-	 * @param applicationData XML data.
 	 * @param func Async function.
 	 * @returns Return value of the async function.
 	 */
-	public async with<T>(
-		applicationData: Readonly<Uint8Array>,
-		func: (self: this) => Promise<T>
-	): Promise<T> {
-		await this.open(applicationData);
-		let r: T;
-		try {
-			r = (await func.call(this, this)) as T;
-		} finally {
-			await this.close();
-		}
-		return r;
-	}
-
-	/**
-	 * Run asyncronous function with automatic open and close.
-	 *
-	 * @param descriptorFile Application descriptor file.
-	 * @param func Async function.
-	 * @returns Return value of the async function.
-	 */
-	public async withFile<T>(
-		descriptorFile: string,
-		func: (self: this) => Promise<T>
-	): Promise<T> {
-		await this.openFile(descriptorFile);
+	public async write<T>(func: (self: this) => Promise<T>): Promise<T> {
+		await this.open();
 		let r: T;
 		try {
 			r = (await func.call(this, this)) as T;
@@ -380,6 +360,33 @@ export abstract class Packager {
 	}
 
 	/**
+	 * Get application descriptor data or throw.
+	 *
+	 * @returns Application descriptor XML data.
+	 */
+	protected async _getDescriptorData() {
+		const {descriptorData, descriptorFile} = this;
+		if (descriptorData !== null) {
+			switch (typeof descriptorData) {
+				case 'function': {
+					return descriptorData();
+				}
+				case 'string': {
+					return new TextEncoder().encode(descriptorData);
+				}
+				default: {
+					return descriptorData;
+				}
+			}
+		}
+		if (descriptorFile !== null) {
+			const d = await readFile(descriptorFile);
+			return new Uint8Array(d.buffer, d.byteOffset, d.byteLength);
+		}
+		throw new Error('Missing application descriptor data');
+	}
+
+	/**
 	 * Get encoded mimetype data.
 	 *
 	 * @returns Mimetype data.
@@ -546,12 +553,8 @@ export abstract class Packager {
 
 	/**
 	 * Open implementation.
-	 *
-	 * @param applicationData The application descriptor data.
 	 */
-	protected abstract _open(
-		applicationData: Readonly<Uint8Array>
-	): Promise<void>;
+	protected abstract _open(): Promise<void>;
 
 	/**
 	 * Close implementation.

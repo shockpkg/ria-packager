@@ -37,6 +37,11 @@ export function test(
 				const path = pathJoin(dir, `${sample.name}${ext}`);
 
 				const packager = new Packager(path);
+				packager.descriptorFile = fixtureFile(
+					sample.name,
+					sample.format,
+					descriptor
+				);
 				packager.debug = true;
 
 				if (signed) {
@@ -46,12 +51,7 @@ export function test(
 					}
 				}
 
-				const descriptorFile = fixtureFile(
-					sample.name,
-					sample.format,
-					descriptor
-				);
-				await packager.withFile(descriptorFile, async packager => {
+				await packager.write(async packager => {
 					for (const {
 						type,
 						source,
