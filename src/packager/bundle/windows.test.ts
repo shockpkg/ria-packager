@@ -34,7 +34,7 @@ void describe('packages/bundles/windows', () => {
 			ok(PackagerBundleWindows.prototype instanceof PackagerBundle);
 		});
 
-		if (!shouldTest('bundle-windows')) {
+		if (!(shouldTest('bundle') || shouldTest('bundle-windows'))) {
 			return;
 		}
 

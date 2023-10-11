@@ -23,7 +23,7 @@ void describe('packages/bundles/mac', () => {
 			ok(PackagerBundleMac.prototype instanceof PackagerBundle);
 		});
 
-		if (!shouldTest('bundle-mac')) {
+		if (!(shouldTest('bundle') || shouldTest('bundle-mac'))) {
 			return;
 		}
 

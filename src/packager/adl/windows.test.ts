@@ -19,7 +19,7 @@ void describe('packages/adls/windows', () => {
 			ok(PackagerAdlWindows.prototype instanceof PackagerAdl);
 		});
 
-		if (!shouldTest('adl-windows')) {
+		if (!(shouldTest('adl') || shouldTest('adl-windows'))) {
 			return;
 		}
 

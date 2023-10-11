@@ -13,7 +13,7 @@ void describe('packages/airs/native', () => {
 			ok(PackagerAirNative.prototype instanceof PackagerAir);
 		});
 
-		if (!shouldTest('air-native')) {
+		if (!(shouldTest('air') || shouldTest('air-native'))) {
 			return;
 		}
 

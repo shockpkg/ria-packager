@@ -13,7 +13,7 @@ void describe('packages/airs/installer', () => {
 			ok(PackagerAirInstaller.prototype instanceof PackagerAir);
 		});
 
-		if (!shouldTest('air-installer')) {
+		if (!(shouldTest('air') || shouldTest('air-installer'))) {
 			return;
 		}
 

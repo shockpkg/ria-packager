@@ -20,7 +20,7 @@ void describe('packages/adls/mac', () => {
 			ok(PackagerAdlMac.prototype instanceof PackagerAdl);
 		});
 
-		if (!shouldTest('adl-mac')) {
+		if (!(shouldTest('adl') || shouldTest('adl-mac'))) {
 			return;
 		}
 

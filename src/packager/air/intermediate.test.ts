@@ -13,7 +13,7 @@ void describe('packages/airs/intermediate', () => {
 			ok(PackagerAirIntermediate.prototype instanceof PackagerAir);
 		});
 
-		if (!shouldTest('air-intermediate')) {
+		if (!(shouldTest('air') || shouldTest('air-intermediate'))) {
 			return;
 		}
 
