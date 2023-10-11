@@ -31,7 +31,7 @@ Currently there is no option for creating license files for packaging HARMAN SDK
 ## Installer
 
 ```js
-import {readFile} from 'node:fs';
+import {readFile} from 'node:fs/promises';
 import {
 	PackagerAirInstaller,
 	SecurityKeystorePkcs12
@@ -63,7 +63,7 @@ await packager.write(async packager => {
 ### Windows
 
 ```js
-import {readFile} from 'node:fs';
+import {readFile} from 'node:fs/promises';
 import {
 	PackagerBundleWindows,
 	SecurityKeystorePkcs12
@@ -103,7 +103,7 @@ await packager.write(async packager => {
 -   The default icon format does not include the obsolete `ICN#` and `ics#` encoded icons.
 
 ```js
-import {readFile} from 'node:fs';
+import {readFile} from 'node:fs/promises';
 import {
 	PackagerBundleMac,
 	SecurityKeystorePkcs12
