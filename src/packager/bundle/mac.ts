@@ -52,7 +52,12 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * Info.plist data.
 	 */
-	public infoPlistData: string | Readonly<Uint8Array> | null = null;
+	public infoPlistData:
+		| string
+		| Readonly<Uint8Array>
+		| (() => string | Readonly<Uint8Array>)
+		| (() => Promise<string | Readonly<Uint8Array>>)
+		| null = null;
 
 	/**
 	 * PkgInfo file.
@@ -62,7 +67,12 @@ export class PackagerBundleMac extends PackagerBundle {
 	/**
 	 * PkgInfo data.
 	 */
-	public pkgInfoData: string | Readonly<Uint8Array> | null = null;
+	public pkgInfoData:
+		| string
+		| Readonly<Uint8Array>
+		| (() => string | Readonly<Uint8Array>)
+		| (() => Promise<string | Readonly<Uint8Array>>)
+		| null = null;
 
 	/**
 	 * Remove unnecessary OS files from older versions of the framework.
@@ -653,8 +663,9 @@ export class PackagerBundleMac extends PackagerBundle {
 	 */
 	protected async _writePkgInfo() {
 		const data = await this.getPkgInfoData();
+		const d = typeof data === 'function' ? await data() : data;
 		const path = pathJoin(this.path, this.appPkgInfoPath);
-		await writeFile(path, data);
+		await writeFile(path, d);
 	}
 
 	/**
@@ -666,7 +677,12 @@ export class PackagerBundleMac extends PackagerBundle {
 		const {infoPlistData, infoPlistFile} = this;
 
 		const dom = new Plist();
-		if (typeof infoPlistData === 'string') {
+		if (typeof infoPlistData === 'function') {
+			const d = await infoPlistData();
+			dom.fromXml(
+				typeof d === 'string' ? d : new TextDecoder().decode(d)
+			);
+		} else if (typeof infoPlistData === 'string') {
 			dom.fromXml(infoPlistData);
 		} else if (infoPlistData) {
 			dom.fromXml(new TextDecoder().decode(infoPlistData));
