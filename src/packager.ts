@@ -48,8 +48,8 @@ export abstract class Packager {
 	public descriptorData:
 		| string
 		| Readonly<Uint8Array>
-		| (() => Readonly<Uint8Array>)
-		| (() => Promise<Readonly<Uint8Array>>)
+		| (() => Readonly<string | Uint8Array>)
+		| (() => Promise<Readonly<string | Uint8Array>>)
 		| null = null;
 
 	/**
@@ -366,10 +366,13 @@ export abstract class Packager {
 	 */
 	protected async _getDescriptorData() {
 		const {descriptorData, descriptorFile} = this;
-		if (descriptorData !== null) {
+		if (descriptorData) {
 			switch (typeof descriptorData) {
 				case 'function': {
-					return descriptorData();
+					const d = await descriptorData();
+					return typeof d === 'string'
+						? new TextEncoder().encode(d)
+						: d;
 				}
 				case 'string': {
 					return new TextEncoder().encode(descriptorData);
