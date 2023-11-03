@@ -130,12 +130,12 @@ jobs:
 
           - node-version: '18.18.0' # LTS (current)
             PKG:
-              - air-sdk-50.2.3.6-windows
+              - air-sdk-50.2.3.7-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
           - node-version: '18.18.0' # LTS (current)
             PKG:
-              - air-sdk-50.2.3.6-mac
+              - air-sdk-50.2.3.7-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
     runs-on: ubuntu-latest
