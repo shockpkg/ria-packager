@@ -115,13 +115,13 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 		const certificate = certificates.length
 			? this._createCertificateX509(
 					forge.pki.certificateToPem(certificates[0])
-			  )
+				)
 			: null;
 
 		const privateKey = privateKeys.length
 			? this._createSecurityKeyPrivateRsa(
 					forge.pki.privateKeyToPem(privateKeys[0])
-			  )
+				)
 			: null;
 
 		this._certificate = certificate;

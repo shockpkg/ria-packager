@@ -126,7 +126,7 @@ export class SecurityTimestamper {
 					forge.asn1.Type.OID,
 					false,
 					reqPolicy
-			  )
+				)
 			: null;
 
 		// Always null.
