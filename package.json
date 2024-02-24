@@ -30,7 +30,7 @@
 	},
 	"scripts": {
 		"shockpkg": "shockpkg",
-		"clean": "rimraf *.log* dts esm cjs spec/packages",
+		"clean": "rimraf dts esm cjs spec/packages",
 		"lint": "eslint .",
 		"format": "prettier -w .",
 		"formatted": "prettier -c .",
