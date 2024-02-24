@@ -2,7 +2,7 @@ import {describe, it} from 'node:test';
 import {strictEqual} from 'node:assert';
 import {Writable} from 'node:stream';
 
-import {Zipper} from './zipper';
+import {IZipperWriteStream, Zipper} from './zipper';
 
 class BufferCollector extends Writable {
 	protected _offset = 0;
@@ -59,7 +59,7 @@ void describe('zipper', () => {
 	void describe('Zipper', () => {
 		void it('stream writting', async () => {
 			const out = new BufferCollector();
-			const zipper = new Zipper(out);
+			const zipper = new Zipper(out as IZipperWriteStream);
 			zipper.comment = new TextEncoder().encode('archive comment');
 
 			{

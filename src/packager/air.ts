@@ -136,7 +136,9 @@ export abstract class PackagerAir extends Packager {
 	protected async _open() {
 		const {path} = this;
 		await mkdir(dirname(path), {recursive: true});
-		this._zipper = this._createZipper(createWriteStream(path));
+		this._zipper = this._createZipper(
+			createWriteStream(path) as IZipperWriteStream
+		);
 	}
 
 	/**
