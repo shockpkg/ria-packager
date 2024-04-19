@@ -14,28 +14,23 @@ jobs:
             PKG: ''
             RIA_PACKAGER_TEST: ''
 
-          - node-version: '18.18.2' # LTS
-            CODE_TEST: 'test-legacy'
-            PKG: ''
-            RIA_PACKAGER_TEST: ''
-
           - node-version: '20.9.0' # LTS
             CODE_TEST: 'test-legacy'
             PKG: ''
             RIA_PACKAGER_TEST: ''
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             CODE_CHECK: 1
             PKG: ''
             RIA_PACKAGER_TEST: ''
 
-          - node-version: '21.6.2' # Latest
+          - node-version: '21.7.3' # Latest
             CODE_TEST: 'test'
             PKG: ''
             RIA_PACKAGER_TEST: ''
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-1.0.7.4880-windows
@@ -44,7 +39,7 @@ jobs:
               - air-sdk-1.5.3.9120-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-1.0.7.4880-mac-zip
@@ -53,123 +48,123 @@ jobs:
               - air-sdk-1.5.3.9120-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-2.0.1.12090-windows
               - air-sdk-2.7.1.19610-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-2.0.1.12090-mac-zip
               - air-sdk-2.7.1.19610-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.0.0.4080-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.0.0.4080-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.2.0.2070-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.2.0.2070-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.6.0.6090-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-3.6.0.6090-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-25.0.0.134-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-25.0.0.134-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-27.0.0.132-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-27.0.0.128-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-32.0.0.116-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-32.0.0.116-mac-zip
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-33.0.2.330-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-33.0.2.330-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-33.1.1.929-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-33.1.1.929-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-50.2.4.5-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
-          - node-version: '20.11.1' # LTS (current)
+          - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-50.2.4.5-mac
@@ -239,7 +234,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.11.1'
+          node-version: '20.12.2'
           registry-url: https://registry.npmjs.org/
 
       - name: Dependencies
