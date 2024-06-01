@@ -137,25 +137,13 @@ jobs:
           - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
-              - air-sdk-33.0.2.330-windows
+              - air-sdk-33.1.1.935-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
           - node-version: '20.12.2' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
-              - air-sdk-33.0.2.330-mac
-            RIA_PACKAGER_TEST: 'adl,bundle'
-
-          - node-version: '20.12.2' # LTS (current)
-            CODE_TEST: 'test-legacy'
-            PKG:
-              - air-sdk-33.1.1.929-windows
-            RIA_PACKAGER_TEST: 'adl,bundle'
-
-          - node-version: '20.12.2' # LTS (current)
-            CODE_TEST: 'test-legacy'
-            PKG:
-              - air-sdk-33.1.1.929-mac
+              - air-sdk-33.1.1.935-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
           - node-version: '20.12.2' # LTS (current)
@@ -168,6 +156,18 @@ jobs:
             CODE_TEST: 'test-legacy'
             PKG:
               - air-sdk-50.2.5.1-mac
+            RIA_PACKAGER_TEST: 'adl,bundle'
+
+          - node-version: '20.12.2' # LTS (current)
+            CODE_TEST: 'test-legacy'
+            PKG:
+              - air-sdk-51.0.1.2-windows
+            RIA_PACKAGER_TEST: 'adl,bundle'
+
+          - node-version: '20.12.2' # LTS (current)
+            CODE_TEST: 'test-legacy'
+            PKG:
+              - air-sdk-51.0.1.2-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
     runs-on: ubuntu-latest
