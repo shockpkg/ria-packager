@@ -14,11 +14,11 @@ Package for creating Adobe AIR packages
 
 Creates AIR packages from the packaged files, and an AIR SDK if necessary.
 
-When an AIR SDK is necessary, it can use a directory containing an SDK, or a shockpkg AIR SDK package file.
+When an AIR SDK is necessary, it can use a directory containing an AIR SDK, or an AIR SDK archive (shockpkg package file).
 
-Reading DMG SDK packages is only supported on macOS.
+Reading DMG SDK packages is only supported on macOS, using ZIP packages instead is recommended.
 
-Not all possible packing formats are supported, and some have individual limitations.
+Not all possible package formats are supported, and some have individual limitations.
 
 Some packagers have extra features which can optionally be enabled for things the official packager does not support.
 
@@ -28,7 +28,7 @@ Currently there is no option for creating license files for packaging HARMAN SDK
 
 # Usage
 
-## Installer
+## AIR Installer
 
 ```js
 import {readFile} from 'node:fs/promises';
@@ -60,7 +60,7 @@ await packager.write(async packager => {
 
 -   Native extensions not supported.
 
-### Windows
+### Bundle Windows
 
 ```js
 import {readFile} from 'node:fs/promises';
@@ -96,7 +96,7 @@ await packager.write(async packager => {
 });
 ```
 
-### Mac
+### Bundle Mac
 
 **Limitations:**
 
@@ -135,7 +135,7 @@ Limitations:
 
 -   Native extensions not supported.
 
-### Windows
+### ADL Windows
 
 ```js
 import {PackagerAdlWindows} from '@shockpkg/ria-packager';
@@ -154,7 +154,7 @@ await packager.write(async packager => {
 });
 ```
 
-### Mac
+### ADL Mac
 
 ```js
 import {PackagerAdlMac} from '@shockpkg/ria-packager';
