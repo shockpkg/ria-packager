@@ -8,7 +8,7 @@ Package for creating Adobe AIR packages
 [![size](https://packagephobia.now.sh/badge?p=@shockpkg/ria-packager)](https://packagephobia.now.sh/result?p=@shockpkg/ria-packager)
 [![downloads](https://img.shields.io/npm/dm/@shockpkg/ria-packager.svg)](https://npmcharts.com/compare/@shockpkg/ria-packager?minimal=true)
 
-[![Build Status](https://github.com/shockpkg/ria-packager/workflows/main/badge.svg)](https://github.com/shockpkg/ria-packager/actions?query=workflow%3Amain+branch%3Amaster)
+[![main](https://github.com/shockpkg/ria-packager/actions/workflows/main.yaml/badge.svg)](https://github.com/shockpkg/ria-packager/actions/workflows/main.yaml)
 
 # Overview
 
