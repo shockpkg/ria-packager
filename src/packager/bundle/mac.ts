@@ -598,6 +598,7 @@ export class PackagerBundleMac extends PackagerBundle {
 		const path = pathJoin(this.path, this.appIcnsPath);
 
 		// Write either a modern or a reference icon.
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (this.applicationIconModern) {
 			await this._writeIconModern(path, icon);
 		} else {

@@ -12,8 +12,8 @@ import {Packager} from '../packager';
 const childTags = (el: Readonly<Element>, name: string | null = null) => {
 	const {childNodes} = el;
 	const r: Element[] = [];
-	// eslint-disable-next-line @typescript-eslint/prefer-for-of
-	for (let i = 0; i < childNodes.length; i++) {
+	const {length} = childNodes;
+	for (let i = 0; i < length; i++) {
 		const child = childNodes[i] as Element;
 		const {tagName} = child;
 		if (!tagName || (name && tagName !== name)) {
@@ -330,6 +330,7 @@ export abstract class PackagerBundle extends Packager {
 			: null;
 
 		// The application.architecture tag (can be anywhere, use first).
+		// eslint-disable-next-line unicorn/prefer-query-selector
 		const architectureTags = doc.getElementsByTagName('architecture');
 		this._applicationInfoArchitecture = architectureTags.length
 			? architectureTags[0].textContent || null

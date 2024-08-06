@@ -112,6 +112,7 @@ export class SecurityTimestamper {
 					forge.asn1.Class.UNIVERSAL,
 					forge.asn1.Type.OCTETSTRING,
 					false,
+					// eslint-disable-next-line unicorn/prefer-code-point
 					String.fromCharCode(...digested)
 				)
 			]
@@ -147,6 +148,7 @@ export class SecurityTimestamper {
 					forge.asn1.Class.UNIVERSAL,
 					forge.asn1.Type.INTEGER,
 					false,
+					// eslint-disable-next-line unicorn/prefer-code-point
 					String.fromCharCode(1)
 				),
 				messageImprintDef,
@@ -156,6 +158,7 @@ export class SecurityTimestamper {
 					forge.asn1.Class.UNIVERSAL,
 					forge.asn1.Type.BOOLEAN,
 					false,
+					// eslint-disable-next-line unicorn/prefer-code-point
 					String.fromCharCode(certReq ? 0xff : 0)
 				),
 				asn1Extn
@@ -258,6 +261,7 @@ export class SecurityTimestamper {
 			);
 		}
 
+		// eslint-disable-next-line unicorn/prefer-code-point
 		const pkiStatusCode = pkiStatus.value.charCodeAt(0);
 		if (pkiStatusCode !== 0 && pkiStatusCode !== 1) {
 			throw new Error(`Unexpected PKI status code: ${pkiStatusCode}`);

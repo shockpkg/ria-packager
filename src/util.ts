@@ -31,7 +31,7 @@ export function pathRelativeBase(path: string, start: string, nocase = false) {
 		return '';
 	}
 	if (p.startsWith(`${s}/`)) {
-		return path.substring(s.length + 1);
+		return path.slice(s.length + 1);
 	}
 	return null;
 }

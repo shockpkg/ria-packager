@@ -346,12 +346,12 @@ export class Signature {
 	 * @param values Indexed values.
 	 * @returns Complete string.
 	 */
-	protected _templated(name: string, values: Readonly<string[]>) {
+	protected _templated(name: string, values: readonly string[]) {
 		const template = this._templates.get(name);
 		if (!template) {
 			throw new Error(`Unknown template name: ${name}`);
 		}
-		return template.replace(/\{(\d+)\}/g, (str, index) => {
+		return template.replace(/{(\d+)}/g, (str, index) => {
 			const i = +index;
 			if (i >= values.length) {
 				throw new Error(`Index out of range: ${i} > ${values.length}`);
@@ -426,8 +426,8 @@ export class Signature {
 		delimit = '\n'
 	) {
 		const chunks = [];
-		for (let b64 = base64Encode(data); b64; b64 = b64.substring(chunk)) {
-			chunks.push(b64.substring(0, chunk));
+		for (let b64 = base64Encode(data); b64; b64 = b64.slice(chunk)) {
+			chunks.push(b64.slice(0, chunk));
 		}
 		return chunks.join(delimit);
 	}

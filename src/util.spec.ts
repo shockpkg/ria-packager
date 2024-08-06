@@ -21,7 +21,6 @@ export function shouldTest(name: string) {
 }
 
 export function listFormats() {
-	// eslint-disable-next-line no-sync
 	return readdirSync(pathJoin('spec', 'fixtures', 'HelloWorld'))
 		.filter(s => /^\d+\.\d+$/.test(s))
 		.map(s => s.split('.').map(s => +s))

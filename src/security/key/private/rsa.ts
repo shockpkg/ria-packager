@@ -37,6 +37,7 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 		}
 
 		const md = forge.md.sha1.create();
+		// eslint-disable-next-line unicorn/prefer-code-point
 		md.update(String.fromCharCode(...data));
 		const signature = privateKey.sign(md, 'RSASSA-PKCS1-V1_5');
 		return forge.util.binary.raw.decode(signature);

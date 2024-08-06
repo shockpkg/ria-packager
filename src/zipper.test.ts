@@ -17,6 +17,7 @@ class BufferCollector extends Writable {
 	) {
 		// Should always be buffer.
 		if (!Buffer.isBuffer(chunk)) {
+			// eslint-disable-next-line unicorn/prefer-type-error
 			throw new Error('Expected a buffer chunk');
 		}
 
@@ -47,9 +48,7 @@ class BufferCollector extends Writable {
 }
 
 function bufferHex(data: Readonly<Buffer>) {
-	return data
-		.toString('hex')
-		.split('')
+	return [...data.toString('hex')]
 		.map((v, i) => (i && i % 2 === 0 ? ` ${v}` : v))
 		.join('')
 		.toUpperCase();

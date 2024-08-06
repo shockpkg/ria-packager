@@ -248,7 +248,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 		) {
 			return null;
 		}
-		const values = {...(versionStrings || {})};
+		const values = {...versionStrings};
 		if (fileVersion !== null) {
 			values.FileVersion = fileVersion;
 		}
@@ -459,7 +459,6 @@ export class PackagerBundleWindows extends PackagerBundle {
 			return null;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/require-await
 		return async (data: Uint8Array) => {
 			// Parse EXE.
 			const exe = NtExecutable.from(signatureSet(data, null, true, true));
@@ -598,7 +597,7 @@ export class PackagerBundleWindows extends PackagerBundle {
 	 * @returns Version integers ([MS, LS]) or null.
 	 */
 	protected _peVersionInts(version: string): [number, number] | null {
-		const parts = version.split(/[.,]/);
+		const parts = version.split(/[,.]/);
 		const numbers = [];
 		for (const part of parts) {
 			const n = /^\d+$/.test(part) ? +part : -1;

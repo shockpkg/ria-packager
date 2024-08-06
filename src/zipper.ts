@@ -5,6 +5,37 @@ import {deflateRaw} from 'node:zlib';
 import {crc32} from '@shockpkg/icon-encoder';
 
 /**
+ * Add Extended Timestamp to bit flags and list.
+ *
+ * @param flags Bit flags.
+ * @param times Array of times.
+ * @param time Time to add, or not if null.
+ * @param index Bit index.
+ * @param local Local header or central.
+ * @returns New bit flags.
+ */
+function addET(
+	flags: number,
+	times: number[],
+	time: Readonly<Date> | number | null = null,
+	index: number,
+	local: boolean
+) {
+	if (time !== null) {
+		// eslint-disable-next-line no-bitwise
+		flags |= 1 << index;
+		if (index || local) {
+			times.push(
+				typeof time === 'number'
+					? time
+					: Math.round(time.getTime() / 1000)
+			);
+		}
+	}
+	return flags;
+}
+
+/**
  * Zipper write stream interface.
  * A subset of Writable.
  */
@@ -154,19 +185,9 @@ export class ZipperEntryExtraField {
 	) {
 		let flags = 0;
 		const times: number[] = [];
-		[mtime, atime, ctime].forEach((v, i) => {
-			if (v === null) {
-				return;
-			}
-
-			// eslint-disable-next-line no-bitwise
-			flags |= 1 << i;
-			if (local || i) {
-				times.push(
-					typeof v === 'number' ? v : Math.round(v.getTime() / 1000)
-				);
-			}
-		});
+		flags = addET(flags, times, mtime, 0, local);
+		flags = addET(flags, times, atime, 1, local);
+		flags = addET(flags, times, ctime, 2, local);
 
 		const d = new Uint8Array(1 + times.length * 4);
 		let i = 0;

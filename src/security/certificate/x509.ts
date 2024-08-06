@@ -30,7 +30,7 @@ export class SecurityCertificateX509 extends SecurityCertificate {
 	public encodePemData() {
 		// Remove all the non-base64 lines, then decode.
 		const base64 = this._certificate
-			.split(/[\r\n]+/)
+			.split(/[\n\r]+/)
 			.map(s => s.trim())
 			.filter(s => !s.startsWith('-'))
 			.join('');

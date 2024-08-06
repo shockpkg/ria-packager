@@ -11,7 +11,6 @@ import {Signature} from './signature';
 const mimetype = 'application/vnd.adobe.air-application-installer-package+zip';
 
 const files: [string, () => Promise<Uint8Array>][] = [
-	// eslint-disable-next-line @typescript-eslint/require-await
 	['mimetype', async () => new TextEncoder().encode(mimetype)],
 	[
 		'META-INF/AIR/application.xml',
@@ -34,7 +33,7 @@ const expectedTimestampYes = fixtureFile(
 
 function extractTimestamp(xml: string) {
 	const m = xml.match(
-		/^([\s\S]*)(<Object\s+xmlns:xades[^>]+>[\s\S]+<\/Object>)([\s\S]*)$/
+		/^([\S\s]*)(<Object\s+xmlns:xades[^>]+>[\S\s]+<\/Object>)([\S\s]*)$/
 	);
 	if (!m) {
 		throw new Error('No timestamp');
