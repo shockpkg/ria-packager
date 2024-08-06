@@ -1,2 +1,2 @@
-export * from './private';
-export * from './private/';
+export * from './private.ts';
+export * from './private/index.ts';

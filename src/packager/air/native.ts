@@ -1,4 +1,4 @@
-import {PackagerAir} from '../air';
+import {PackagerAir} from '../air.ts';
 
 /**
  * PackagerAirNative object.

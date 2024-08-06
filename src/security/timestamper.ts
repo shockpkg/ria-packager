@@ -1,7 +1,7 @@
 import forge from 'node-forge';
 
-import {NAME, VERSION} from '../meta';
-import {IFetch} from '../types';
+import {NAME, VERSION} from '../meta.ts';
+import {IFetch} from '../types.ts';
 
 /**
  * SecurityTimestamper object.

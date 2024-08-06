@@ -1,2 +1,2 @@
-export * from './mac';
-export * from './windows';
+export * from './mac.ts';
+export * from './windows.ts';

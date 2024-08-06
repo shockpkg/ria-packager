@@ -1,9 +1,9 @@
 import {mkdir, utimes, writeFile} from 'node:fs/promises';
 import {dirname, join as pathJoin} from 'node:path';
 
-import {IPackagerResourceOptions} from '../../packager';
-import {quoteSh} from '../../util';
-import {PackagerAdl} from '../adl';
+import {IPackagerResourceOptions} from '../../packager.ts';
+import {quoteSh} from '../../util.ts';
+import {PackagerAdl} from '../adl.ts';
 
 /**
  * PackagerAdlMac object.

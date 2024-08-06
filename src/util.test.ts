@@ -1,7 +1,7 @@
 import {describe, it} from 'node:test';
 import {strictEqual} from 'node:assert';
 
-import {pathRelativeBase} from './util';
+import {pathRelativeBase} from './util.ts';
 
 void describe('util', () => {
 	void describe('pathRelativeBase', () => {

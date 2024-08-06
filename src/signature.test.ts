@@ -3,10 +3,10 @@ import {describe, it} from 'node:test';
 import {ok, strictEqual, throws} from 'node:assert';
 import {readFile} from 'node:fs/promises';
 
-import {fixtureFile, timestampUrl} from './util.spec';
-import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
-import {SecurityTimestamper} from './security/timestamper';
-import {Signature} from './signature';
+import {fixtureFile, timestampUrl} from './util.spec.ts';
+import {SecurityKeystorePkcs12} from './security/keystore/pkcs12.ts';
+import {SecurityTimestamper} from './security/timestamper.ts';
+import {Signature} from './signature.ts';
 
 const mimetype = 'application/vnd.adobe.air-application-installer-package+zip';
 

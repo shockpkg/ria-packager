@@ -10,10 +10,10 @@ import {
 	getPackageFile,
 	shouldTest,
 	versionBefore
-} from '../../util.spec';
-import {PackagerBundle} from '../bundle';
+} from '../../util.spec.ts';
+import {PackagerBundle} from '../bundle.ts';
 
-import {PackagerBundleWindows} from './windows';
+import {PackagerBundleWindows} from './windows.ts';
 
 const fileVersion = '3.14.15.92';
 const productVersion = '3.1.4.1';

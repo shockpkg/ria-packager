@@ -1,6 +1,6 @@
 import {base64Decode} from '@shockpkg/plist-dom';
 
-import {SecurityCertificate} from '../certificate';
+import {SecurityCertificate} from '../certificate.ts';
 
 /**
  * SecurityCertificateX509 object.

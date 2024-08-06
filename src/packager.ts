@@ -3,10 +3,10 @@ import {join as pathJoin, basename} from 'node:path';
 
 import {fsWalk, pathNormalize} from '@shockpkg/archive-files';
 
-import {SecurityKeystore} from './security/keystore';
-import {Signature} from './signature';
-import {Hasher} from './hasher';
-import {HasherSha256} from './hasher/sha256';
+import {SecurityKeystore} from './security/keystore.ts';
+import {Signature} from './signature.ts';
+import {Hasher} from './hasher.ts';
+import {HasherSha256} from './hasher/sha256.ts';
 
 /**
  * Options for adding resources.

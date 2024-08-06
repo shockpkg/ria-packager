@@ -2,7 +2,7 @@ import {describe, it} from 'node:test';
 import {strictEqual} from 'node:assert';
 import {Writable} from 'node:stream';
 
-import {IZipperWriteStream, Zipper} from './zipper';
+import {IZipperWriteStream, Zipper} from './zipper.ts';
 
 class BufferCollector extends Writable {
 	protected _offset = 0;

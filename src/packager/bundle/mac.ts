@@ -15,9 +15,9 @@ import {
 	ValueDict
 } from '@shockpkg/plist-dom';
 
-import {pathRelativeBaseMatch, pathRelativeBase} from '../../util';
-import {IPackagerResourceOptions} from '../../packager';
-import {IIcon, PackagerBundle} from '../bundle';
+import {pathRelativeBaseMatch, pathRelativeBase} from '../../util.ts';
+import {IPackagerResourceOptions} from '../../packager.ts';
+import {IIcon, PackagerBundle} from '../bundle.ts';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const asValue = (v: Value) => v;

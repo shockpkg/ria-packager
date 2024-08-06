@@ -1,4 +1,4 @@
-import {SecurityKey} from '../key';
+import {SecurityKey} from '../key.ts';
 
 /**
  * SecurityKeyPrivate object.

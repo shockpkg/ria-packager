@@ -4,8 +4,8 @@ import {join as pathJoin} from 'node:path';
 
 import {Manager} from '@shockpkg/core';
 
-import {SecurityKeystorePkcs12} from './security/keystore/pkcs12';
-import {IPackagerResourceOptions} from './packager';
+import {SecurityKeystorePkcs12} from './security/keystore/pkcs12.ts';
+import {IPackagerResourceOptions} from './packager.ts';
 
 // eslint-disable-next-line no-process-env
 export const envTest = process.env.RIA_PACKAGER_TEST || null;

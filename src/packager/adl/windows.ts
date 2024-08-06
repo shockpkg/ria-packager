@@ -1,9 +1,9 @@
 import {mkdir, utimes, writeFile} from 'node:fs/promises';
 import {dirname, join as pathJoin} from 'node:path';
 
-import {quoteCmd} from '../../util';
-import {IPackagerResourceOptions} from '../../packager';
-import {PackagerAdl} from '../adl';
+import {quoteCmd} from '../../util.ts';
+import {IPackagerResourceOptions} from '../../packager.ts';
+import {PackagerAdl} from '../adl.ts';
 
 /**
  * Convert forward slashes to back slashes.

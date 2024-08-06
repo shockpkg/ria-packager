@@ -2,9 +2,9 @@ import {describe, it} from 'node:test';
 import {ok, throws} from 'node:assert';
 import {readFile} from 'node:fs/promises';
 
-import {fixtureFile} from '../../util.spec';
+import {fixtureFile} from '../../util.spec.ts';
 
-import {SecurityKeystorePkcs12} from './pkcs12';
+import {SecurityKeystorePkcs12} from './pkcs12.ts';
 
 const file = fixtureFile('signature', 'key.p12');
 const pass = 'password';

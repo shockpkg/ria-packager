@@ -1,6 +1,6 @@
 import forge from 'node-forge';
 
-import {SecurityKeyPrivate} from '../private';
+import {SecurityKeyPrivate} from '../private.ts';
 
 /**
  * SecurityKeyPrivateRsa object.

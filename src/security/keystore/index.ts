@@ -1,1 +1,1 @@
-export * from './pkcs12';
+export * from './pkcs12.ts';

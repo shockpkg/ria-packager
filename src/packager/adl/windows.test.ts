@@ -8,10 +8,10 @@ import {
 	getPackageFile,
 	shouldTest,
 	versionBefore
-} from '../../util.spec';
-import {PackagerAdl} from '../adl';
+} from '../../util.spec.ts';
+import {PackagerAdl} from '../adl.ts';
 
-import {PackagerAdlWindows} from './windows';
+import {PackagerAdlWindows} from './windows.ts';
 
 void describe('packages/adls/windows', () => {
 	void describe('PackagerAdlWindows', () => {

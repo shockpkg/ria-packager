@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 
-import {Hasher} from '../hasher';
+import {Hasher} from '../hasher.ts';
 
 /**
  * HasherSha256 object.

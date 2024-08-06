@@ -26,9 +26,9 @@ import {
 	pathRelativeBase,
 	align,
 	pngHalfSize
-} from '../../util';
-import {IPackagerResourceOptions} from '../../packager';
-import {IIcon, PackagerBundle} from '../bundle';
+} from '../../util.ts';
+import {IPackagerResourceOptions} from '../../packager.ts';
+import {IIcon, PackagerBundle} from '../bundle.ts';
 
 // IMAGE_DATA_DIRECTORY indexes.
 const IDD_RESOURCE = 2;

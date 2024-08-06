@@ -1,8 +1,8 @@
 import forge from 'node-forge';
 
-import {SecurityCertificateX509} from '../certificate/x509';
-import {SecurityKeyPrivateRsa} from '../key/private/rsa';
-import {SecurityKeystore} from '../keystore';
+import {SecurityCertificateX509} from '../certificate/x509.ts';
+import {SecurityKeyPrivateRsa} from '../key/private/rsa.ts';
+import {SecurityKeystore} from '../keystore.ts';
 
 /**
  * SecurityKeystorePkcs12 object.

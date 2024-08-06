@@ -7,9 +7,9 @@ import {
 	cleanPackageDir,
 	timestampUrl,
 	fixtureKeystoreRead
-} from '../util.spec';
+} from '../util.spec.ts';
 
-import {PackagerAir} from './air';
+import {PackagerAir} from './air.ts';
 
 export function test(
 	Packager: new (path: string) => PackagerAir,

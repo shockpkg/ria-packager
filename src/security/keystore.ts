@@ -1,5 +1,5 @@
-import {SecurityCertificate} from './certificate';
-import {SecurityKeyPrivate} from './key/private';
+import {SecurityCertificate} from './certificate.ts';
+import {SecurityKeyPrivate} from './key/private.ts';
 
 /**
  * SecurityKeystore object.

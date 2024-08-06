@@ -1,10 +1,10 @@
 import {base64Encode} from '@shockpkg/plist-dom';
 
-import {SecurityCertificate} from './security/certificate';
-import {SecurityKeyPrivate} from './security/key/private';
-import {SecurityTimestamper} from './security/timestamper';
-import {HasherSha1} from './hasher/sha1';
-import {HasherSha256} from './hasher/sha256';
+import {SecurityCertificate} from './security/certificate.ts';
+import {SecurityKeyPrivate} from './security/key/private.ts';
+import {SecurityTimestamper} from './security/timestamper.ts';
+import {HasherSha1} from './hasher/sha1.ts';
+import {HasherSha256} from './hasher/sha256.ts';
 
 const templates: [string, string][] = [
 	['certificate', '<X509Certificate>{0}</X509Certificate>'],

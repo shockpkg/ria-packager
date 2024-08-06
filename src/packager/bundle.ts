@@ -1,6 +1,6 @@
 import {DOMParser} from '@xmldom/xmldom';
 
-import {Packager} from '../packager';
+import {Packager} from '../packager.ts';
 
 /**
  * Get child tags for an element.

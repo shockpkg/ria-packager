@@ -5,8 +5,8 @@ import {
 	createArchiveByFileStatOrThrow
 } from '@shockpkg/archive-files';
 
-import {pathRelativeBaseMatch} from '../util';
-import {Packager} from '../packager';
+import {pathRelativeBaseMatch} from '../util.ts';
+import {Packager} from '../packager.ts';
 
 /**
  * PackagerAdl object.

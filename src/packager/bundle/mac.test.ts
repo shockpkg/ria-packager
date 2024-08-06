@@ -12,10 +12,10 @@ import {
 	getPackageFile,
 	shouldTest,
 	versionBefore
-} from '../../util.spec';
-import {PackagerBundle} from '../bundle';
+} from '../../util.spec.ts';
+import {PackagerBundle} from '../bundle.ts';
 
-import {PackagerBundleMac} from './mac';
+import {PackagerBundleMac} from './mac.ts';
 
 void describe('packages/bundles/mac', () => {
 	void describe('PackagerBundleMac', () => {

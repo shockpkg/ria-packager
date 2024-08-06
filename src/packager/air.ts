@@ -2,8 +2,8 @@ import {createWriteStream} from 'node:fs';
 import {mkdir, open} from 'node:fs/promises';
 import {dirname} from 'node:path';
 
-import {IZipperWriteStream, Zipper, ZipperEntry} from '../zipper';
-import {IPackagerResourceOptions, Packager} from '../packager';
+import {IZipperWriteStream, Zipper, ZipperEntry} from '../zipper.ts';
+import {IPackagerResourceOptions, Packager} from '../packager.ts';
 
 /**
  * PackagerAir object.

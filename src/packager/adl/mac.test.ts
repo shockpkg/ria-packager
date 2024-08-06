@@ -9,10 +9,10 @@ import {
 	getPackageFile,
 	shouldTest,
 	versionBefore
-} from '../../util.spec';
-import {PackagerAdl} from '../adl';
+} from '../../util.spec.ts';
+import {PackagerAdl} from '../adl.ts';
 
-import {PackagerAdlMac} from './mac';
+import {PackagerAdlMac} from './mac.ts';
 
 void describe('packages/adls/mac', () => {
 	void describe('PackagerAdlMac', () => {

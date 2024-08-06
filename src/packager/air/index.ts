@@ -1,3 +1,3 @@
-export * from './installer';
-export * from './intermediate';
-export * from './native';
+export * from './installer.ts';
+export * from './intermediate.ts';
+export * from './native.ts';
