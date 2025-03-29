@@ -161,13 +161,13 @@ jobs:
           - node-version: '20.16.0' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
-              - air-sdk-51.1.3.8-windows
+              - air-sdk-51.1.3.10-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
           - node-version: '20.16.0' # LTS (current)
             CODE_TEST: 'test-legacy'
             PKG:
-              - air-sdk-51.1.3.8-mac
+              - air-sdk-51.1.3.10-mac
             RIA_PACKAGER_TEST: 'adl,bundle'
 
     runs-on: ubuntu-latest
