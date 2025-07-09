@@ -6,6 +6,9 @@ import {SecurityTimestamper} from './security/timestamper.ts';
 import {HasherSha1} from './hasher/sha1.ts';
 import {HasherSha256} from './hasher/sha256.ts';
 
+const defaultSignDigest = 'sha256' as const;
+const defaultTimestampDigest = 'sha256' as const;
+
 const templates: [string, string][] = [
 	['certificate', '<X509Certificate>{0}</X509Certificate>'],
 	['crl', '<X509CRL>{0}</X509CRL>'],
@@ -29,28 +32,28 @@ const templates: [string, string][] = [
 			'  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#" Id="PackageSignature">',
 			'    <SignedInfo>',
 			'      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>',
-			'      <SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"/>',
+			'      <SignatureMethod Algorithm="{0}"/>',
 			'      <Reference URI="#PackageContents">',
 			'        <Transforms>',
 			'          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>',
 			'        </Transforms>',
 			'        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>',
-			'        <DigestValue>{0}</DigestValue>',
+			'        <DigestValue>{1}</DigestValue>',
 			'      </Reference>',
 			'    </SignedInfo>',
 			// eslint-disable-next-line max-len
-			'    <SignatureValue Id="PackageSignatureValue">{1}</SignatureValue>',
+			'    <SignatureValue Id="PackageSignatureValue">{2}</SignatureValue>',
 			'    <KeyInfo>',
 			'      <X509Data>',
-			'        {2}',
+			'        {3}',
 			'      </X509Data>',
 			'    </KeyInfo>',
 			'    <Object>',
 			'      <Manifest Id="PackageContents">',
-			'        {3}',
+			'        {4}',
 			'      </Manifest>',
 			'    </Object>',
-			'    {4}',
+			'    {5}',
 			'  </Signature>',
 			'</signatures>',
 			''
@@ -61,13 +64,13 @@ const templates: [string, string][] = [
 		[
 			'<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">',
 			'<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod>',
-			'<SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"></SignatureMethod>',
+			'<SignatureMethod Algorithm="{0}"></SignatureMethod>',
 			'<Reference URI="#PackageContents">',
 			'<Transforms>',
 			'<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform>',
 			'</Transforms>',
 			'<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>',
-			'<DigestValue>{0}</DigestValue>',
+			'<DigestValue>{1}</DigestValue>',
 			'</Reference>',
 			'</SignedInfo>'
 		].join('')
@@ -114,6 +117,16 @@ export class Signature {
 	 * Private key.
 	 */
 	public privateKey: SecurityKeyPrivate | null = null;
+
+	/**
+	 * Signature digest algorithm.
+	 */
+	public signDigest: 'sha1' | 'sha256' = defaultSignDigest;
+
+	/**
+	 * Timestamp digest algorithm.
+	 */
+	public timestampDigest: 'sha1' | 'sha256' = defaultTimestampDigest;
 
 	/**
 	 * Timestamp URL.
@@ -176,6 +189,8 @@ export class Signature {
 	public defaults() {
 		this.certificate = null;
 		this.privateKey = null;
+		this.signDigest = defaultSignDigest;
+		this.timestampDigest = defaultTimestampDigest;
 		this.timestampUrl = null;
 		this.timestampUriSignature = false;
 		this.timestampUriPackage = true;
@@ -225,8 +240,13 @@ export class Signature {
 		const manifest = this._templated('packageManifest', [
 			this._packageManifest.join('')
 		]);
+		const signatureAlgorithm =
+			this.signDigest === 'sha256'
+				? 'http://www.w3.org/TR/xmldsig-core#rsa-sha256'
+				: 'http://www.w3.org/TR/xmldsig-core#rsa-sha1';
 		const digest = this._hashSha256(new TextEncoder().encode(manifest));
 		const signed = this._templated('SignedInfo', [
+			signatureAlgorithm,
 			this._base64Encode(digest)
 		]);
 
@@ -252,10 +272,11 @@ export class Signature {
 			throw new Error('Private key not set');
 		}
 
+		const {signDigest} = this;
 		const keyInfo = this._buildKeyInfo();
 		const signature = keyPrivate.sign(
 			new TextEncoder().encode(signedInfo),
-			'sha1'
+			signDigest
 		);
 
 		this._signature = signature;
@@ -283,11 +304,15 @@ export class Signature {
 		const message = this._templated('SignatureValue', [
 			this._base64Encode(signature)
 		]);
+		const messageData = new TextEncoder().encode(message);
 
+		const {timestampDigest} = this;
 		const timestamper = this._createSecurityTimestamper(timestampUrl);
 		const timestamp = await timestamper.timestamp(
-			this._hashSha1(new TextEncoder().encode(message)),
-			'sha1'
+			timestampDigest === 'sha256'
+				? this._hashSha256(messageData)
+				: this._hashSha1(messageData),
+			timestampDigest
 		);
 
 		this._timestamp = timestamp;
@@ -311,9 +336,14 @@ export class Signature {
 		}
 
 		const timestamp = this._timestamp ? this._createTimestampXml() : '';
+		const signatureAlgorithm =
+			this.signDigest === 'sha256'
+				? 'http://www.w3.org/TR/xmldsig-core#rsa-sha256'
+				: 'http://www.w3.org/TR/xmldsig-core#rsa-sha1';
 
 		return new TextEncoder().encode(
 			this._templated('PackageSignature', [
+				signatureAlgorithm,
 				this._base64Encode(manifestDigest),
 				this._base64Encode(signature),
 				keyInfo,

@@ -32,11 +32,21 @@ export class SecurityKeyPrivateRsa extends SecurityKeyPrivate {
 	public sign(data: Readonly<Uint8Array>, digest: string) {
 		const privateKey = forge.pki.privateKeyFromPem(this._privateKey);
 		digest = digest.toLowerCase();
-		if (digest !== 'sha1') {
-			throw new Error(`Unsupported digest algorithm: ${digest}`);
+		let md;
+		switch (digest) {
+			case 'sha1': {
+				md = forge.md.sha1.create();
+				break;
+			}
+			case 'sha256': {
+				md = forge.md.sha256.create();
+				break;
+			}
+			default: {
+				throw new Error(`Unsupported digest algorithm: ${digest}`);
+			}
 		}
 
-		const md = forge.md.sha1.create();
 		// eslint-disable-next-line unicorn/prefer-code-point
 		md.update(String.fromCharCode(...data));
 		const signature = privateKey.sign(md, 'RSASSA-PKCS1-V1_5');

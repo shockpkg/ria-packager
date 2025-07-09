@@ -76,8 +76,19 @@ export class SecurityTimestamper {
 	 */
 	protected _encodeRequest(digested: Readonly<Uint8Array>, digest: string) {
 		digest = digest.toLowerCase();
-		if (digest !== 'sha1') {
-			throw new Error(`Unsupported digest algorithm: ${digest}`);
+		let iod = '';
+		switch (digest) {
+			case 'sha1': {
+				iod = forge.pki.oids.sha1;
+				break;
+			}
+			case 'sha256': {
+				iod = forge.pki.oids.sha256;
+				break;
+			}
+			default: {
+				throw new Error(`Unsupported digest algorithm: ${digest}`);
+			}
 		}
 
 		const certReq = true;
@@ -91,7 +102,7 @@ export class SecurityTimestamper {
 					forge.asn1.Class.UNIVERSAL,
 					forge.asn1.Type.OID,
 					false,
-					forge.asn1.oidToDer(forge.pki.oids.sha1).getBytes()
+					forge.asn1.oidToDer(iod).getBytes()
 				),
 				forge.asn1.create(
 					forge.asn1.Class.UNIVERSAL,

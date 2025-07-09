@@ -21,14 +21,17 @@ const files: [string, () => Promise<Uint8Array>][] = [
 
 const replayTimestampBody = fixtureFile('signature', 'timestamp.body.bin');
 
-const expectedTimestampNo = fixtureFile(
+const expectedSha1TimestampNo = fixtureFile(
 	'signature',
-	'signatures.xml.timestamp.no.bin'
+	'signatures.xml.sha1.timestamp.no.bin'
 );
-
-const expectedTimestampYes = fixtureFile(
+const expectedSha1TimestampYes = fixtureFile(
 	'signature',
-	'signatures.xml.timestamp.yes.bin'
+	'signatures.xml.sha1.timestamp.yes.bin'
+);
+const expectedSha256TimestampNo = fixtureFile(
+	'signature',
+	'signatures.xml.sha256.timestamp.no.bin'
 );
 
 function extractTimestamp(xml: string) {
@@ -76,6 +79,8 @@ void describe('signature', () => {
 	void describe('Signature', () => {
 		void it('Timestamp: OFF', async () => {
 			const signature = new Signature();
+			signature.signDigest = 'sha1';
+			signature.timestampDigest = 'sha1';
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
@@ -91,7 +96,7 @@ void describe('signature', () => {
 			const encoded = signature.encode();
 
 			// Check that code matches expected code.
-			const expected = await readFile(expectedTimestampNo);
+			const expected = await readFile(expectedSha1TimestampNo);
 			strictEqual(
 				new TextDecoder().decode(encoded),
 				expected.toString('utf8')
@@ -100,6 +105,8 @@ void describe('signature', () => {
 
 		void it('Timestamp: REPLAY', async () => {
 			const signature = new SignatureReplay();
+			signature.signDigest = 'sha1';
+			signature.timestampDigest = 'sha1';
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
@@ -118,7 +125,7 @@ void describe('signature', () => {
 			const encoded = signature.encode();
 
 			// Check that code matches expected code.
-			const expected = await readFile(expectedTimestampYes);
+			const expected = await readFile(expectedSha1TimestampYes);
 			strictEqual(
 				new TextDecoder().decode(encoded),
 				expected.toString('utf8')
@@ -127,6 +134,8 @@ void describe('signature', () => {
 
 		void it('Timestamp: REAL', async () => {
 			const signature = new Signature();
+			signature.signDigest = 'sha256';
+			signature.timestampDigest = 'sha256';
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
@@ -149,12 +158,14 @@ void describe('signature', () => {
 				new TextDecoder().decode(encoded)
 			);
 
-			const expected = await readFile(expectedTimestampNo);
+			const expected = await readFile(expectedSha256TimestampNo);
 			strictEqual(extracted.removed, expected.toString('utf8'));
 		});
 
 		void it('Linear Methods', async () => {
 			const signature = new SignatureReplay();
+			signature.signDigest = 'sha1';
+			signature.timestampDigest = 'sha1';
 
 			const keystore = await getKeystore();
 			signature.certificate = keystore.getCertificate();
@@ -162,8 +173,8 @@ void describe('signature', () => {
 
 			signature.timestampUrl = timestampUrl;
 
-			const expectedNo = await readFile(expectedTimestampNo);
-			const expectedYes = await readFile(expectedTimestampYes);
+			const expectedNo = await readFile(expectedSha1TimestampNo);
+			const expectedYes = await readFile(expectedSha1TimestampYes);
 
 			const expectedEncode = (data: Uint8Array, timestamp: boolean) => {
 				const expected = timestamp ? expectedYes : expectedNo;
