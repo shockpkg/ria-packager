@@ -59,7 +59,9 @@ class SignatureReplay extends Signature {
 	protected _createSecurityTimestamper(timestampUrl: string) {
 		return new (class extends SecurityTimestamper {
 			protected async _sendRequest(message: Readonly<Uint8Array>) {
-				return readFile(replayTimestampBody);
+				return readFile(replayTimestampBody) as Promise<
+					Uint8Array<ArrayBuffer>
+				>;
 			}
 		})(timestampUrl);
 	}

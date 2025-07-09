@@ -296,12 +296,12 @@ export class ZipperEntry {
 	/**
 	 * Entry path.
 	 */
-	public path = new Uint8Array(0);
+	public path: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
 
 	/**
 	 * Entry comment.
 	 */
-	public comment = new Uint8Array(0);
+	public comment: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
 
 	/**
 	 * Extra fields, local header.
@@ -644,7 +644,7 @@ export class Zipper {
 	/**
 	 * Archive comment.
 	 */
-	public comment = new Uint8Array(0);
+	public comment: Uint8Array<ArrayBufferLike> = new Uint8Array(0);
 
 	/**
 	 * Added entries.

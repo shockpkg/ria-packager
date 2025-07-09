@@ -237,7 +237,6 @@ export default [
 			'unicorn/switch-case-braces': 'off',
 
 			// Stylistic plugin:
-			'@stylistic/func-call-spacing': 'error',
 			'@stylistic/lines-around-comment': [
 				'error',
 				{

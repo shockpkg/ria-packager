@@ -68,7 +68,9 @@ export class SecurityKeystorePkcs12 extends SecurityKeystore {
 	public decode(data: Readonly<Uint8Array>, password: string | null = null) {
 		this.reset();
 
-		const asn1 = forge.asn1.fromDer(new forge.util.ByteStringBuffer(data));
+		const asn1 = forge.asn1.fromDer(
+			new forge.util.ByteStringBuffer(data as Uint8Array<ArrayBuffer>)
+		);
 		const p12 = password
 			? forge.pkcs12.pkcs12FromAsn1(asn1, true, password)
 			: forge.pkcs12.pkcs12FromAsn1(asn1, true);

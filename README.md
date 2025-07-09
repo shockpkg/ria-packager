@@ -58,7 +58,7 @@ await packager.write(async packager => {
 
 **Limitations:**
 
--   Native extensions not supported.
+- Native extensions not supported.
 
 ### Bundle Windows
 
@@ -100,7 +100,7 @@ await packager.write(async packager => {
 
 **Limitations:**
 
--   The default icon format does not include the obsolete `ICN#` and `ics#` encoded icons.
+- The default icon format does not include the obsolete `ICN#` and `ics#` encoded icons.
 
 ```js
 import {readFile} from 'node:fs/promises';
@@ -133,7 +133,7 @@ await packager.write(async packager => {
 
 Limitations:
 
--   Native extensions not supported.
+- Native extensions not supported.
 
 ### ADL Windows
 

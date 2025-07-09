@@ -60,7 +60,6 @@ export abstract class Packager {
 	/**
 	 * File and directory names to exclude when added a directory.
 	 */
-	// eslint-disable-next-line unicorn/better-regex
 	public excludes = [/^\./, /^ehthumbs\.db$/i, /^Thumbs\.db$/i];
 
 	/**

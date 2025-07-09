@@ -56,7 +56,8 @@ export class SecurityTimestamper {
 	 */
 	protected async _sendRequest(message: Readonly<Uint8Array>) {
 		const {url, headers} = this;
-		const response = await global.fetch(url, {
+		const fetch = this._ensureFetch();
+		const response = await fetch(url, {
 			method: 'POST',
 			headers,
 			body: message
@@ -189,7 +190,7 @@ export class SecurityTimestamper {
 	 */
 	protected _decodeResponse(response: Readonly<Uint8Array>) {
 		const object = forge.asn1.fromDer(
-			new forge.util.ByteStringBuffer(response)
+			new forge.util.ByteStringBuffer(response as Uint8Array<ArrayBuffer>)
 		);
 
 		const validator = {

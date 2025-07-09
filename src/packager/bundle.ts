@@ -1,4 +1,4 @@
-import {DOMParser} from '@xmldom/xmldom';
+import {DOMParser, type Element} from '@xmldom/xmldom';
 
 import {Packager} from '../packager.ts';
 
@@ -164,7 +164,7 @@ export abstract class PackagerBundle extends Packager {
 			new TextDecoder().decode(applicationData),
 			'text/xml'
 		);
-		const root = doc.documentElement;
+		const root = doc.documentElement!;
 
 		/**
 		 * Get child tag, optional.
