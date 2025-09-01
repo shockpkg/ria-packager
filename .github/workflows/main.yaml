@@ -166,6 +166,18 @@ jobs:
           - node-version: '22.17.0' # LTS (current)
             CODE_TEST: 'test'
             PKG:
+              - air-sdk-51.1.4.1-windows
+            RIA_PACKAGER_TEST: 'adl,bundle'
+
+          - node-version: '22.17.0' # LTS (current)
+            CODE_TEST: 'test'
+            PKG:
+              - air-sdk-51.1.4.1-mac
+            RIA_PACKAGER_TEST: 'adl,bundle'
+
+          - node-version: '22.17.0' # LTS (current)
+            CODE_TEST: 'test'
+            PKG:
               - air-sdk-51.2.2.3-windows
             RIA_PACKAGER_TEST: 'adl,bundle'
 
